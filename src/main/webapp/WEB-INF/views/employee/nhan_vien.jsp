@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>Đây là trang làm việc của nhân viên!!!!</h1>
+	<h1>Đây là trang làm việc của nhân viên</h1>
 	<h3>Như các bạn thấy đó, không có gì hết ^^</h3>
 </body>
 </html>
