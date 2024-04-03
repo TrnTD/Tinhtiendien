@@ -1,0 +1,129 @@
+@charset "ISO-8859-1";
+body{
+	margin:0;
+	color: black;
+	background-color: white;
+	font:600 16px/18px 'Open Sans',sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    height: 100vh;
+   
+}
+
+.signup-wrap{
+	width:100%;
+	min-height:670px;
+	position:relative;
+    border-radius: 40px;
+}
+.signup{
+
+	height:100%;
+	padding:90px 70px 50px 70px;
+    border-radius: 40px;
+	display: flex;
+    flex-direction: column;
+	justify-content: center;
+    align-items: center;
+	height: 100vh;
+}
+
+.tag a, .tag h1 
+{
+	text-align: center;
+}
+
+
+.tag a
+{
+	display: block;
+	margin: 15px;
+	font-weight: 100;
+	font-size: 12px;
+}
+
+
+
+.login-html .sign-up-user
+{
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	position:absolute;
+	transform:rotateY(180deg);
+	backface-visibility:hidden;
+	transition:all 0s linear;
+}
+
+.signup-form{
+	width: 60%;
+	margin-top: 10px;
+}
+.signup-form .group{
+	margin-bottom:15px;
+}
+.signup-form .group .label,
+.signup-form .group .input,
+.signup-form .group .button{
+	width: 100%;
+	color:#fff;
+	display:block;
+}
+.signup-form .group .input,
+.signup-form .group .button{
+	border:none;
+	padding:15px 20px;
+	border-radius:5px;
+	background:rgba(255,255,255,.1);
+}
+
+.signup-form .group .input
+{
+	width: 95%;
+	color: black;
+    border: 1px solid black;
+    margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.signup-form .group .button{
+	font-weight: 600;
+	font-size: 16px;
+	letter-spacing: 1px;
+}
+
+.signup-form .group .button
+{
+	cursor: pointer;
+}
+
+.signup-form .group input[data-type="password"]{
+	/* text-security:circle; */
+	-webkit-text-security:circle;
+}
+.signup-form .group .label{
+	color:black;
+	font-size:12px;
+}
+.signup-form .group .button{
+	background:#1161ee;
+}
+
+.signup-form .group i {
+	font-size: 14px;
+	font-weight: 200;
+}
+
+.footer
+{
+	font-size: 12px;
+}
+
+.footer a 
+{
+	color: black;
+	font-weight: 200;
+}
+
