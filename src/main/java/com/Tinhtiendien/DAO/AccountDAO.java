@@ -37,7 +37,8 @@ public class AccountDAO {
 	}
 	
 	public boolean checkExistAccount(String username, String password) {
-		String sql = "select * from taikhoan where username = ? and password = ?";
+//		String sql = "select * from taikhoan where username = ? and password = ?";
+		String sql = "EXEC sp_CheckLogin @username = ?, @password = ?";
 		List<Account> list = new ArrayList<Account>();
 		
 		try {
@@ -55,7 +56,8 @@ public class AccountDAO {
 	
 	public int getRole(String username) {
 		int role = -1;
-		String query = "select role from taikhoan where username = ?";
+//		String query = "select role from taikhoan where username = ? or chuho_id = ?";
+		String query = "exec sp_GetRole @username = ?";
 		
 		try {
 			role = jdbcTemplate.queryForObject(query, Integer.class, username);	
@@ -68,18 +70,30 @@ public class AccountDAO {
 		return role;
 	}
 	
-	public Account getAllInfo(String username) {
-		Account account = null;
-		String sql = "select * from chuho where username = ?";
-		
+	public void register (String chuhoid, String username, String password) {
+		String sql = "EXEC sp_UpdateUsernameAndInsertIntoTaikhoan @chuho_id = ?, @username = ?, @password = ?, @role = null";
+		int result = 0;
 		try {
-			account = jdbcTemplate.queryForObject(sql, new Object[] {username}, new MapperAccount());
-			System.out.println("Lay thong tin chu ho thanh cong!!");
+			result = jdbcTemplate.update(sql, new Object[] {chuhoid, username, password});
 		} catch (DataAccessException e) {
-			System.out.println("Lay thong tin chu ho that bai!!");
+			System.out.println("Su dung sp that bai");
 		}
 		
-		return account;
+	}
+
+	public boolean checkUsernameAccount(String username) {
+			List<Account> list = new ArrayList<Account>();
+			String sql = "select * from taikhoan where username = ?";
+			try {
+				list = jdbcTemplate.query(sql, new Object[] {username}, new MapperAccount());
+			} catch (DataAccessException e) {
+				System.out.println("Truy van taikhoan that bai");
+			}
+			
+			if (list.size() == 0) {
+				return false;
+			}
+			return true;
 	}
 	
 	

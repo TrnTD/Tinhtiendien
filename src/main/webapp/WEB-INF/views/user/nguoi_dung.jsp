@@ -9,8 +9,6 @@
 </head>
 <body>
 	<%@include file="/WEB-INF/views/layouts/user/navbar.jsp" %>	
-	${hoten}
-	${makh}
 	<%@include file="/WEB-INF/views/layouts/user/sidebar.jsp" %>	
 </body>
 </html>

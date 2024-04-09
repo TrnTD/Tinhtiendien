@@ -10,59 +10,58 @@
 </head>
 <style><%@include file="/WEB-INF/resource/assets/css/style-navbar.css"%></style>
 <body>
-	<div class="navbar-container">
-        <div class="navbar">
-            <div class="item">
-                <a href="/Tinhtiendien">Về trang chủ</a>
-            </div>
+<div class="navbar-container">
+       <div class="navbar">
+           <div class="item">
+               <a href="/Tinhtiendien">Về trang chủ</a>
+           </div>
 
-            <div class="item nabar-notification-bell">
-                <i class="fa-regular fa-bell"></i>
-            </div>
-    
-            <div class="item navbar-user-info">
-                <div class="btn-user-info">
-                    <i class="fa-regular fa-circle-user"></i>
-                    <p>${hoten}</p>
-                    <i class="fa-solid fa-angle-down"></i>
-                </div>
+           <div class="item nabar-notification-bell">
+               <i class="fa-regular fa-bell"></i>
+           </div>
+   
+           <div class="item navbar-user-info">
+               <div class="btn-user-info">
+                   <i class="fa-regular fa-circle-user"></i>
+                   <p>${hoten}</p>
+                   <i class="fa-solid fa-angle-down"></i>
+               </div>
 
-                <div class="sub-user-info">
-                    <div class="sub-item sub-username">
-                        <p class="title">Họ và tên</p>
-                        <p>${hoten}</p>
-                    </div>
+               <div class="sub-user-info">
+                   <div class="sub-item sub-username">
+                       <p class="title">Họ và tên</p>
+                       <p>${hoten}</p>
+                   </div>
 
-                    <div class="sub-item sub-id">
-                        <p class="title">Mã khách hàng</p>
-                        <p>${makh}</p>
-                    </div>
+                   <div class="sub-item sub-id">
+                       <p class="title">Mã khách hàng</p>
+                       <p>${makh}</p>
+                   </div>
 
-                    <div class="sub-item sub-address">
-                        <p class="title">Địa chỉ</p>
-                        <p>${diachi}</p>
-                    </div>
+                   <div class="sub-item sub-address">
+                       <p class="title">Địa chỉ</p>
+                       <p>${diachi}</p>
+                   </div>
 
-                    <div class="sub-item sub-email">
-                        <p class="title">Email</p>
-                        <p>${email}</p>
-                    </div>
+                   <div class="sub-item sub-email">
+                       <p class="title">Email</p>
+                       <p>${email}</p>
+                   </div>
 
-                    <div class="sub-item sub-sdt">
-                        <p class="title">Số điện thoại</p>
-                        <p>${sdt}</p>
-                    </div>
+                   <div class="sub-item sub-sdt">
+                       <p class="title">Số điện thoại</p>
+                       <p>${sdt}</p>
+                   </div>
 
-                    <div class="btn-logout">
-                        <form action="logout">
-                            <button type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i>Đăng xuất</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+                   <div class="btn-logout">
+                       <form action="logout">
+                           <button type="submit"><i class="fa-solid fa-arrow-right-from-bracket"></i>Đăng xuất</button>
+                       </form>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
 </body>
 <script>
     $(document).ready(() => {

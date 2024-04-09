@@ -119,11 +119,14 @@ body{
 .footer
 {
 	font-size: 12px;
+	
 }
 
 .footer a 
 {
-	color: black;
+	color: red;
 	font-weight: 200;
+	text-decoration: none;
+	font-weight: bold;
 }
 
