@@ -3,6 +3,8 @@ package com.Tinhtiendien.controller;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +33,7 @@ public class AuthController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, params = { "username", "password" })
 	public String login(@RequestParam("username") String username, @RequestParam("password") String password,
-			RedirectAttributes redirectAttribute) {
+			RedirectAttributes redirectAttribute, HttpSession session) {
 		if (username.isEmpty() || password.isEmpty()) {
 			return "redirect:login";
 		} else if (accountDAO.checkExistAccount(username, password)) {
@@ -40,11 +42,12 @@ public class AuthController {
 				Info info = infoDAO.getAllInfo(username);
 
 				redirectAttribute.addFlashAttribute("hoten", info.getHovaten());
-				redirectAttribute.addFlashAttribute("makh", info.getChuho_id());
+				redirectAttribute.addFlashAttribute("makh", info.getKhachhang_id());
 				redirectAttribute.addFlashAttribute("diachi", info.getDiachi());
 				redirectAttribute.addFlashAttribute("email", info.getEmail());
 				redirectAttribute.addFlashAttribute("sdt", info.getSdt());
 
+				session.setAttribute("info_khachhang", info);
 				return "redirect:nguoi_dung";
 			} else if (accountDAO.getRole(username) == 1) {
 				System.out.print("Dang nhap vao quan ly thanh cong");
@@ -72,9 +75,9 @@ public class AuthController {
 		return "register";
 	}
 	
-	@RequestMapping(value = "/register", method = RequestMethod.POST, params = { "chuhoid", "username", "password", "repassword" })
+	@RequestMapping(value = "/register", method = RequestMethod.POST, params = { "khachhangid", "username", "password", "repassword" })
 	public String register(Model model,
-							@RequestParam("chuhoid") String chuhoid,
+							@RequestParam("khachhangid") String khachhangid,
 							@RequestParam("username") String username,
 							@RequestParam("password") String password,
 							@RequestParam("repassword") String repassword
@@ -84,7 +87,7 @@ public class AuthController {
 		boolean isValid = Pattern.matches(regex, password);
 		
 		// Nếu Chuho_ID tồn tại và username tương ứng null thì tiếp, sai thì báo lỗi
-		if (infoDAO.checkChuHoIDandUsername(chuhoid)) {
+		if (infoDAO.checkKhachHangIDandUsername(khachhangid)) {
 			// Nếu username có trong bảng Tài Khoản thì báo lỗi, sai thì tiếp
 			if (accountDAO.checkUsernameAccount(username)) {
 				String messageUN = "Tên đăng nhập đã được sử dụng";
@@ -92,7 +95,7 @@ public class AuthController {
 				return "register";
 			} else {
 				// Nếu username có trong bảng Chủ Hộ thì báo lỗi, sai thì tiếp
-				if (infoDAO.checkUsernameChuHo(username)) {
+				if (infoDAO.checkUsernameKhachHang(username)) {
 					String messageUN = "Tên đăng nhập đã được sử dụng";
 					model.addAttribute("messageUN",messageUN);
 					return "register";
@@ -103,7 +106,7 @@ public class AuthController {
 						// Check mật khẩu và nhập lại mật khẩu có trùng ko
 						// Đúng thì đăng kí, sai thì báo lỗi
 						if (password.equals(repassword)) {
-							accountDAO.register(chuhoid, username, password);
+							accountDAO.register(khachhangid, username, password);
 							return "redirect:login";
 						} else {
 							String messagePW = "Vui lòng nhập lại đúng mật khẩu";

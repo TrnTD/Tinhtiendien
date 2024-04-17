@@ -12,4 +12,13 @@
 	<%@include file="/WEB-INF/views/layouts/user/sidebar.jsp" %>	
 	
 </body>
+<script>
+	$(document).ready(function() {
+		$('a').click(function(e) {
+			e.preventDefault();
+			var href = $(this).attr('href');
+			alert("Href: " + href);
+		});
+	});
+</script>
 </html>

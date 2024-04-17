@@ -60,6 +60,7 @@
             </div>
         </div>
     </div>
+    ${message}
 </body>
 
 </html>

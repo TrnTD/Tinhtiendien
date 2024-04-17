@@ -18,7 +18,7 @@
                    <form action="register" method="POST">
                         <div class="group">
                             <label for="id" class="label">Mã khách hàng</label>
-                            <input id="id" type="text" class="input" name ="chuhoid" required>
+                            <input id="id" type="text" class="input" name ="khachhangid" required>
                         	<h4 style="color: red;">${messageMKH}</h4>
                         </div>
                         <div class="group">

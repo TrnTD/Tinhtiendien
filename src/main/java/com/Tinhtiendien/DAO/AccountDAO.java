@@ -56,7 +56,7 @@ public class AccountDAO {
 	
 	public int getRole(String username) {
 		int role = -1;
-//		String query = "select role from taikhoan where username = ? or chuho_id = ?";
+//		String query = "select role from taikhoan where username = ? or khachhang_id = ?";
 		String query = "exec sp_GetRole @username = ?";
 		
 		try {
@@ -70,11 +70,11 @@ public class AccountDAO {
 		return role;
 	}
 	
-	public void register (String chuhoid, String username, String password) {
-		String sql = "EXEC sp_UpdateUsernameAndInsertIntoTaikhoan @chuho_id = ?, @username = ?, @password = ?, @role = null";
+	public void register (String khachhang_id, String username, String password) {
+		String sql = "EXEC sp_UpdateUsernameAndInsertIntoTaikhoan @khachhang_id = ?, @username = ?, @password = ?, @role = null";
 		int result = 0;
 		try {
-			result = jdbcTemplate.update(sql, new Object[] {chuhoid, username, password});
+			result = jdbcTemplate.update(sql, new Object[] {khachhang_id, username, password});
 		} catch (DataAccessException e) {
 			System.out.println("Su dung sp that bai");
 		}

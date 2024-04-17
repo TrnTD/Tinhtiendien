@@ -20,11 +20,12 @@ public class HomeController {
 	}
 	
 	@RequestMapping("/index")
-	public ModelAndView index(RedirectAttributes redirectAttribute) {
-		ModelAndView mav = new ModelAndView("redirect:login");
+	public String index(RedirectAttributes redirectAttribute, Model model) {
+//		ModelAndView mav = new ModelAndView("redirect:login");
+		
 		redirectAttribute.addFlashAttribute("message", "Hello World!");
 		
-		return mav;
+		return "redirect:login";
 	}
 
 }

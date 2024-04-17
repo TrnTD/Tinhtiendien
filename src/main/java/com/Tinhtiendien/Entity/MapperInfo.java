@@ -12,7 +12,7 @@ public class MapperInfo implements RowMapper<Info> {
 	public Info mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Info info = new Info();
 		
-		info.setChuho_id(rs.getString("chuho_id"));
+		info.setKhachhang_id(rs.getString("khachhang_id"));
 		info.setUsername(rs.getString("username"));
 		info.setHovaten(rs.getString("hovaten"));
 		info.setGioitinh(rs.getString("gioitinh"));

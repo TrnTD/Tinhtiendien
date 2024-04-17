@@ -16,26 +16,26 @@ public class InfoDAO {
 	public JdbcTemplate jdbcTemplate;
 	
 	public Info getAllInfo(String username) {
-		String sql = "select * from chuho where username = ? or chuho_id = ?";
+		String sql = "select * from khachhang where username = ? or khachhang_id = ?";
 		Info info = null;
 		try {
 			info = jdbcTemplate.queryForObject(sql, new Object[] {username, username}, new MapperInfo());
-			System.out.println("Truy van thong tin chu ho thanh cong 1");
+			System.out.println("Truy van thong tin khach hang thanh cong 1");
 		} catch (DataAccessException e) {
-			System.out.println("Truy van thong tin chu ho that bai 1");
+			System.out.println("Truy van thong tin khach hang that bai 1");
 		}
 		
 		return info;
 	}
 	
-	public boolean checkUsernameChuHo(String username) {
-		String sql = "select * from chuho where username = ?";
+	public boolean checkUsernameKhachHang(String username) {
+		String sql = "select * from khachhang where username = ?";
 		List<Info> infos = null;
 		try {
 			infos = jdbcTemplate.query(sql, new Object[] {username}, new MapperInfo());
-			System.out.println("Truy van thong tin chu ho thanh cong 2");
+			System.out.println("Truy van thong tin khach hang thanh cong 2");
 		} catch (DataAccessException e) {
-			System.out.println("Truy van thong tin chu ho that bai 2");
+			System.out.println("Truy van thong tin khach hang that bai 2");
 		}
 		
 		if (infos != null && infos.size() == 0) {
@@ -45,13 +45,13 @@ public class InfoDAO {
 		return true;
 	}
 
-	public boolean checkChuHoIDandUsername(String chuhoid) {
-			String sql = "select * from chuho where chuho_id = ? AND username is null";
+	public boolean checkKhachHangIDandUsername(String khachhangid) {
+			String sql = "select * from khachhang where khachhang_id = ? AND username is null";
 			Info info = null;
 			try {
-				info = jdbcTemplate.queryForObject(sql, new Object[] {chuhoid}, new MapperInfo());
+				info = jdbcTemplate.queryForObject(sql, new Object[] {khachhangid}, new MapperInfo());
 			} catch (DataAccessException e) {
-				System.out.println("Truy van chuho that bai");
+				System.out.println("Truy van khachhang that bai");
 			}
 			
 			if (info == null) {

@@ -3,7 +3,7 @@ package com.Tinhtiendien.Models;
 import java.sql.Date;
 
 public class Info {
-	private String chuho_id;
+	private String khachhang_id;
 	private String username;
 	private String hovaten;
 	private String gioitinh;
@@ -17,15 +17,14 @@ public class Info {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
 
-	public String getChuho_id() {
-		return chuho_id;
+	public String getKhachhang_id() {
+		return khachhang_id;
 	}
-
-	public void setChuho_id(String chuho_id) {
-		this.chuho_id = chuho_id;
+	public void setKhachhang_id(String khachhang_id) {
+		this.khachhang_id = khachhang_id;
 	}
-
 	public String getUsername() {
 		return username;
 	}

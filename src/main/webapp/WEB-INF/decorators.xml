@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/decorators">
+
+	<!-- apply nguoi_dung template -->
+ 	<decorator name="chu_ki_do" page="user.jsp">
+		<pattern>/nguoi_dung/chu_ki_do</pattern>
+	</decorator>
+	
+	<decorator name="lich_ghi_chi_so" page="user.jsp">
+		<pattern>/nguoi_dung/lich_ghi_chi_so</pattern>
+	</decorator>
+	
+	<decorator name="quan_ly_chung" page="user.jsp">
+		<pattern>/nguoi_dung/quan_ly_chung</pattern>
+	</decorator>
+	
+	<decorator name="tra_cuu_hoa_don" page="user.jsp">
+		<pattern>/nguoi_dung/tra_cuu_hoa_don</pattern>
+	</decorator>
+	
+	<decorator name="thong_tin_hoa_don" page="user.jsp">
+		<pattern>/nguoi_dung/thong_tin_hoa_don</pattern>
+	</decorator>
+	
+	<decorator name="lich_su_thanh_toan" page="user.jsp">
+		<pattern>/nguoi_dung/lich_su_thanh_toan</pattern>
+	</decorator>
+	
+	<decorator name="lich_tam_ngung_cap_dien" page="user.jsp">
+		<pattern>/nguoi_dung/lich_tam_ngung_cap_dien</pattern>
+	</decorator>
+	
+	<decorator name="thong_tin_do_xa" page="user.jsp">
+		<pattern>/nguoi_dung/lich_su_do</pattern>
+	</decorator>
+	
+	<decorator name="lich_su_lien_he" page="user.jsp">
+		<pattern>/nguoi_dung/lich_su_lien_he</pattern>
+	</decorator>
+	
+	<decorator name="lich_su_yeu_cau" page="user.jsp">
+		<pattern>/nguoi_dung/lich_su_yeu_cau</pattern>
+	</decorator>
+	
+	<decorator name="lich_su_yeu_cau" page="user.jsp">
+		<pattern>/nguoi_dung/quan_ly_tai_khoan</pattern>
+	</decorator>
+	
+	
+	
+	
+</decorators>

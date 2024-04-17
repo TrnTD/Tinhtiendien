@@ -10,5 +10,31 @@
 <body>
 	<%@include file="/WEB-INF/views/layouts/user/navbar.jsp" %>	
 	<%@include file="/WEB-INF/views/layouts/user/sidebar.jsp" %>	
+	
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+// 	$(document).ready(function() {
+// 		$('a').click(function(e) {
+// 			e.preventDefault();
+// 			var href = $(this).attr('href');
+// 			if (href.includes('#')) {
+// 				return;
+// 			} else {
+// 				alert("Href: " + href);
+// 				$.ajax({
+// 					url: href,
+// 					method: "GET",
+// 					success: function(data) {
+// 						$('.container').html(data);
+// 					},
+// 					error: function(xhr, status, error) {
+// 						console.error("Co loi hoac " + href + " khong ton tai")
+// 					}
+// 				})
+// 			}	
+// 		});
+// 	});
+</script>
+
 </html>
