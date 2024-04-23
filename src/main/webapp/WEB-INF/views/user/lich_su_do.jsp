@@ -10,6 +10,17 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
+<style>
+	th {
+		font-size: 18px;
+		text-align: center;
+	}
+	
+	td {
+		font-weight: 500;
+		text-align: center;
+	}
+</style>
 	<div class="content">
   		<div class="container" style="width:1000px">
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Lịch sử đo</h2>           

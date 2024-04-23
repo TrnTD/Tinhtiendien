@@ -13,6 +13,17 @@
 
 </style>
 <body>
+<style>
+	th {
+		font-size: 18px;
+		text-align: center;
+	}
+	
+	td {
+		font-weight: 500;
+		text-align: center;
+	}
+</style>
 	<div class="content">
   		<div class="container" style="width:1000px">
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Thông tin hóa đơn</h2>
@@ -31,8 +42,8 @@
 	          <tbody>
 				<c:forEach var="cthd" items="${list_cthd}">
 				    <tr>
-				        <td>${cthd.thang_tao}</td>
-				        <td>${cthd.nam_tao}</td>
+				        <td>${cthd.thang_batdau}</td>
+				        <td>${cthd.nam_batdau}</td>
 				        <td>${cthd.chiso_cu}</td>
 				        <td>${cthd.chiso_moi}</td>
 				        <td>${cthd.dien_tieu_thu}</td>

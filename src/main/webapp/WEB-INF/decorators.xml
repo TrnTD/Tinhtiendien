@@ -2,6 +2,9 @@
 <decorators defaultdir="/decorators">
 
 	<!-- apply nguoi_dung template -->
+<!--	<decorator name="chu_ki_do" page="user.jsp">-->
+<!--		<pattern>/nguoi_dung/quan_ly_chung</pattern>-->
+<!--	</decorator>-->
  	<decorator name="chu_ki_do" page="user.jsp">
 		<pattern>/nguoi_dung/chu_ki_do</pattern>
 	</decorator>
@@ -46,7 +49,9 @@
 		<pattern>/nguoi_dung/quan_ly_tai_khoan</pattern>
 	</decorator>
 	
-	
+	<decorator name="quan_ly_thong_tin_nguoi_dung" page="employee.jsp">
+		<pattern>/nhan_vien/quan_ly_thong_tin_nguoi_dung</pattern>
+	</decorator>
 	
 	
 </decorators>

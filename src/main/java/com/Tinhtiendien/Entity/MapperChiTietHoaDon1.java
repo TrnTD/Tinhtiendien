@@ -25,6 +25,9 @@ public class MapperChiTietHoaDon1 implements RowMapper<ChiTietHoaDon> {
 		cthd.setNgay_tao(rs.getString("ngay_tao"));
 		cthd.setThang_tao(rs.getInt("thang_tao"));
 		cthd.setNam_tao(rs.getInt("nam_tao"));
+		cthd.setNgay_batdau(rs.getString("ngay_batdau"));
+		cthd.setThang_batdau(rs.getInt("thang_batdau"));
+		cthd.setNam_batdau(rs.getInt("nam_batdau"));
 		
 		return cthd;
 	}

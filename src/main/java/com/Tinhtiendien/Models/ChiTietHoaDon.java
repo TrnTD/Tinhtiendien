@@ -20,6 +20,35 @@ public class ChiTietHoaDon {
 	private int tong_tien;
 	
 	private String loai_hoadon = "Tiền điện";
+	
+	private String ngay_batdau;
+	private int thang_batdau;
+	private int nam_batdau;
+
+	
+	public int getThang_batdau() {
+		return thang_batdau;
+	}
+
+	public void setThang_batdau(int thang_batdau) {
+		this.thang_batdau = thang_batdau;
+	}
+
+	public int getNam_batdau() {
+		return nam_batdau;
+	}
+
+	public void setNam_batdau(int nam_batdau) {
+		this.nam_batdau = nam_batdau;
+	}
+
+	public String getNgay_batdau() {
+		return ngay_batdau;
+	}
+
+	public void setNgay_batdau(String ngay_batdau) {
+		this.ngay_batdau = ngay_batdau;
+	}
 
 	public int getChitiet_hoadon_id() {
 		return chitiet_hoadon_id;

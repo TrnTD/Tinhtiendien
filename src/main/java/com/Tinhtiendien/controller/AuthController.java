@@ -33,7 +33,7 @@ public class AuthController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, params = { "username", "password" })
 	public String login(@RequestParam("username") String username, @RequestParam("password") String password,
-			RedirectAttributes redirectAttribute, HttpSession session) {
+			RedirectAttributes redirectAttribute, HttpSession session, Model model) {
 		if (username.isEmpty() || password.isEmpty()) {
 			return "redirect:login";
 		} else if (accountDAO.checkExistAccount(username, password)) {
@@ -48,7 +48,8 @@ public class AuthController {
 				redirectAttribute.addFlashAttribute("sdt", info.getSdt());
 
 				session.setAttribute("info_khachhang", info);
-				return "redirect:nguoi_dung";
+				
+				return "redirect:nguoi_dung/quan_ly_chung";
 			} else if (accountDAO.getRole(username) == 1) {
 				System.out.print("Dang nhap vao quan ly thanh cong");
 				
@@ -107,6 +108,12 @@ public class AuthController {
 						// Đúng thì đăng kí, sai thì báo lỗi
 						if (password.equals(repassword)) {
 							accountDAO.register(khachhangid, username, password);
+							try {
+							    Thread.sleep(5000);
+							    model.addAttribute("message_success", "Đăng ký thành công, đang chuyển tới đăng nhập");
+							} catch (InterruptedException e) {
+							    
+							}
 							return "redirect:login";
 						} else {
 							String messagePW = "Vui lòng nhập lại đúng mật khẩu";

@@ -71,18 +71,21 @@
     <div class="row">
       <div class="col-md-9">
             <h4 style="color:#f6621c; margin-bottom: 20px;" class="card-title">Thay đổi mật khẩu</h4>
-            <form>
+            <form action="quan_ly_tai_khoan" method="POST">
               <div class="form-group" style="margin-bottom: 20px;">
                 <label for="inputOldPassword">Mật khẩu cũ</label>
-                <input type="password" class="form-control" id="inputOldPassword" placeholder="Nhập mật khẩu cũ">
+                <input type="password" name="oldpassword" class="form-control" id="inputOldPassword" placeholder="Nhập mật khẩu cũ" required>
+              	<h6 style="color: red;">${oldpassmessage}</h4>
               </div>
               <div class="form-group" style="margin-bottom: 20px;">
                 <label for="inputNewPassword">Mật khẩu mới</label>
-                <input type="password" class="form-control" id="inputNewPassword" placeholder="Nhập mật khẩu mới">
+                <input type="password" name = "newpassword" class="form-control" id="inputNewPassword" placeholder="Nhập mật khẩu mới" required>
+              	<h6 style="color: red;">${newpassmessage}</h4>
               </div>
               <div class="form-group" style="margin-bottom: 20px;">
                 <label for="inputConfirmPassword">Nhập lại mật khẩu mới</label>
-                <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Nhập lại mật khẩu mới">
+                <input type="password" name = "renewpassword" class="form-control" id="inputConfirmPassword" placeholder="Nhập lại mật khẩu mới" required>
+              	<h6 style="color: red;">${renewpassmessage}</h4>
               </div>
               <p>Mật khẩu bao gồm tối thiểu 06 ký tự, có ít nhất một chữ in hoa (A-Z), một chữ in thường (a-z), một chữ số (0-9) và một ký tự đặc biệt (#?.!@$%^&*-). Ví dụ: Matkhau@123</p>
               <button type="submit" class="btn btn-primary">Cập nhật</button>

@@ -35,7 +35,7 @@ public class ChiTietHoaDonDAO {
 	
 	public ChiTietHoaDon getAllInfoHoaDon(String khachhang_id, int thang, int nam) {
 		ChiTietHoaDon hoadon = null;
-		String sql = "exec sp_GetChiTietHoaDonBykhachhangIDAndMonthAndYear @KhachHangID = ?, @ThangTao = ?, @NamTao = ?";
+		String sql = "exec sp_GetChiTietHoaDonBykhachhangIDAndMonthAndYear @KhachHangID = ?, @ThangBD = ?, @NamBD = ?";
 		System.out.println("thang:" + thang);
 		System.out.println("thang:" + nam);
 		try {

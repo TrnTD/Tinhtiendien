@@ -96,5 +96,32 @@ public class AccountDAO {
 			return true;
 	}
 	
+	public void changePassword (String username, String newpassword) {
+		String sql = "UPDATE taikhoan SET password = ? WHERE username = ?"; 
+		int result = 0;
+		try {
+			result = jdbcTemplate.update(sql, new Object[] {newpassword, username});
+		} catch (DataAccessException e) {
+			System.out.println("Doi mat khau that bai");
+		}
+		
+	}
+	
+	public boolean checkOldPassword (String username, String oldpassword) {
+		String sql = "select * from taikhoan where username = ? and password = ?";
+		Account account = null;
+		try {
+			account = jdbcTemplate.queryForObject(sql, new Object[] { username, oldpassword}, new MapperAccount());
+			System.out.println("Truy van mat khau cu thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van mat khau cu that bai");
+		}
+		
+		if (account == null) {
+			return false;
+		}
+		return true;
+	}
+	
 	
 }

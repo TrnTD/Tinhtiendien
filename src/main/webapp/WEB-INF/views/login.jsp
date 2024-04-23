@@ -12,7 +12,7 @@
     <div class="login-wrap">
         <div class="login-html">
             <input id="tab-1" type="radio" name="tab" class="sign-in-1" checked><label for="tab-1" class="tab">Tài khoản</label>
-            <input id="tab-2" type="radio" name="tab" class="sign-in-2"><label for="tab-2" class="tab">Số điện thoại</label>
+            <input id="tab-2" type="radio" name="tab" class="sign-in-2"><label for="tab-2" class="tab"></label>
             <div class="login-form">
 	                <div class="sign-in-user">
 		            <form action="login" method="POST">
@@ -47,20 +47,20 @@
                 </div>
 
                 <!-- -------------------------------------- -->
-                <div class="sign-in-phone">
-                    <div class="group">
-                        <label for="SDT" class="label">Số điện thoại</label>
-                        <input id="SDT" type="text" class="input">
-                    </div>
-                    <div class="group">
-                        <input type="submit" class="button" value="Đăng nhập">
-                    </div>
-                </div>     
+<!--                 <div class="sign-in-phone"> -->
+<!--                     <div class="group"> -->
+<!--                         <label for="SDT" class="label">Số điện thoại</label> -->
+<!--                         <input id="SDT" type="text" class="input"> -->
+<!--                     </div> -->
+<!--                     <div class="group"> -->
+<!--                         <input type="submit" class="button" value="Đăng nhập"> -->
+<!--                     </div> -->
+<!--                 </div>      -->
                 </form>
             </div>
         </div>
     </div>
-    ${message}
+    <h1 style="color: red;">${message_success}</h1>
 </body>
 
 </html>

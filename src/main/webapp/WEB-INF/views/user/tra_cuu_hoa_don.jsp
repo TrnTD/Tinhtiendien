@@ -8,15 +8,21 @@
 <meta charset="ISO-8859-1">
 <title>Tra cứu hóa đơn</title>
 </head>
-<style>
-h3 {
-	margin-bottom: 100px;
-}
-</style>
+
 <body>
 <%-- 	<%@include file="/WEB-INF/views/layouts/user/navbar2.jsp" %>	 --%>
 <%-- 	<%@include file="/WEB-INF/views/layouts/user/sidebar2.jsp" %> --%>
+<style>
+	th {
+		font-size: 18px;
+		text-align: center;
+	}
 	
+	td {
+		font-weight: 500;
+		text-align: center;
+	}
+</style>	
 	<div class="content">
   		<div class="container" style="width:1000px">
 	        <h2 style="color:#f6621c;margin-bottom: 20px;">Thông tin khách hàng</h3>
@@ -96,6 +102,8 @@ h3 {
 	           	  <th>Mã hóa đơn</th>
 	              <th>Mã khách hàng</th>
 	              <th>Loại hóa đơn</th>
+	              <th>Từ ngày</th>
+	              <th>Đến ngày</th>
 	              <th>Số tiền</th>
 	              <th>Tiền thuế</th>
 	              <th>Tổng tiền</th>
@@ -108,6 +116,8 @@ h3 {
 					    	<td>${hoadon.hoadon_id}</td>
 					        <td>${hoadon.khachhang_id}</td>
 					        <td>${hoadon.loai_hoadon}</td>
+					        <td>${hoadon.ngay_batdau}</td>
+					        <td>${hoadon.ngay_tao}</td>
 					        <td>${hoadon.so_tien}</td>
 					        <td>${hoadon.tien_thue}</td>
 					        <td>${hoadon.tong_tien}</td>

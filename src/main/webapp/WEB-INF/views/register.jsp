@@ -10,6 +10,9 @@
 <body>
 	<div class="signup-wrap">
         <div class="signup">
+        <div class="tag">
+        	<h1 style="color: red;">${message_success}</h1>
+         </div>
                 <div class="tag">
                     <h1>Đăng kí tài khoản</h1>
                 </div>

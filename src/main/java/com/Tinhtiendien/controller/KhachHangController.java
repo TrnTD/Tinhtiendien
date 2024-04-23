@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.Tinhtiendien.DAO.*;
 import com.Tinhtiendien.DAO.*;
@@ -27,6 +30,9 @@ import com.Tinhtiendien.Models.*;
 
 @Controller
 public class KhachHangController {
+	
+	@Autowired
+	AccountDAO accountDAO = new AccountDAO();
 	
 	@Autowired
 	ChiTietHoaDonDAO chitiethoadonDAO = new ChiTietHoaDonDAO();
@@ -39,6 +45,30 @@ public class KhachHangController {
 	
 	@Autowired
 	LichGhiChiSoDAO lgcsDAO = new LichGhiChiSoDAO();
+	
+	@RequestMapping(value = "/nguoi_dung/quan_ly_chung", method = RequestMethod.GET)
+	public String quan_ly_chung(HttpSession session, Model model) throws JsonProcessingException {
+		String test = "[100, 200, 300, 400, 500]";
+        model.addAttribute("test", test);
+        
+        Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		List<ChiTietHoaDon> list_cthd = chitiethoadonDAO.getAllInfoChiTietHoaDon(makh);
+		
+		ArrayList<Integer> list_chiso = new ArrayList<>();
+		ArrayList<Integer> list_thang = new ArrayList<>();
+		
+		for (ChiTietHoaDon cthd : list_cthd) {
+			list_chiso.add(cthd.getDien_tieu_thu());
+			list_thang.add(cthd.getThang_batdau());
+		}
+		
+		
+		model.addAttribute("list_chiso", list_chiso);
+		model.addAttribute("list_thang", list_thang);
+		
+		return "user/quan_ly_chung";
+	}
 	
 	
 	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don", method = RequestMethod.GET)
@@ -59,6 +89,8 @@ public class KhachHangController {
 		model.addAttribute("list_cthd", list_cthd);
 		return "user/thong_tin_hoa_don";
 	}
+	
+	
 	
 	@RequestMapping(value = "/nguoi_dung/tra_cuu_hoa_don", method = RequestMethod.GET)
 	public String render_tra_cuu_hoa_don(HttpSession session, Model model) {
@@ -137,6 +169,39 @@ public class KhachHangController {
 		int ma_dongho = donghodienDAO.getMaDongHo(makh);
 		model.addAttribute("ma_dongho", ma_dongho);
 		
+		return "user/quan_ly_tai_khoan";
+	}
+	
+	// đổi mật khẩu  
+	@RequestMapping(value = "/nguoi_dung/quan_ly_tai_khoan", method = RequestMethod.POST, params = { "oldpassword", "newpassword", "renewpassword" })
+	public String doi_mat_khau(HttpSession session , Model model, 
+			@RequestParam("oldpassword") String oldpassword,
+			@RequestParam("newpassword") String newpassword,
+			@RequestParam("renewpassword") String renewpassword) {
+		
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String username = info.getUsername();
+		
+		String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?.!@$%^&*-]).{6,}$";
+		boolean isValid = Pattern.matches(regex, newpassword);
+
+		if (accountDAO.checkOldPassword(username, oldpassword)) {
+			if(isValid) {
+				if (newpassword.equals(oldpassword)) {
+					model.addAttribute("newpassmessage", "Mật khẩu không được trùng với mật khẩu cũ");
+				} else {
+					if (newpassword.equals(renewpassword)) {
+						accountDAO.changePassword(username, newpassword);
+					} else {
+						model.addAttribute("renewpassmessage", "Vui lòng nhập lại đúng mật khẩu");
+					}
+				}
+			} else {
+				model.addAttribute("newpassmessage", "Mật khẩu mới không đúng định dạng");
+			}
+		} else {
+			model.addAttribute("oldpassmessage", "Mật khẩu cũ không đúng, vui lòng nhập đúng mật khẩu");
+		}	
 		return "user/quan_ly_tai_khoan";
 	}
 }
