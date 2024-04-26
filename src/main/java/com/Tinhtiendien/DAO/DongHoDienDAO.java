@@ -1,5 +1,7 @@
 package com.Tinhtiendien.DAO;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,5 +50,21 @@ public class DongHoDienDAO {
 		}
 		
 		return ma;
+	}
+	
+	public boolean checkKhachHangInDongHoDien(String khachhang_id) {
+		String sql = "select * from dong_ho_dien where khachhang_id = ?";
+		List<DongHoDien> dhd = null;
+		try {
+			dhd = jdbcTemplate.query(sql, new Object[] {khachhang_id}, new MapperDongHoDien());
+			System.out.println("Truy van thong tin dong ho dien bang id thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van thong tin dong ho dien bang id that bai");
+		}
+		
+		if (dhd != null && dhd.size() == 0) {
+			return false;
+		}	
+		return true;
 	}
 }

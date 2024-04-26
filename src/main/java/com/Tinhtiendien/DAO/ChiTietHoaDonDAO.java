@@ -17,7 +17,7 @@ public class ChiTietHoaDonDAO {
 	
 	public List<ChiTietHoaDon> getAllInfoChiTietHoaDon(String khachhang_id) {
 		List<ChiTietHoaDon> list_cthd = new ArrayList<ChiTietHoaDon>();
-		String sql = "exec sp_GetChiTietHoaDonByKhachHangID @KhachHangID = ?";
+		String sql = "exec sp_GetChiTietHoaDonByKhachHangID2 @KhachHangID = ?";
 		System.out.println(khachhang_id);
 		try {
 			list_cthd = jdbcTemplate.query(sql, new Object[] {khachhang_id}, new MapperChiTietHoaDon1());
@@ -35,7 +35,7 @@ public class ChiTietHoaDonDAO {
 	
 	public ChiTietHoaDon getAllInfoHoaDon(String khachhang_id, int thang, int nam) {
 		ChiTietHoaDon hoadon = null;
-		String sql = "exec sp_GetChiTietHoaDonBykhachhangIDAndMonthAndYear @KhachHangID = ?, @ThangBD = ?, @NamBD = ?";
+		String sql = "exec sp_GetChiTietHoaDonBykhachhangIDAndMonthAndYear2 @KhachHangID = ?, @ThangBatDau = ?, @NamBatDau = ?";
 		System.out.println("thang:" + thang);
 		System.out.println("thang:" + nam);
 		try {

@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/main/webapp/WEB-INF/views/employee/nhan_vien.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/views/employee/quan_ly_thong_tin_nguoi_dung.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/employee/quan_ly_thong_tin_khach_hang.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/layouts/user/sidebar.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/login.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/views/user/nguoi_dung.jsp=UTF-8

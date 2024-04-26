@@ -118,24 +118,20 @@
           <ul class="dropdown-menu" id="userDropdown">
             <li>
               <a class="dropdown-item" href="#">Họ và tên</a>
-              <div class="info">${info_khachhang.hovaten}</div>
+              <div class="info">${info_nhanvien.hovaten}</div>
             </li>
 
             <li>
-              <a class="dropdown-item" href="#">Mã khách hàng</a>
-              <div class="info">${info_khachhang.khachhang_id}</div>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Địa chỉ</a>
-              <div class="info">${info_khachhang.diachi}</div>
+              <a class="dropdown-item" href="#">Mã nhân viên</a>
+              <div class="info">${info_nhanvien.nhanvien_id}</div>
             </li>
             <li>
               <a class="dropdown-item" href="#">Email</a>
-              <div class="info">${info_khachhang.email}</div>
+              <div class="info">${info_nhanvien.email}</div>
             </li>
             <li>
               <a class="dropdown-item" href="#">Số điện thoại</a>
-              <div class="info">${info_khachhang.sdt}</div>
+              <div class="info">${info_nhanvien.sdt}</div>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>

@@ -47,7 +47,7 @@ $(document).ready(function() {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Điện tiêu thụ' // Tên trục dọc
+                            text: 'Điện tiêu thụ (Kwh)' // Tên trục dọc
                         }
                     },
                     x: {

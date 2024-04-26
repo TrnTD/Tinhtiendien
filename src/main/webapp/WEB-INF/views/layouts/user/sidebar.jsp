@@ -110,7 +110,7 @@
       </li>
       
       <li class="nav-item">
-        <a class="nav-link" href="/Tinhtiendien/nguoi_dung/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
+        <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
       </li>
     </ul>
 </div>

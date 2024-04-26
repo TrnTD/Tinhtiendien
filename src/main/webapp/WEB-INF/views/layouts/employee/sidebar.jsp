@@ -89,8 +89,8 @@
         <li class="nav-item">
             <a class="nav-link" href="#lichsuhoadon" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-regular fa-newspaper"></i> Quản lý chi tiết<i class="fa-solid fa-chevron-down"></i></a>
             <ul class="collapse list-unstyled" id="lichsuhoadon" style="padding-left: 20px;">
-                <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_thong_tin_nguoi_dung" style="font-size: 13px">Quản lý thông tin người dùng</a></li>
-                <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/thong_tin_hoa_don" style="font-size: 13px">Quản lý tài khoản người dùng</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang" style="font-size: 13px">Quản lý thông tin khách hàng</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang" style="font-size: 13px">Quản lý tài khoản khách hàng</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý đồng hồ điện</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý lịch ghi chỉ số</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý lịch sử đo</a></li>

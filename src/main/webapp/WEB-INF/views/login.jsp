@@ -19,11 +19,11 @@
 	                    <div class="sign-in-user">
                     <div class="group">
                         <label for="user" class="label">Mã khách hàng/ Tên đăng nhập</label>
-                        <input id="user" type="text" class="input" name="username">
+                        <input id="user" type="text" class="input" name="username" required>
                     </div>
                     <div class="group">
                         <label for="pass" class="label">Mật khẩu</label>
-                        <input id="pass" type="password" class="input" data-type="password" name="password">
+                        <input id="pass" type="password" class="input" data-type="password" name="password" required>
                     </div>
                     <!-- <div class="group">
                         <label for="" class="label">Nhập mã xác minh</label>
@@ -34,6 +34,7 @@
                         <label for="check"><span class="icon"></span> Ghi nhớ mật khẩu</label>
                     </div>
                     <div class="group">
+                        <h5 style="color: red; ">${message_error}</h1>
                         <input type="submit" class="button" value="Đăng nhập">
                     </div>
                     <div class="foot-lnk">
@@ -60,7 +61,6 @@
             </div>
         </div>
     </div>
-    <h1 style="color: red;">${message_success}</h1>
 </body>
 
 </html>

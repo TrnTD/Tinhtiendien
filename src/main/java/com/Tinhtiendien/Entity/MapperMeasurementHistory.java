@@ -15,7 +15,7 @@ public class MapperMeasurementHistory implements RowMapper<MeasurementHistory> {
 		mh.setDongho_id(rs.getInt("dongho_id"));
 		mh.setKhachhang_id(rs.getString("khachhang_id"));
 		mh.setNgay_do(rs.getDate("ngay_do"));
-		mh.setChiso(rs.getFloat("chiso"));
+		mh.setChiso(rs.getInt("chiso"));
 		
 		return mh;
 	}

@@ -37,9 +37,9 @@ public class AuthController {
 		if (username.isEmpty() || password.isEmpty()) {
 			return "redirect:login";
 		} else if (accountDAO.checkExistAccount(username, password)) {
-			if (accountDAO.getRole(username) == 2) {
-				System.out.print("Dang nhap vao chu ho thanh cong");
-				Info info = infoDAO.getAllInfo(username);
+			if (accountDAO.getRole(username) == 3) {
+				System.out.println("Dang nhap vao khach hang thanh cong");
+				Info info = infoDAO.getAllInfoKhachHang(username);
 
 				redirectAttribute.addFlashAttribute("hoten", info.getHovaten());
 				redirectAttribute.addFlashAttribute("makh", info.getKhachhang_id());
@@ -50,11 +50,24 @@ public class AuthController {
 				session.setAttribute("info_khachhang", info);
 				
 				return "redirect:nguoi_dung/quan_ly_chung";
-			} else if (accountDAO.getRole(username) == 1) {
+			} else if (accountDAO.getRole(username) == 2) {
 				System.out.print("Dang nhap vao quan ly thanh cong");
 				
-				return "redirect:employee/nhan_vien";
+				InfoNhanVien infonv = infoDAO.getAllInfoNhanVien(username);
+				
+				redirectAttribute.addFlashAttribute("hoten", infonv.getHovaten());
+				redirectAttribute.addFlashAttribute("makh", infonv.getNhanvien_id());
+				redirectAttribute.addFlashAttribute("email", infonv.getEmail());
+				redirectAttribute.addFlashAttribute("sdt", infonv.getSdt());
+
+				session.setAttribute("info_nhanvien", infonv);
+
+				
+				return "redirect:nhan_vien/";
 			}
+		} else {
+			model.addAttribute("message_error", "Tài khoản / mã khách hàng hoặc mật khẩu không đúng");
+			return "login";
 		}
 
 		return "redirect:login";
@@ -136,7 +149,7 @@ public class AuthController {
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String render_home() {
-		return "redirect:../Tinhtiendien";
+		return "redirect:../Tinhtiendien/login";
 	}
 }
 

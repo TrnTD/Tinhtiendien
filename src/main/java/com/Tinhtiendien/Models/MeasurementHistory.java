@@ -7,7 +7,7 @@ public class MeasurementHistory {
 	private int dongho_id;
 	private String khachhang_id;
 	private Date ngay_do;
-	private float chiso;
+	private int chiso;
 	
 	public int getLichsu_do_id() {
 		return lichsu_do_id;
@@ -33,10 +33,10 @@ public class MeasurementHistory {
 	public void setNgay_do(Date ngay_do) {
 		this.ngay_do = ngay_do;
 	}
-	public float getChiso() {
+	public int getChiso() {
 		return chiso;
 	}
-	public void setChiso(float chiso) {
+	public void setChiso(int chiso) {
 		this.chiso = chiso;
 	}
 }

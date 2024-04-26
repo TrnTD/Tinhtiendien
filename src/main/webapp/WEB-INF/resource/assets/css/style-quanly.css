@@ -73,3 +73,9 @@ table.table td button {
 .btn-success {
     background-color: #5cb85c;
 }
+
+td {
+    form {
+        display: inline-block;
+    }
+}

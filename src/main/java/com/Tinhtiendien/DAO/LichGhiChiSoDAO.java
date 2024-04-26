@@ -30,4 +30,20 @@ public class LichGhiChiSoDAO {
 		
 		return lsckd;
 	}
+	
+	public boolean checkKhachHangInLGCS(String khachhang_id) {
+		String sql = "select * from lich_ghi_chi_so where khachhang_id = ?";
+		List<LichGhiChiSo> lgcs = null;
+		try {
+			lgcs = jdbcTemplate.query(sql, new Object[] {khachhang_id}, new MapperLichGhiChiSo());
+			System.out.println("Truy van thong tin lich ghi chi so bang id thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van thong tin lich ghi chi so bang id that bai");
+		}
+		
+		if (lgcs != null && lgcs.size() == 0) {
+			return false;
+		}	
+		return true;
+	}
 }

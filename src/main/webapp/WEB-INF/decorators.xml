@@ -50,8 +50,14 @@
 	</decorator>
 	
 	<decorator name="quan_ly_thong_tin_nguoi_dung" page="employee.jsp">
-		<pattern>/nhan_vien/quan_ly_thong_tin_nguoi_dung</pattern>
+		<pattern>/nhan_vien/quan_ly_thong_tin_khach_hang</pattern>
 	</decorator>
+	
+	<decorator name="quan_ly_thong_tin_nguoi_dung" page="employee.jsp">
+		<pattern>/nhan_vien/quan_ly_tai_khoan_khach_hang</pattern>
+	</decorator>
+	
+	
 	
 	
 </decorators>

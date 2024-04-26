@@ -48,8 +48,6 @@ public class KhachHangController {
 	
 	@RequestMapping(value = "/nguoi_dung/quan_ly_chung", method = RequestMethod.GET)
 	public String quan_ly_chung(HttpSession session, Model model) throws JsonProcessingException {
-		String test = "[100, 200, 300, 400, 500]";
-        model.addAttribute("test", test);
         
         Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
@@ -184,6 +182,7 @@ public class KhachHangController {
 		
 		String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?.!@$%^&*-]).{6,}$";
 		boolean isValid = Pattern.matches(regex, newpassword);
+		boolean passwordChanged = false;
 
 		if (accountDAO.checkOldPassword(username, oldpassword)) {
 			if(isValid) {
@@ -192,6 +191,7 @@ public class KhachHangController {
 				} else {
 					if (newpassword.equals(renewpassword)) {
 						accountDAO.changePassword(username, newpassword);
+						passwordChanged = true;
 					} else {
 						model.addAttribute("renewpassmessage", "Vui lòng nhập lại đúng mật khẩu");
 					}
@@ -202,6 +202,9 @@ public class KhachHangController {
 		} else {
 			model.addAttribute("oldpassmessage", "Mật khẩu cũ không đúng, vui lòng nhập đúng mật khẩu");
 		}	
+		
+		model.addAttribute("passwordChanged", passwordChanged);
+		
 		return "user/quan_ly_tai_khoan";
 	}
 }

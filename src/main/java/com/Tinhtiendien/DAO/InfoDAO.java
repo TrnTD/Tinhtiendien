@@ -1,5 +1,6 @@
 package com.Tinhtiendien.DAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.Tinhtiendien.Entity.MapperInfo;
+import com.Tinhtiendien.Entity.MapperInfoNhanVien;
 import com.Tinhtiendien.Models.*;
 
 @Repository
@@ -15,7 +17,7 @@ public class InfoDAO {
 	@Autowired
 	public JdbcTemplate jdbcTemplate;
 	
-	public Info getAllInfo(String username) {
+	public Info getAllInfoKhachHang(String username) {
 		String sql = "select * from khachhang where username = ? or khachhang_id = ?";
 		Info info = null;
 		try {
@@ -26,6 +28,19 @@ public class InfoDAO {
 		}
 		
 		return info;
+	}
+	
+	public InfoNhanVien getAllInfoNhanVien(String username) {
+		String sql = "select * from nhanvien where username = ? or nhanvien_id = ?";
+		InfoNhanVien infonv = null;
+		try {
+			infonv = jdbcTemplate.queryForObject(sql, new Object[] {username, username}, new MapperInfoNhanVien());
+			System.out.println("Truy van thong tin khach hang thanh cong 1");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van thong tin khach hang that bai 1");
+		}
+		
+		return infonv;
 	}
 	
 	public boolean checkUsernameKhachHang(String username) {
@@ -59,5 +74,67 @@ public class InfoDAO {
 			}
 			return true;
 		}
+	
+	public List<Info> getAllKhachHang(){
+		List<Info> infos = new  ArrayList<Info>();
+		String sql = "select * from khachhang";
+		try {
+			infos = jdbcTemplate.query(sql, new MapperInfo());
+			System.out.println("Truy van tat ca thong tin khach hang thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca thong tin khach hang that bai");
+		}
+		
+		if (infos.size() == 0) {
+			System.out.println("Khong co khach hang de truy van");
+		}
+		
+		return infos;
+	}
+	
+	public boolean addNewKhachHang(String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi) {
+		boolean isAdd = false;
+		String sql = "insert into khachhang (hovaten, gioitinh, ngaythangnam_sinh, email, sdt, cccd, diachi) "
+				+ "values (?, ?, ?, ?, ?, ?, ?)";
+		try {
+			jdbcTemplate.update(sql, new Object[] {hoten, gioitinh, ngaysinh, email, sdt, cccd, diachi});
+			isAdd = true;
+			System.out.println("Them khach hang moi thanh cong");
+		}
+		catch (DataAccessException e){
+			System.out.println("Them khach hang moi that bai");
+		}
+		
+		return isAdd;
+	}
+	
+	public boolean updateKhachHang(String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi, String khachhang_id) {
+		boolean isUpdate = false;
+		
+		String sql = "UPDATE khachhang"
+				+ " SET hovaten = ?, gioitinh = ?, ngaythangnam_sinh = ?, email =?, sdt =?, cccd = ?, diachi = ?"
+				+ " WHERE khachhang_id = ?";
+		try {
+			jdbcTemplate.update(sql, new Object[] {hoten, gioitinh, ngaysinh, email, sdt, cccd, diachi, khachhang_id});
+			isUpdate = true;
+			System.out.println("Chinh sua khach hang thanh cong");
+		}
+		catch (DataAccessException e){
+			System.out.println("Chinh sua khach hang that bai");
+		}
+		
+		return isUpdate;
+	}
+	
+	public void deleteKhachHang(String khachhang_id) {
+		String sql = "delete khachhang where khachhang_id = ? AND username is null";
+		try {
+			jdbcTemplate.update(sql, new Object[] {khachhang_id});
+			System.out.println("Xoa khach hang thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Xoa khach hang that bai");
+		}
+
+	}
 
 }
