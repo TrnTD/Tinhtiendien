@@ -3,6 +3,7 @@ package com.Tinhtiendien.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.http.HttpRequest;
 import java.util.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -383,8 +384,9 @@ public class NhanVienController {
 		return "redirect:/nhan_vien/quan_ly_lich_ghi_chi_so_khach_hang";
 	}
 	
-	
-	///////////////////////// QUAN LY LICH SU DO ////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////// QUAN LY LICH SU DO ///////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang", method = RequestMethod.GET)
 	public String get_lsd_khachhang(@RequestParam(value = "selected_makh", required = false) String selected_makh, Model model) {
@@ -413,9 +415,13 @@ public class NhanVienController {
 		boolean canAdd = true;
 		String message = "";
 		
-		String ngaydo = nam + "-" + thang + "-" + ngay;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		if (ngay == "0" || thang == "0" || nam == "0") {
+			redirectAttributes.addFlashAttribute("err_mess_addNgaydo", "Ngày đo không được để trống!");
+			canAdd = false;
+		}
 		
+		String ngaydo = "";
+
 		if (khachhang_id == "") {
 			redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không được để trống!");
 			canAdd = false;
@@ -426,8 +432,10 @@ public class NhanVienController {
 			} else {
 				
 				System.out.println("Ma khach hang: " + khachhang_id);
-				System.out.println("Ngay do: " + ngaydo);
+				
 				System.out.println("Chi so: " + chiso);
+				
+				
 				
 				MeasurementHistory latest_lsd = mdDAO.getLatestLsdByKhachhangId(khachhang_id);
 				
@@ -437,11 +445,25 @@ public class NhanVienController {
 						canAdd = false;
 					}
 					
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 					String date = formatter.format(latest_lsd.getNgay_do());
-					if (ngaydo.compareTo(date) <= 0) {
-						redirectAttributes.addFlashAttribute("err_mess_addNgaydo", "Ngày đo không được bé hơn hoặc bằng ngày đo của tháng gần nhất!");
+					if (ngay.equals("0") || thang.equals("0") || nam.equals("0")) {
+						redirectAttributes.addFlashAttribute("err_mess_addNgaydo", "Ngày đo không được để trống!");
 						canAdd = false;
-					}					
+					} else {
+						LocalDate localDate = LocalDate.of(Integer.parseInt(nam), Integer.parseInt(thang), Integer.parseInt(ngay));
+						
+						ngaydo = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+						System.out.println("Ngay do: " + ngaydo);
+						System.out.println("date: " + date);
+						
+						if (ngaydo.compareTo(date) <= 0) {
+							redirectAttributes.addFlashAttribute("err_mess_addNgaydo", "Ngày đo không được bé hơn hoặc bằng ngày đo của tháng gần nhất!");
+							canAdd = false;
+						}					
+						
+					}
+					
 				}
 			}
 		}
@@ -493,8 +515,17 @@ public class NhanVienController {
 		MeasurementHistory nextlsd = mdDAO.getNextLDSByLsdIdAndKhId(lsd_id, khachhang_id);
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		formatter.setLenient(false);
 		
 		boolean canUpdate = true;
+		
+		try {
+			Date date = formatter.parse(ngay_do);
+		} catch (ParseException e) {
+			redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không hợp lệ!!");
+			canUpdate = false;
+		}
+		
 		
 		if (prelsd != null) {
 			if (chiso < prelsd.getChiso()) {
@@ -588,8 +619,8 @@ public class NhanVienController {
 	}
 	
 	public static void main(String[] args) {
-		String date1 = "2020-1-1";
-		String date2 = "2019-10-2";
+		String date1 = "2024-1-1";
+		String date2 = "2024-01-02";
 		
 		if (date1.compareTo(date2) > 0) {
 			System.out.println("date1 lon hon date2");

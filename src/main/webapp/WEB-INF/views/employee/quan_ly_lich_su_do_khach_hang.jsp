@@ -69,9 +69,9 @@
 		sessionStorage.removeItem("lsd_id");
 		sessionStorage.removeItem("khachhang_id");
 		sessionStorage.removeItem("chiso");
-		sessionStorage.removeItem("ngay");
-		sessionStorage.removeItem("thang");
-		sessionStorage.removeItem("nam");
+		sessionStorage.setItem("ngay", "");
+		sessionStorage.setItem("thang", "");
+		sessionStorage.setItem("nam", "");
 	</script>
 	<%
 			session.removeAttribute("message");
@@ -92,9 +92,9 @@
 		sessionStorage.removeItem("lsd_id");
 		sessionStorage.removeItem("khachhang_id");
 		sessionStorage.removeItem("chiso");
-		sessionStorage.removeItem("ngay");
-		sessionStorage.removeItem("thang");
-		sessionStorage.removeItem("nam");
+		sessionStorage.setItem("ngay", "");
+		sessionStorage.setItem("thang", "");
+		sessionStorage.setItem("nam", "");
 )
 	</script>
 	<%
@@ -109,7 +109,7 @@
                         <h2>Quản lý <b>Lịch Sử Đo</b></h2>
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" onclick="setSelectForm('addForm')">
+                        <button type="button" class="btn btn-success btn-add" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" onclick="setSelectForm('addForm')">
                             <i class="material-icons">&#xE147;</i> <span>Thêm lịch sử đo mới</span>
                         </button>
                         <!-- <a href="#deleteEmployeeModal" class="btn btn-danger" data-bs-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a> -->
@@ -182,37 +182,37 @@
                                 <div class="container">
 								  <div class="row">
 								    <div class="col">
-								    	<select class="form-select" id="addDay" name="ngay" required>
-                                		<option value="0" disabled selected hidden>Ngày</option>
-					                	<c:forEach var = "i" begin = "1" end = "31">
-					                    	<option value="${i}">${i}</option>
-					                    </c:forEach>
-									      </select>
+								    	<select class="form-select addDay" id="addngaydo" name="ngay" required>
+	                                		<option value="0" selected hidden>Ngày</option>
+						                	<c:forEach var = "i" begin = "1" end = "31">
+						                    	<option value="${i}">${i}</option>
+						                    </c:forEach>
+								      	</select>
 								    </div>
 								    <div class="col">
-								      	<select class="form-select" id="addMonth" name="thang" required>
-		                				<option value="0" disabled selected hidden>Tháng</option>
+								      	<select class="form-select addMonth" id="addngaydo" name="thang" required>
+		                				<option value="0" selected hidden>Tháng</option>
 				                		<c:forEach var = "i" begin = "1" end = "12">
 				                    		<option value="${i}">${i}</option>
 				                    	</c:forEach>
 				                		</select>
 								    </div>
 								    <div class="col">
-								      	<select class="form-select" id="addYear" name="nam" required>
-		                				<option value="0" disabled selected hidden>Năm</option>
+								      	<select class="form-select addYear" id="addngaydo" name="nam" required>
+		                				<option value="0" selected hidden>Năm</option>
 				                		<c:forEach var = "i" begin = "1900" end = "2024">
 				                    		<option value="${i}">${i}</option>
 				                    	</c:forEach>
 		                				</select>
 								    </div>
-								    <h6 style="color:red; padding-left:5px; padding-top:5px" id="add_khachhang_id">${err_mess_addNgaydo}</h6>
+								    <h6 style="color:red; padding-left:5px; padding-top:5px" id="addngaydo">${err_mess_addNgaydo}</h6>
 								  </div>
 								</div>
                             </div>
                             <div class="mb-3">
                                 <label for="add_chiso" class="form-label">Chỉ số</label>
                                 <input type="number" class="form-control" id="add_chiso" name ="add_chiso" min="0" required>
-                                <h6 style="color:red; padding-left:5px; padding-top:5px" id="add_khachhang_id">${err_mess_addChiso}</h6>
+                                <h6 style="color:red; padding-left:5px; padding-top:5px" id="add_chiso">${err_mess_addChiso}</h6>
                             </div>
                         </form>
                     </div>
@@ -234,7 +234,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Edit employee form -->
-                        <form action = "/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/sua" method="POST" id ="editCustomer" onsubmit="return validateDate()">
+                        <form action = "/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/sua" method="POST" id ="editCustomer">
                         	<div class="mb-3">
 								<label for="editDOB" class="form-label">Ngày đo</label>
 								<div class="container">
@@ -314,6 +314,37 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+	// Lấy nút "Add"
+	const addButton = document.querySelector('.btn-add');
+	addButton.addEventListener('click', (event) => {
+		var khachhang_id = sessionStorage.getItem("khachhang_id");
+		var ngay = sessionStorage.getItem("ngay");
+		var thang = sessionStorage.getItem("thang");
+		var nam = sessionStorage.getItem("nam");
+		var chiso = sessionStorage.getItem("chiso");
+		
+		if (ngay == '') {
+			console.log("ngay null")
+			document.querySelector('.addDay').selectedIndex = 0;
+		} else {
+			document.querySelector('.addDay').value = ngay;			
+		}
+		
+		if (thang == '') {
+			document.querySelector('.addMonth').selectedIndex = 0;
+		} else {
+			document.querySelector('.addMonth').value = thang;			
+		}
+		
+		if (nam == '') {
+			document.querySelector('.addYear').selectedIndex = 0;
+		} else {
+			document.querySelector('.addYear').value = nam;			
+		}
+	})
+	
+
+
 	// Lấy tất cả các nút "Edit"
 	const editButtons = document.querySelectorAll('.btn-edit');
 	
@@ -358,32 +389,7 @@
 // 	        console.log("lich su do id: " + document.querySelector('.lsd_id-edit').value);
 	    });
 	});
-	
-// 	const editForm = document.getElementById('editCustomer')
-// 	editForm.addEventListener("submit", function(e) {
-// 		var err_mess_element = document.querySelector('h6#editChiso')
-// 		var editInputElement = document.querySelector('input#editChiso')
-		
-// 		var chiso_moi = document.querySelector('input[name="chiso"]').value
-// 		var chiso_cu = sessionStorage.getItem("chiso_cu")
-// 		var chiso_thangsau = sessionStorage.getItem("chiso_thangsau")
-		
-// 		if (chiso_thangsau == null) {
-// 			console.log("null cmnr")
-// 		} else {
-// 			if (chiso_moi < chiso_cu) {
-// 				e.preventDefault();
-// 				err_mess_element.textContent = "Chỉ số phải lớn hơn hoặc bằng chỉ số tháng trước!!"
-// 				editInputElement.classList.add('error-input')
-// 			} else if (chiso_moi > chiso_thangsau && chiso_thangsau != null) {
-// 				e.preventDefault();
-// 				err_mess_element.textContent = "Chỉ số phải bé hơn hoặc bằng chỉ số tháng sau!!"
-// 				editInputElement.classList.add('error-input')
-// 			}			
-// 		}
-// 	})
-	
-	
+
 	const deleteButtons = document.querySelectorAll('.btn-delete');
 	
 	deleteButtons.forEach((button) => {
@@ -421,10 +427,24 @@
 	}
 	
 	window.addEventListener('beforeunload', function() {
-        sessionStorage.setItem("chiso", document.querySelector('input[name="chiso"]').value);
-        sessionStorage.setItem("ngay", document.querySelector('.editDay').value);
-        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
-        sessionStorage.setItem("nam", document.querySelector('.editYear').value);
+		var formType = sessionStorage.getItem("formType")
+		
+		// edit form
+		if (formType == "editForm") {
+	        sessionStorage.setItem("chiso", document.querySelector('input[name="chiso"]').value);
+	        sessionStorage.setItem("ngay", document.querySelector('.editDay').value);
+	        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
+	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);			
+		}
+        
+        // add form
+        if (formType == "addForm") {
+	        sessionStorage.setItem("khachhang_id", document.querySelector('input[name="add_khachhangid"]').value);
+	        sessionStorage.setItem("ngay", document.querySelector('.addDay').value);
+	        sessionStorage.setItem("thang", document.querySelector('.addMonth').value);
+	        sessionStorage.setItem("nam", document.querySelector('.addYear').value);
+	        sessionStorage.setItem("chiso", document.querySelector('input[name="add_chiso"]').value);        	
+        }
         
 	});
 	
@@ -437,12 +457,39 @@
 		var thang = sessionStorage.getItem("thang");
 		var nam = sessionStorage.getItem("nam");
 		
+		
+		// binding data khi tải lại trang
+		// edit form
 		document.querySelector('input[name="chiso"]').value = chiso;
 		document.querySelector('.lsd_id-edit').value = lsd_id;
 		document.querySelector('.khachhang_id-edit').value = khachhang_id;
 		document.querySelector('.editDay').value = ngay;
 		document.querySelector('.editMonth').value = thang;
 		document.querySelector('.editYear').value = nam;
+		
+		
+		// add form
+		document.querySelector('#add_khachhang_id').value = khachhang_id;
+		if (ngay == '') {
+			console.log("ngay null")
+			document.querySelector('.addDay').selectedIndex = 0;
+		} else {
+			document.querySelector('.addDay').value = ngay;			
+		}
+		
+		if (thang == '') {
+			document.querySelector('.addMonth').selectedIndex = 0;
+		} else {
+			document.querySelector('.addMonth').value = thang;			
+		}
+		
+		if (nam == '') {
+			document.querySelector('.addYear').selectedIndex = 0;
+		} else {
+			document.querySelector('.addYear').value = nam;			
+		}
+		
+		document.querySelector('input[name="add_chiso"]').value = chiso;
 		
 		var formType = sessionStorage.getItem("formType");
 		if (formType == "addForm") {
@@ -456,9 +503,9 @@
 			sessionStorage.removeItem("lsd_id");
 			sessionStorage.removeItem("khachhang_id");
 			sessionStorage.removeItem("chiso");
-			sessionStorage.removeItem("ngay");
-			sessionStorage.removeItem("thang");
-			sessionStorage.removeItem("nam");
+			sessionStorage.setItem("ngay", '');
+			sessionStorage.setItem("thang", '');
+			sessionStorage.setItem("nam", '');
 			
 			var error_mess_list = document.querySelectorAll('h6');
 			error_mess_list.forEach(function(error_mess) {
@@ -493,49 +540,7 @@
             }
         }
 	})
-	
-	function isValidateDate(day, month, year) {
-		if (month < 1 || month > 12) {
-			return false;
-		}
-		
-		var daysInMonth = new Date(year, month, 0).getDate();
-		
-		if (day < 1 || day > daysInMonth) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	function validateDate() {
-		var selectedDay = parseInt(document.querySelector(".editDay").value);
-        var selectedMonth = parseInt(document.querySelector(".editMonth").value);
-        var selectedYear = parseInt(document.querySelector(".editYear").value);
-        
-        console.log(selectedDay)
-        console.log(selectedMonth)
-        console.log(selectedYear)
-		
-		if (!isValidateDate(selectedDay, selectedMonth, selectedYear)) {
-			
-			var err_mess_ngaydo = document.querySelector('h6#editngaydo');
-			
-			err_mess_ngaydo.textContent = "Ngày không hợp lệ!!";
-			
-			var inputElements = document.querySelectorAll('#editngaydo:not(h6)');
 
-            if (inputElements) {
-            	inputElements.forEach(inputElement => {
-            		inputElement.classList.add('error-input');
-            	})
-            }
-
-            return false;
-        }
-		
-		return true;
-	}
 	
 </script>
 </body>
