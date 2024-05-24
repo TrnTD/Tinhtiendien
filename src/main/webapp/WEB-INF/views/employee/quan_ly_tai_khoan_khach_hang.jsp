@@ -15,6 +15,9 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css"
 	rel="stylesheet">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <style>
 body {
 	color: #566787;
@@ -93,19 +96,45 @@ table.table td button {
 }
 
 .btn-success {
-    background-color: #5cb85c;
+	background-color: #5cb85c;
 }
 
 /* .table-striped>tbody>tr:nth-of-type(odd) {
     --bs-table-accent-bg: none;
     color: var(--bs-table-striped-color);
 } */
+.error-input {
+    border: 1px solid red !important; /* Đường viền màu đỏ */
+}
+
 </style>
 </head>
 
 
 <body>
-	<div class="container mt-5">
+	<div class="container">
+	<div class="row">
+		<div style="margin-left: 0px;width:1300px" class="col-md-8 offset-md-2">
+			<form class="custom-form">
+			    <div class="row mb-3">
+			        <div class="col">
+			            <label for="field1" class="form-label">Field 1</label>
+			            <input type="text" class="form-control" id="field1" placeholder="Enter Field 1">
+			        </div>
+			        <div class="col">
+			            <label for="field2" class="form-label">Field 2</label>
+			            <input type="text" class="form-control" id="field2" placeholder="Enter Field 2">
+			        </div>
+			    </div>
+			   
+	    		<!-- Thêm các hàng input khác nếu cần -->
+				<button style="float: right;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
+			</form>
+		</div>
+	</div>
+	
+		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
+		
 		<div class="table-wrapper">
 			<div class="table-title">
 				<div class="row">
@@ -116,9 +145,9 @@ table.table td button {
 					</div>
 					<div class="col-md-6 text-md-end">
 						<button type="button" class="btn btn-success"
-							data-bs-toggle="modal" data-bs-target="#addEmployeeModal" style="background-color: #5cb85c;">
-							<i class="material-icons">&#xE147;</i> <span>Thêm tài
-								khoản</span>
+							data-bs-toggle="modal" data-bs-target="#addEmployeeModal"
+							onclick="setSelectForm('addForm','')">
+							<i class="material-icons">&#xE147;</i> <span>Thêm tài khoản</span>
 						</button>
 					</div>
 				</div>
@@ -143,12 +172,12 @@ table.table td button {
 							<td style="display: flex; justify-content: center; gap: 20px;">
 								<button type="button" class="btn btn-primary btn-sm"
 									data-bs-toggle="modal" data-bs-target="#editEmployeeModal"
-									onclick="selectRow('${acc.username}')">
+									onclick="setSelectForm('editForm', '${acc.username}')">
 									<i class="bi bi-pencil-fill"></i> Chỉnh sửa
 								</button>
 								<button type="button" class="btn btn-danger btn-sm"
 									data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"
-									onclick="selectRow('${acc.username}')">
+									onclick="setSelectForm('deleteForm', '${acc.username}')">
 									<i class="bi bi-trash-fill"></i> Xoá
 								</button>
 							</td>
@@ -160,7 +189,9 @@ table.table td button {
 			<form method="POST">
 				<input type="hidden" id="selectedUsername" name="selectedUsername"
 					value="">
-					
+				<input type="hidden" id="actionForm" name="action" value="">
+
+
 				<!-- Add Employee Modal -->
 				<div class="modal fade" id="addEmployeeModal" tabindex="-1"
 					aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
@@ -174,23 +205,28 @@ table.table td button {
 							</div>
 							<div class="modal-body">
 								<!-- Add employee form -->
-						   			<div class="mb-3">
-										<label class="form-label">Mã khách hàng</label>
-										<input type="text" class="form-control" name="addUsernameId">
-									</div>
-									<div class="mb-3">
-										<label  class="form-label">Tên đăng nhập</label>
-										<input type="text" class="form-control" name="addUsername">
-									</div>
-									<div class="mb-3">
-										<label class="form-label">Mật khẩu </label> <input
-											type="text" class="form-control" name="addPassWord">
-									</div>
+								<div class="mb-3">
+									<label class="form-label">Mã khách hàng</label> <input
+										type="text" class="form-control" name="addUsernameId" id="themMKH">
+										<h6 style="color:red; padding-left:5px;padding-top:5px" id="themMKH">${tbThemMKH}</h6>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Tên đăng nhập</label> <input
+										type="text" class="form-control" name="addUsername" id="themTK">
+										<h6 style="color:red; padding-left:5px;padding-top:5px" id="themTK">${tbThemTK}</h6>
+										 <i>Tên đăng nhập hợp lệ chỉ chứa chữ in hoa (A-Z), chữ in thường (a-z) và chữ số (0-9), không bao gồm tiếng Việt có dấu. Ví dụ: User12</i>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Mật khẩu </label> <input type="text"
+										class="form-control" name="addPassWord" id="themMK">
+										<h6 style="color:red; padding-left:5px;padding-top:5px" id="themMK">${tbThemMK}</h6>
+										<i>Mật khẩu bao gồm tối thiểu 06 ký tự, có ít nhất một chữ in hoa (A-Z), một chữ in thường (a-z), một chữ số (0-9) và một ký tự đặc biệt (#?.!@$%^&*-). Ví dụ: Matkhau@123</i>
+								</div>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary"
 									data-bs-dismiss="modal">Huỷ</button>
-								<button type="submit" class="btn btn-primary" name="action" value="add">Thêm</button>
+								<button type="submit" class="btn btn-primary">Thêm</button>
 							</div>
 						</div>
 					</div>
@@ -211,15 +247,17 @@ table.table td button {
 								<!-- Edit employee form -->
 
 								<div class="mb-3">
-									<label  class="form-label">Mật khẩu</label> <input
-										type="text" class="form-control" name="newPass">
+									<label class="form-label">Mật khẩu</label> <input type="text"
+										class="form-control" name="newPass" id="doiMK">
+										<h6 style="color:red; padding-left:5px;padding-top:5px" id="doiMK">${tbDoiMK}</h6>
+										<i>Mật khẩu bao gồm tối thiểu 06 ký tự, có ít nhất một chữ in hoa (A-Z), một chữ in thường (a-z), một chữ số (0-9) và một ký tự đặc biệt (#?.!@$%^&*-). Ví dụ: Matkhau@123</i>
 								</div>
 
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary"
 									data-bs-dismiss="modal">Huỷ</button>
-								<button type="submit" name="action" value="edit"
+								<button type="submit" 
 									class="btn btn-primary">Đổi mật khẩu</button>
 							</div>
 						</div>
@@ -243,8 +281,7 @@ table.table td button {
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary"
 									data-bs-dismiss="modal">Huỷ</button>
-								<button type="submit" name="action" value="delete"
-									class="btn btn-danger">Xác nhận</button>
+								<button type="submit" class="btn btn-danger">Xác nhận</button>
 							</div>
 						</div>
 					</div>
@@ -255,16 +292,136 @@ table.table td button {
 
 	</div>
 
-
-
+	<%-- 	<%
+	String tb = (String) session.getAttribute("tbao");
+	%>
+ --%>
 	<!-- Bootstrap JS -->
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-		function selectRow(username) {
+		function setSelectForm(form, username) {
 			document.getElementById("selectedUsername").value = username;
-			console.log(username);
+			sessionStorage.setItem("formType", form);
+			console.log(sessionStorage.getItem("formType"));
+			var formType = sessionStorage.getItem("formType");
+			  if (formType === "editForm") {
+				  document.getElementById("actionForm").value = 'edit';
+		        } else if (formType === "deleteForm") {
+		        	document.getElementById("actionForm").value = 'delete';
+		        } else if (formType === "addForm") {
+		        	document.getElementById("actionForm").value = 'add';
+		        }
 		}
+		
+		window.addEventListener('beforeunload', function() {
+            sessionStorage.setItem("addUsernameId", document.querySelector('input[name="addUsernameId"]').value);
+            sessionStorage.setItem("addUsername", document.querySelector('input[name="addUsername"]').value);
+            sessionStorage.setItem("addPassWord", document.querySelector('input[name="addPassWord"]').value);
+            sessionStorage.setItem("newPass", document.querySelector('input[name="newPass"]').value);
+		});
+
+		document.addEventListener("DOMContentLoaded", function() {
+			var message = "${tb}";
+			console.log(message);
+
+			if (message && message.trim() !== "") {
+				
+				var tb = document.getElementById('thong_bao');
+				tb.style.display = 'block'; // Hiển thị thông báo
+
+		        // Ẩn thông báo sau 3 giây
+		        setTimeout(function() {
+		        	tb.style.display = 'none';
+		        }, 3000);
+				
+				// Xoá session
+				sessionStorage.removeItem("formType");
+				sessionStorage.removeItem("addUsernameId");
+				sessionStorage.removeItem("addUsername");
+				sessionStorage.removeItem("addPassWord");
+				sessionStorage.removeItem("newPass");
+			} else {
+					var formType = sessionStorage.getItem("formType");
+					if (formType === "editForm") {
+						  document.getElementById("actionForm").value = 'edit';
+				        } else if (formType === "deleteForm") {
+				        	document.getElementById("actionForm").value = 'delete';
+				        } else if (formType === "addForm") {
+				        	document.getElementById("actionForm").value = 'add';
+				        }
+					
+					
+					var addUsernameIdValue = sessionStorage.getItem("addUsernameId");
+			        var addUsernameValue = sessionStorage.getItem("addUsername");
+			        var addPassWordValue = sessionStorage.getItem("addPassWord");
+			        var newPassValue = sessionStorage.getItem("newPass"); 
+			      
+			        
+				 	document.querySelector('input[name="addUsernameId"]').value = addUsernameIdValue;
+			        document.querySelector('input[name="addUsername"]').value = addUsernameValue;
+			        document.querySelector('input[name="addPassWord"]').value = addPassWordValue;
+			        document.querySelector('input[name="newPass"]').value = newPassValue;
+				if (formType === "editForm") {
+					// Hiển thị form chỉnh sửa khi session storage có giá trị "editForm"
+					$('#editEmployeeModal').modal('show');
+				} else if (formType === "deleteForm") {
+					// Hiển thị form xoá khi session storage có giá trị "deleteForm"
+					$('#deleteEmployeeModal').modal('show');
+				} else if (formType === "addForm") {
+					$('#addEmployeeModal').modal('show');
+				}
+			}
+			
+			// Gắn sự kiện hidden.bs.modal cho tất cả các modal
+			$('.modal').on('hidden.bs.modal', function () {
+			    sessionStorage.removeItem("formType");
+				sessionStorage.removeItem("addUsernameId");
+				sessionStorage.removeItem("addUsername");
+				sessionStorage.removeItem("addPassWord");
+				sessionStorage.removeItem("newPass");
+				
+			    let headers = document.querySelectorAll('h6');
+	            headers.forEach(function(header) {
+	                header.textContent = '';
+					var inputId = header.id;
+		            // Tìm ô input tương ứng bằng id của thẻ h6
+		            var inputElement = document.getElementById(inputId); 
+		            inputElement.classList.remove('error-input');
+		            inputElement.value = "";
+
+	            });
+			    
+			});
+			
+/* ============================ THÔNG BÁO NHẬP DỮ LIỆU =====================================	 */																
+			var errorMessages = document.querySelectorAll('h6');
+		    // Duyệt qua mỗi thông báo lỗi
+		    errorMessages.forEach(function(errorMessage) {
+		        // Kiểm tra nếu thông báo không rỗng
+		        if (errorMessage.textContent.trim() !== "") {
+		            // Lấy id của thẻ h6
+		            var inputId = errorMessage.id;
+		            
+		            // Tìm ô input tương ứng bằng id của thẻ h6
+		            var inputElement = document.getElementById(inputId); 
+		            
+		            // Kiểm tra xem ô input có tồn tại không
+		            if (inputElement) {
+		                // Thêm lớp CSS 'error-input' cho ô input
+		                inputElement.classList.add('error-input');
+		            }
+		        }
+		    });
+			
+		});
+		
+
 	</script>
+
 </body>
+
+
+
 </html>
+

@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,8 +15,16 @@
 </style>
 <body>
 <style>
+	thead tr {
+		background-color: #e8ecfc;
+		
+		th {
+			color: #063bc0;
+		}
+	}
+
 	th {
-		font-size: 18px;
+		font-size: 16px;
 		text-align: center;
 	}
 	
@@ -28,7 +37,7 @@
   		<div class="container" style="width:1000px">
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Thông tin hóa đơn</h2>
 	        
-	        <table class="table table-hover">
+	        <table class="table table-hover" style="background-color: white;">
 	          <thead>
 	            <tr>
 	              <th>Tháng</th>
@@ -40,14 +49,14 @@
 	            </tr>
 	          </thead>
 	          <tbody>
-				<c:forEach var="cthd" items="${list_cthd}">
+				<c:forEach var="hoadon" items="${list_hoadon}">
 				    <tr>
-				        <td>${cthd.thang_batdau}</td>
-				        <td>${cthd.nam_batdau}</td>
-				        <td>${cthd.chiso_cu}</td>
-				        <td>${cthd.chiso_moi}</td>
-				        <td>${cthd.dien_tieu_thu}</td>
-				        <td>${cthd.tong_tien}</td>
+				        <td>${hoadon.month_bill}</td>
+				        <td>${hoadon.year_bill}</td>
+				        <td>${hoadon.chiso_cu}</td>
+				        <td>${hoadon.chiso_moi}</td>
+				        <td>${hoadon.dien_tieu_thu}</td>
+				        <td><fmt:formatNumber value="${hoadon.tong_tien}" pattern="#,###"/></td>
 				    </tr>
 				</c:forEach>
 

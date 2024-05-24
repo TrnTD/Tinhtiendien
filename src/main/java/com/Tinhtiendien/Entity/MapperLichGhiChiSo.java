@@ -12,6 +12,8 @@ public class MapperLichGhiChiSo implements RowMapper<LichGhiChiSo> {
 	{
 		LichGhiChiSo ck = new LichGhiChiSo();
 		
+		ck.setLichghi_id(rs.getString("lichghi_id"));
+		ck.setKhachhang_id(rs.getString("khachhang_id"));
 		String temp = rs.getString("ngay_batdau");
 		String []temp1 = temp.split("-");
 		ck.setNam(temp1[0]);

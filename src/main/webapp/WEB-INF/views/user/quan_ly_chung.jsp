@@ -11,7 +11,10 @@
 <body>
 <div id="intValueContainer1" data-intvalue="${list_thang}"></div>
 <div id="intValueContainer2" data-intvalue="${list_chiso}"></div>
-<canvas id="myChart" width="100vh" height="50vh"></canvas>
+
+<canvas id="myChart" width="100vh" height="50vh" style="background-color: white;"></canvas>
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="text/javascript">

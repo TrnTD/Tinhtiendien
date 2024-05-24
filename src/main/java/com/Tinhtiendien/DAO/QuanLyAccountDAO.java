@@ -38,36 +38,42 @@ public class QuanLyAccountDAO {
 		return listAccount;
 	}
 	
-	public void changePassword (String username, String newpassword) {
+	public String changePassword (String username, String newpassword,String thong_bao) {
 		String sql = "UPDATE taikhoan SET password = ? WHERE username = ?"; 
 		int result = 0;
 		try {
 			result = jdbcTemplate.update(sql, new Object[] {newpassword, username});
+			thong_bao= "Đổi mật khẩu thành công!";
 			System.out.println("Doi mat khau thanh cong");
 		} catch (DataAccessException e) {
 			System.out.println("Doi mat khau that bai");
 		}
+		return thong_bao;
 	}
 	
-	public void deleteAcc (String username) {
+	public String deleteAcc (String username,String thong_bao) {
 		String sql = "exec sp_DeleteTaikhoan @username = ?"; 
 		int result = 0;
 		try {
 			result = jdbcTemplate.update(sql, new Object[] {username});
+			thong_bao= "Xoá tài khoản thành công!";
 			System.out.println("Xoa tai khoan thanh cong");
 		} catch (DataAccessException e) {
 			System.out.println("Xoa tai khoan that bai");
 		}
+		return thong_bao;
 	}
 	
-	public void addAcc (String khachhang_id,String username,String password) {
+	public String addAcc (String khachhang_id,String username,String password,String thong_bao) {
 		String sql = "exec sp_UpdateUsernameAndInsertIntoTaikhoan @khachhang_id = ? , @username =  ?, @password = ?, @role = null;";
 		int result = 0;
 		try {
 			result = jdbcTemplate.update(sql, new Object[] {khachhang_id,username,password});
+			thong_bao = "Thêm tài khoản thành công";
 			System.out.println("Them tai khoan thanh cong");
 		} catch (DataAccessException e) {
 			System.out.println("Them tai khoan that bai");
 		}
+		return thong_bao;
 	}
 }

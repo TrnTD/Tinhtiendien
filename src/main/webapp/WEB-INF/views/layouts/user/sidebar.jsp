@@ -9,22 +9,26 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <style>
+body {
+	background-color: #e5e5e5;
+}
+
 .sidebar {
       position: fixed;
       top: 0;
       left: 0;
       height: 100%;
       width: 250px;
-      padding-top: 15px;
+/*       padding-top: 15px; */
       background-color: #ffff;
       border-right: 1px solid #ccc; /* Thêm viền bên phải */
       z-index: 9999999;
       box-shadow: 1px 0 10px rgba(0, 0, 0, 0.5);
 
       img {
-        height: 80px;
-        width: 100%;
-        margin-bottom: 20px;
+        height: 150px;
+/*         width: 100%; */
+/*         margin-bottom: 20px; */
       }
 
       .nav-item {
@@ -79,8 +83,8 @@
 </style>
 <body>
 <div class="sidebar" style="overflow-y: auto; height: 100vh;">
-    <div class="sidebar-logo">
-      <img src="https://www.thuvienvector.com/upload/images/items/vector-logo-evn-logo-tap-doan-dien-luc-viet-nam-file-cdr-coreldraw-ai-151.webp" alt="">
+    <div class="sidebar-logo" style="display: flex; justify-content: center">
+      <img src="https://downloadlogomienphi.com/sites/default/files/logos/download-logo-vector-hoc-vien-cong-nghe-buu-chinh-vien-thong-mien-phi.jpg" alt="">
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
@@ -98,7 +102,7 @@
           <a class="nav-link" href="#tracuu" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu<i class="fa-solid fa-chevron-down"></i></a>
           <ul class="collapse list-unstyled" id="tracuu" style="padding-left: 20px;">
               <li><a class="nav-link menu-item" href="#">Lịch tạm ngưng cấp điện</a></li>
-              <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_ghi_chi_so">Lịch ghi chỉ số</a></li>
+<!--               <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_ghi_chi_so">Lịch ghi chỉ số</a></li> -->
               <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_do">Lịch sử đo</a></li>
           </ul>
       </li>

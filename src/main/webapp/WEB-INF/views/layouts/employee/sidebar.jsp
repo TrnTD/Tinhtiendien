@@ -15,16 +15,17 @@
       left: 0;
       height: 100%;
       width: 250px;
-      padding-top: 15px;
+/*       padding-top: 15px; */
       background-color: #ffff;
       border-right: 1px solid #ccc; /* Thêm viền bên phải */
       z-index: 999;
       box-shadow: 1px 0 10px rgba(0, 0, 0, 0.5);
 
       img {
-        height: 80px;
-        width: 100%;
-        margin-bottom: 20px;
+        height: 150px;
+/* 		width: 100%; */
+/*         margin-bottom: 20px; */
+        
       }
 
       .nav-item {
@@ -79,8 +80,8 @@
 </style>
 <body>
 <div class="sidebar" style="overflow-y: auto; height: 100vh;">
-    <div class="sidebar-logo">
-      <img src="https://www.thuvienvector.com/upload/images/items/vector-logo-evn-logo-tap-doan-dien-luc-viet-nam-file-cdr-coreldraw-ai-151.webp" alt="">
+    <div class="sidebar-logo" style="display: flex; justify-content: center">
+      <img src="https://downloadlogomienphi.com/sites/default/files/logos/download-logo-vector-hoc-vien-cong-nghe-buu-chinh-vien-thong-mien-phi.jpg" alt="">
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
@@ -92,21 +93,14 @@
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang" style="font-size: 13px">Quản lý thông tin khách hàng</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang" style="font-size: 13px">Quản lý tài khoản khách hàng</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý đồng hồ điện</a></li>
-                <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý lịch ghi chỉ số</a></li>
-                <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý lịch sử đo</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_lich_ghi_chi_so_khach_hang" style="font-size: 13px">Quản lý lịch ghi chỉ số</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang" style="font-size: 13px">Quản lý lịch sử đo</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý hóa đơn</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan" style="font-size: 13px">Quản lý giá điện</a></li>
                 
             </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#tracuu" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu<i class="fa-solid fa-chevron-down"></i></a>
-          <ul class="collapse list-unstyled" id="tracuu" style="padding-left: 20px;">
-              <li><a class="nav-link menu-item" href="#" style="font-size: 13px">Lịch tạm ngưng cấp điện</a></li>
-              <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_ghi_chi_so" style="font-size: 13px">Lịch ghi chỉ số</a></li>
-              <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_do" style="font-size: 13px">Lịch sử đo</a></li>
-          </ul>
-      </li>
+        
       <li class="nav-item">
           <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a>
       </li>

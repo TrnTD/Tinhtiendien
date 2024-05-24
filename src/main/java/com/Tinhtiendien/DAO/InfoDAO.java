@@ -75,6 +75,25 @@ public class InfoDAO {
 			return true;
 		}
 	
+	public boolean checkExistKhachHangById(String khachhang_id) {
+		
+		String query = "select * from khachhang where khachhang_id = ?";
+		Info info = null;
+		
+		try {
+			info = jdbcTemplate.queryForObject(query, new Object[] {khachhang_id}, new MapperInfo());
+			System.out.println("Ton tai khach hang voi khachhang_id: " + khachhang_id);
+		} catch (DataAccessException e) {
+			System.out.println("Co loi khi truy van khachhang_id: " + khachhang_id);
+		}
+		
+		if (info != null) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public List<Info> getAllKhachHang(){
 		List<Info> infos = new  ArrayList<Info>();
 		String sql = "select * from khachhang";
@@ -126,15 +145,67 @@ public class InfoDAO {
 		return isUpdate;
 	}
 	
-	public void deleteKhachHang(String khachhang_id) {
+	public boolean deleteKhachHang(String khachhang_id) {
 		String sql = "delete khachhang where khachhang_id = ? AND username is null";
 		try {
 			jdbcTemplate.update(sql, new Object[] {khachhang_id});
 			System.out.println("Xoa khach hang thanh cong");
+			return true;
 		} catch (DataAccessException e) {
 			System.out.println("Xoa khach hang that bai");
+			return false;
 		}
 
+	}
+	
+	public boolean checkSoDienThoaiTrung (String sdt) {
+		String sql = "select * from khachhang where sdt = ?";
+		System.out.println("select * from khachhang where sdt = " + sdt);
+		Info info = null;
+		try {
+			info = jdbcTemplate.queryForObject(sql, new Object[] {sdt}, new MapperInfo());
+		} catch (DataAccessException e) {
+			System.out.println("Truy van khachhang bang sdt that bai");
+		}
+		
+		if (info == null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean checkCanCuocCongDanTrung (String cccd) {
+		String sql = "select * from khachhang where cccd = ?";
+		System.out.println("select * from khachhang where cccd = " + cccd);
+		Info info = null;
+		try {
+			info = jdbcTemplate.queryForObject(sql, new Object[] {cccd}, new MapperInfo());
+		} catch (DataAccessException e) {
+			System.out.println("Truy van khachhang bang cccd that bai");
+		}
+		
+		if (info == null) {
+			return false;
+		}
+		return true;
+	}
+	
+	public Info getKhachHangByID(String khachhang_id){
+		Info info = null;
+		String sql = "select * from khachhang where khachhang_id = ?";
+		try {
+			info = jdbcTemplate.queryForObject(sql,new Object[] {khachhang_id}, new MapperInfo());
+			System.out.println("Truy van thong tin khach hang thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van thong tin khach hang that bai");
+		}
+		
+		if (info == null) {
+			System.out.println("Khong co khach hang de truy van");
+		}
+		
+		return info;
 	}
 
 }

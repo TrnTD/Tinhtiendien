@@ -11,13 +11,15 @@
 </head>
 
 <style>
+
+
 </style>
 <body>
 	<%@include file="/WEB-INF/views/layouts/user/navbar.jsp" %>	
 	<%@include file="/WEB-INF/views/layouts/user/sidebar.jsp" %>
 	
-	<div style="margin-left:260px; margin-top:35px">
-		<div style="display: flex; justify-content: center">
+	<div style="margin-left:260px; margin-top:35px;">
+		<div style="display: flex; justify-content: center; gap: 0px;">
 			<dec:body/>		
 		</div>
 	</div>

@@ -99,7 +99,7 @@ public class AccountDAO {
 	public void changePassword (String username, String newpassword) {
 		String sql = "UPDATE taikhoan SET password = ? WHERE username = ?"; 
 		int result = 0;
-		try {
+		try {	
 			result = jdbcTemplate.update(sql, new Object[] {newpassword, username});
 		} catch (DataAccessException e) {
 			System.out.println("Doi mat khau that bai");
@@ -122,6 +122,5 @@ public class AccountDAO {
 		}
 		return true;
 	}
-	
 	
 }

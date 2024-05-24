@@ -46,4 +46,26 @@ public class LichGhiChiSoDAO {
 		}	
 		return true;
 	}
+	
+	public boolean update_lgcs_khachhang(int lgcs_id, String ngay_batdau) {
+		boolean isUpdate = false;
+		int result = 0;
+		
+		String query = "update lich_ghi_chi_so set ngay_batdau = ? where lichghi_id = ?";
+		
+		try {
+			result = jdbcTemplate.update(query, new Object[] {ngay_batdau, lgcs_id});
+			System.out.println("Cap nhat ngay bat dau khach hang thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("Cap nhat ngay bat dau khach hang that bai!!");
+		}
+		
+		if (result > 0) {
+			isUpdate = true;
+		}
+		
+		System.out.println("Ket qua update ngay bat dau khach hang: " + result);
+		
+		return isUpdate;
+	}
 }

@@ -46,19 +46,23 @@ public class KhachHangController {
 	@Autowired
 	LichGhiChiSoDAO lgcsDAO = new LichGhiChiSoDAO();
 	
+	@Autowired
+	HoaDonDAO hoadonDAO = new HoaDonDAO();
+	
 	@RequestMapping(value = "/nguoi_dung/quan_ly_chung", method = RequestMethod.GET)
 	public String quan_ly_chung(HttpSession session, Model model) throws JsonProcessingException {
         
         Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
-		List<ChiTietHoaDon> list_cthd = chitiethoadonDAO.getAllInfoChiTietHoaDon(makh);
+		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDon(makh);
+		Collections.reverse(list_hoadon);
 		
 		ArrayList<Integer> list_chiso = new ArrayList<>();
 		ArrayList<Integer> list_thang = new ArrayList<>();
 		
-		for (ChiTietHoaDon cthd : list_cthd) {
-			list_chiso.add(cthd.getDien_tieu_thu());
-			list_thang.add(cthd.getThang_batdau());
+		for (HoaDon hoadon : list_hoadon) {
+			list_chiso.add(hoadon.getDien_tieu_thu());
+			list_thang.add(hoadon.getMonth_bill());
 		}
 		
 		
@@ -73,18 +77,10 @@ public class KhachHangController {
 	public String thong_tin_hoa_don(HttpSession session, Model model) {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
-		List<ChiTietHoaDon> list_cthd = chitiethoadonDAO.getAllInfoChiTietHoaDon(makh);
+		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDon(makh);
 		
-//		for (ChiTietHoaDon cthd : list_cthd) {
-//			System.out.println(cthd.getChitiet_hoadon_id());
-//			System.out.println(cthd.getHoadon_id());
-//			System.out.println(cthd.getChiso_cu());
-//			System.out.println(cthd.getChiso_moi());
-//			System.out.println(cthd.getNgay_thanhtoan());
-//			System.out.println(cthd.getTrangthai());
-//		}
 		
-		model.addAttribute("list_cthd", list_cthd);
+		model.addAttribute("list_hoadon", list_hoadon);
 		return "user/thong_tin_hoa_don";
 	}
 	
@@ -113,8 +109,16 @@ public class KhachHangController {
 		
 		model.addAttribute("nam_dangky", nam_dangky);
         
-        ChiTietHoaDon hoadon = chitiethoadonDAO.getAllInfoHoaDon(makh, thang, nam);
+        HoaDon hoadon = hoadonDAO.getAllInfoHoaDonByDate(makh, thang, nam);
+        
+        boolean issetHoaDon = false;
+        if (hoadon != null) {
+        	issetHoaDon = true;
+        }
+        
         model.addAttribute("hoadon", hoadon);
+        model.addAttribute("issetHoaDon", issetHoaDon);
+        
 		return "/user/tra_cuu_hoa_don";
     }
 	
@@ -124,7 +128,7 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		
-		List<ChiTietHoaDon> list_lstt = chitiethoadonDAO.getAllInfoChiTietHoaDon(makh);
+		List<HoaDon> list_lstt = hoadonDAO.getAllInfoHoaDon(makh);
 		
 		model.addAttribute("list_lstt", list_lstt);
 		

@@ -4,8 +4,8 @@ import java.sql.Date;
 
 public class MeasurementHistory {
 	private int lichsu_do_id;
-	private int dongho_id;
 	private String khachhang_id;
+	private int dongho_id;
 	private Date ngay_do;
 	private int chiso;
 	

@@ -11,8 +11,22 @@
 </head>
 <body>
 <style>
+	thead tr {
+		background-color: #e8ecfc;
+		width: 1000px;
+		
+		th {
+			color: #063bc0;
+		}
+		
+		th:first-child {
+			width: 120px;
+		}
+		
+	}
+
 	th {
-		font-size: 18px;
+		font-size: 16px;
 		text-align: center;
 	}
 	
@@ -22,9 +36,9 @@
 	}
 </style>
 	<div class="content">
-  		<div class="container" style="width:1000px">
+  		<div class="container" style="width: 1200px">
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Lịch sử đo</h2>           
-	        <table class="table table-hover">
+	        <table class="table table-hover" style="background-color: white; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
 	         <thead>
 		      <tr>
 			      <th>STT</th>

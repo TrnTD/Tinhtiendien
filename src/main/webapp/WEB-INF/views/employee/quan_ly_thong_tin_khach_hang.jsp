@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
+<%@ page import="java.time.Year" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +14,97 @@
 <body>
 	<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
 <!-- 	================================================= -->
-
-	<div class="container mt-5">
-        <div class="table-wrapper">
+<style>
+	th {
+		vertical-align: middle;
+	}
+</style>
+<div class="container">
+<div class="row">
+	<div style="margin-left: 0px;width:1300px" class="col-md-8 offset-md-2">
+		<form class="custom-form">
+		    <div class="row mb-3">
+		        <div class="col">
+		            <label for="field1" class="form-label">Field 1</label>
+		            <input type="text" class="form-control" id="field1" placeholder="Enter Field 1">
+		        </div>
+		        <div class="col">
+		            <label for="field2" class="form-label">Field 2</label>
+		            <input type="text" class="form-control" id="field2" placeholder="Enter Field 2">
+		        </div>
+		        <div class="col">
+		            <label for="field3" class="form-label">Field 3</label>
+		            <input type="text" class="form-control" id="field3" placeholder="Enter Field 3">
+		        </div>
+		        <div class="col">
+		            <label for="field4" class="form-label">Ngày sinh</label>
+		            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="ngaysinh">
+		        </div>
+		        
+		    </div>
+		    <div class="row mb-3">
+		        <div class="col">
+		            <label for="field5" class="form-label">Field 5</label>
+		            <input type="text" class="form-control" id="field5" placeholder="Enter Field 5">
+		        </div>
+		        <div class="col">
+		            <label for="field6" class="form-label">Field 6</label>
+		            <input type="text" class="form-control" id="field6" placeholder="Enter Field 6">
+		        </div>
+		        <div class="col">
+		            <label for="field7" class="form-label">Field 7</label>
+		            <input type="text" class="form-control" id="field7" placeholder="Enter Field 7">
+		        </div>
+		        <div class="col">
+		            <label for="field8" class="form-label">Field 8</label>
+		            <input type="text" class="form-control" id="field8" placeholder="Enter Field 8">
+		        </div>
+		    </div>
+    		<!-- Thêm các hàng input khác nếu cần -->
+			<button style="float: right;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
+		</form>
+	</div>
+</div>
+        
+        
+	<%
+		String mess = (String) session.getAttribute("message");
+		Boolean isError = (Boolean) session.getAttribute("isError");
+	
+		if (mess != null && !isError) {
+	%>
+	<div id="successMessage" class="alert alert-success" role="alert" style="margin-top: 20px;"><%= mess %></div>
+	<script>
+	// Sau khi tải xong trang, tự động ẩn thông báo sau 3 giây
+	setTimeout(function() {
+		var successMessage = document.getElementById("successMessage");
+		if (successMessage) {
+			successMessage.style.display = "none";
+		}
+	}, 3000);
+	</script>
+	<%
+			session.removeAttribute("message");
+			session.removeAttribute("isError");
+		} else if (mess != null && isError) {
+	%>
+	<div id="errorMessage" class="alert alert-danger" role="alert" style="margin-top: 20px;"><%= mess %></div>
+	<script>
+	// Sau khi tải xong trang, tự động ẩn thông báo sau 3 giây
+	setTimeout(function() {
+		var errorMessage = document.getElementById("errorMessage");
+		if (errorMessage) {
+			errorMessage.style.display = "none";
+		}
+	}, 3000);
+	</script>
+	<%
+			session.removeAttribute("message");
+			session.removeAttribute("isError");
+		}
+	%>
+	
+<div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
                     <div class="col-md-6">
@@ -41,7 +130,7 @@
                         <th>Số điện thoại</th>
                         <th>Căn cước công dân</th>
                         <th>Địa chỉ</th>
-                        <th>Hoạt động</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,7 +166,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Add employee form -->
-                        <form action = "quan_ly_thong_tin_khach_hang/them" method="POST" id ="addCustomer">
+                        <form action = "quan_ly_thong_tin_khach_hang/them" method="POST" id ="addCustomer" onsubmit="return validateDateAdd()">
                             <div class="mb-3">
                                 <label for="addName" class="form-label">Họ Tên</label>
                                 <input type="text" class="form-control" id="addName" name="hoten" required>
@@ -95,7 +184,7 @@
 								  <div class="row">
 								    <div class="col">
 								    	<select class="form-select" id="addDay" name="ngay" required>
-                                		<option value="0" disabled selected hidden>Ngày</option>
+                                		<option value="" disabled selected hidden>Ngày</option>
 					                	<c:forEach var = "i" begin = "1" end = "31">
 					                    	<option value="${i}">${i}</option>
 					                    </c:forEach>
@@ -103,7 +192,7 @@
 								    </div>
 								    <div class="col">
 								      	<select class="form-select" id="addMonth" name="thang" required>
-		                				<option value="0" disabled selected hidden>Tháng</option>
+		                				<option value="" disabled selected hidden>Tháng</option>
 				                		<c:forEach var = "i" begin = "1" end = "12">
 				                    		<option value="${i}">${i}</option>
 				                    	</c:forEach>
@@ -111,12 +200,18 @@
 								    </div>
 								    <div class="col">
 								      	<select class="form-select" id="addYear" name="nam" required>
-		                				<option value="0" disabled selected hidden>Năm</option>
-				                		<c:forEach var = "i" begin = "1900" end = "2024">
-				                    		<option value="${i}">${i}</option>
-				                    	</c:forEach>
+		                				<option value="" disabled selected hidden>Năm</option>
+										<%
+										int currentYear = Year.now().getValue();
+										for (int year=currentYear; year>1923; year--){
+										%>	
+											<option value="<%= year %>"><%= year %></option>
+										<%
+										}
+										%>
 		                				</select>
 								    </div>
+								    <div id="mess-error-date-add"></div>
 								  </div>
 								</div>
                             </div>
@@ -156,7 +251,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Edit employee form -->
-                        <form action = "quan_ly_thong_tin_nguoi_dung/sua" method="POST" id ="editCustomer">
+                        <form action = "quan_ly_thong_tin_khach_hang/sua" method="POST" id ="editCustomer" onsubmit="return validateDateEdit()">
                             <div class="mb-3">
                                 <label for="editName" class="form-label">Họ Tên</label>
                                 <input type="text" class="form-control" id="editName" name ="hoten" required>
@@ -191,11 +286,16 @@
 								    <div class="col">
 								      	<select class="form-select" id="editYear" name="nam">
 		                				<option value="0" disabled selected hidden>Năm</option>
-				                		<c:forEach var = "i" begin = "1900" end = "2024">
-				                    		<option value="${i}">${i}</option>
-				                    	</c:forEach>
+				                    	<%
+										for (int year=currentYear; year>1923; year--){
+										%>	
+											<option value="<%= year %>"><%= year %></option>
+										<%
+										}
+										%>
 		                				</select>
 								    </div>
+								     <div id="mess-error-date-edit"></div>
 								  </div>
 								</div>
                             </div>
@@ -248,7 +348,7 @@
             </div>
         </div>
     </div>
-    <script>
+<script>
 // Lấy tất cả các nút "Edit"
 const editButtons = document.querySelectorAll('.btn-edit');
 
@@ -268,6 +368,7 @@ editButtons.forEach((button) => {
         
         const khachhang_id = row.querySelector('.khachhang_id').value
 
+        console.log(123)
         
         // Điền giá trị vào các trường input trong modal
         document.getElementById('editName').value = name;
@@ -309,6 +410,13 @@ deleteButtons.forEach((button) => {
 
     });
 });
+
+const select_makh = document.querySelector('#select_makh');
+select_makh.addEventListener('change', function() {
+	document.querySelector('#form_makh').submit()
+});
+
+
 </script>
 </body>
 </html>

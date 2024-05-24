@@ -46,7 +46,7 @@ public class DongHoDienDAO {
 		}
 		
 		if (ma == -1) {
-			System.out.println("Khong ma dong ho nao duoc tra ve");
+			System.out.println("Khong co ma dong ho nao duoc tra ve");
 		}
 		
 		return ma;

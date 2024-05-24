@@ -13,7 +13,7 @@
 	<%@include file="/WEB-INF/views/layouts/employee/navbar.jsp" %>	
 	<%@include file="/WEB-INF/views/layouts/employee/sidebar.jsp" %>
 	
-	<div style="margin-left:260px; margin-top:35px">
+	<div style="margin-left:260px; margin-top:50px">
 		<div style="display: flex; justify-content: center">
 			<dec:body/>		
 		</div>

@@ -57,7 +57,17 @@
 		<pattern>/nhan_vien/quan_ly_tai_khoan_khach_hang</pattern>
 	</decorator>
 	
+	<decorator name="quan_ly_lich_su_do_khach_hang" page="employee.jsp">
+		<pattern>/nhan_vien/quan_ly_lich_ghi_chi_so_khach_hang</pattern>
+	</decorator>
+		
+	<decorator name="quan_ly_lich_su_do_khach_hang" page="employee.jsp">
+		<pattern>/nhan_vien/quan_ly_lich_su_do_khach_hang</pattern>
+	</decorator>
 	
+	<decorator name="quan_ly_lich_su_do_khach_hang" page="employee.jsp">
+		<pattern>/nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem</pattern>
+	</decorator>
 	
 	
 </decorators>
