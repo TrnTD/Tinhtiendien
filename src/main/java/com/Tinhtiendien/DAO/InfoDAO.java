@@ -207,5 +207,78 @@ public class InfoDAO {
 		
 		return info;
 	}
+	
+	public boolean checkEmailTrung (String email) {
+		String sql = "select * from khachhang where email = ?";
+		System.out.println("select * from khachhang where sdt = " + email);
+		Info info = null;
+		try {
+			info = jdbcTemplate.queryForObject(sql, new Object[] {email}, new MapperInfo());
+		} catch (DataAccessException e) {
+			System.out.println("Truy van khachhang bang email that bai");
+		}
+		
+		if (info == null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public List<Info> searchKhachHang (String khachhang_id, String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi){
+		List<Info> infos = new  ArrayList<Info>();
+		 String sql = "SELECT * FROM khachhang WHERE 1=1";
+		 List<Object> params = new ArrayList<>();
+
+	        if (khachhang_id != null && !khachhang_id.isEmpty()) {
+	            sql += " AND LOWER(khachhang_id) LIKE LOWER(?)";
+	            params.add("%" + khachhang_id + "%");
+	        }
+	        if (hoten != null && !hoten.isEmpty()) {
+	            sql += " AND LOWER(hovaten) LIKE LOWER(?)";
+	            params.add("%" + hoten + "%");
+	        }
+	        if (gioitinh != null && !gioitinh.isEmpty()) {
+	            sql += " AND gioitinh = ?";
+	            params.add(gioitinh);
+	        }
+	        if (ngaysinh != null && !ngaysinh.isEmpty()) {
+	            sql += " AND ngaythangnam_sinh = ?";
+	            params.add(ngaysinh);
+	        }
+	        if (email != null && !email.isEmpty() && !email.equals(".")) {
+	        	sql += " AND LOWER(email) LIKE LOWER(?)";
+	            params.add("%" + email + "%");
+	        } else if (email.equals(".")) {
+	        	sql += " AND email = ''";
+	        }
+	        if (sdt != null && !sdt.isEmpty()) {
+	            sql += " AND sdt = ?";
+	            params.add(sdt);
+	        }
+	        if (cccd != null && !cccd.isEmpty()) {
+	            sql += " AND cccd = ?";
+	            params.add(cccd);
+	        }
+	        if (diachi != null && !diachi.isEmpty()) {
+	            sql += " AND LOWER(diachi) LIKE LOWER(?)";
+	            params.add("%" + diachi + "%");
+	        }
+	        
+	        System.out.println(sql);
+	        
+	        try {
+				infos = jdbcTemplate.query(sql,params.toArray(), new MapperInfo());
+				System.out.println("Tim kiem thong tin khach hang thanh cong");
+			} catch (DataAccessException e) {
+				System.out.println("Tim kiem thong tin khach hang that bai");
+			}
+	        
+	        if (infos.size() == 0) {
+				System.out.println("Khong co khach hang can tim");
+			}
+	        
+		return infos;
+	}
 
 }

@@ -17,7 +17,7 @@ public class MapperHoaDon implements RowMapper<HoaDon> {
 		hoadon.setHoadon_id(rs.getInt("hoadon_id"));
 		hoadon.setKhachhang_id(rs.getString("khachhang_id"));
 		hoadon.setDongho_id(rs.getInt("dongho_id"));
-		hoadon.setNgay_tao(rs.getDate("ngay_tao"));
+		hoadon.setNgay_tao(rs.getString("ngay_tao"));
 		hoadon.setMonth_bill(rs.getInt("month_bill"));
 		hoadon.setYear_bill(rs.getInt("year_bill"));
 		hoadon.setNgay_batdau(rs.getString("ngay_batdau"));

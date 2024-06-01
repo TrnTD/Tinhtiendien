@@ -24,4 +24,19 @@ public class KtraDuLieu {
 		  Date currentDate = new Date();
 	        System.out.println("Thời gian hiện tại: " + currentDate);
 	 }
+	 
+	 public static String chuanHoaTen(String ten) {
+        ten = ten.trim().replaceAll("\\s+", " ");
+ 
+        String[] tu = ten.split(" ");
+        StringBuilder tenChuanHoa = new StringBuilder();
+
+        for (String tuHienTai : tu) {
+            
+            String chuanHoa = tuHienTai.substring(0, 1).toUpperCase() + tuHienTai.substring(1).toLowerCase();
+            tenChuanHoa.append(chuanHoa).append(" ");
+        }
+
+        return tenChuanHoa.toString().trim();
+    }
 }

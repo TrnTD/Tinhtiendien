@@ -15,7 +15,11 @@ public class HomeController {
 
 	@RequestMapping("/nhan_vien")
 	public String nhan_vien(Model model) {
-		model.addAttribute("message", "Hello world!");
+		
+		model.addAttribute("test_value", "123");
+		
+		System.out.println("testtttt");
+		
 		return "employee/nhan_vien";
 	}
 	

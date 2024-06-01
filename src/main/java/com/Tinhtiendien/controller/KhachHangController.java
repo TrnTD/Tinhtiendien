@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import java.util.Collections;
 import java.util.Comparator;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -50,25 +54,63 @@ public class KhachHangController {
 	HoaDonDAO hoadonDAO = new HoaDonDAO();
 	
 	@RequestMapping(value = "/nguoi_dung/quan_ly_chung", method = RequestMethod.GET)
-	public String quan_ly_chung(HttpSession session, Model model) throws JsonProcessingException {
+	public String quan_ly_chung(HttpSession session, Model model, RedirectAttributes redirectAttributes,
+			HttpServletRequest request) throws JsonProcessingException, ServletException, IOException {
         
         Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
-		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDon(makh);
-		Collections.reverse(list_hoadon);
 		
-		ArrayList<Integer> list_chiso = new ArrayList<>();
-		ArrayList<Integer> list_thang = new ArrayList<>();
+		List<Integer> list_2YearNearest = hoadonDAO.get_2YearsNearest(makh);
 		
-		for (HoaDon hoadon : list_hoadon) {
-			list_chiso.add(hoadon.getDien_tieu_thu());
-			list_thang.add(hoadon.getMonth_bill());
+		List<HoaDon> list_hoadon_lastyear = null;
+		List<HoaDon> list_hoadon_currentyear = null;
+		
+		ArrayList<Integer> list_chiso_lastyear = new ArrayList<Integer>();
+		ArrayList<Integer> list_chiso_currentyear = new ArrayList<Integer>();
+		
+		ArrayList<Integer> list_tien_lastyear = new ArrayList<Integer>();
+		ArrayList<Integer> list_tien_currentyear = new ArrayList<Integer>();
+		
+		
+		if (list_2YearNearest.size() == 1) {
+			list_hoadon_currentyear = hoadonDAO.getAllInfoHoaDonByYear(makh, list_2YearNearest.get(0));
+			
+//			Collections.reverse(list_hoadon_currentyear);
+			
+			for (HoaDon hoadon : list_hoadon_currentyear) {
+				list_chiso_currentyear.add(hoadon.getDien_tieu_thu());
+				list_tien_currentyear.add(hoadon.getTong_tien());
+			}
+			
+			request.setAttribute("list_chiso_currentyear", list_chiso_currentyear);
+			request.setAttribute("list_tien_currentyear", list_tien_currentyear);
+			
+		} else {
+			list_hoadon_lastyear = hoadonDAO.getAllInfoHoaDonByYear(makh, list_2YearNearest.get(0));
+			list_hoadon_currentyear = hoadonDAO.getAllInfoHoaDonByYear(makh, list_2YearNearest.get(1));
+			
+//			Collections.reverse(list_hoadon_lastyear);
+//			Collections.reverse(list_hoadon_currentyear);
+			
+			for (HoaDon hoadon : list_hoadon_lastyear) {
+				list_chiso_lastyear.add(hoadon.getDien_tieu_thu());
+				list_tien_lastyear.add(hoadon.getTong_tien());
+			}
+			
+			for (HoaDon hoadon : list_hoadon_currentyear) {
+				list_chiso_currentyear.add(hoadon.getDien_tieu_thu());
+				list_tien_currentyear.add(hoadon.getTong_tien());
+			}
+			
+			request.setAttribute("list_chiso_lastyear", list_chiso_lastyear);
+			request.setAttribute("list_tien_lastyear", list_tien_lastyear);
+			
+			request.setAttribute("list_chiso_currentyear", list_chiso_currentyear);
+			request.setAttribute("list_tien_currentyear", list_tien_currentyear);
 		}
 		
-		
-		model.addAttribute("list_chiso", list_chiso);
-		model.addAttribute("list_thang", list_thang);
-		
+		request.setAttribute("list_2YearNearest", list_2YearNearest);
+
 		return "user/quan_ly_chung";
 	}
 	

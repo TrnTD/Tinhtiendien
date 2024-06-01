@@ -2,14 +2,11 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Date" %>
-
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="ISO-8859-1">
-	<title>Quản lý lịch sử đo khách hàng</title>
+	<title>Quản lý hóa đơn khách hàng</title>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -20,37 +17,101 @@
 	.error-input {
 	    border: 1px solid red !important; /* Đường viền màu đỏ */
 	}
+	
+
+	
+ 	.status_hoadon_green { 
+ 		color: #09a706; 
+ 		background-color: rgba(9, 167, 6, .1); 
+ 		padding: 8px 0px; 
+ 		border-radius: 34px;
+ 		font-weight: bold;
+ 		text-align: center;
+ 		line-height: 14px;
+ 		
+ 	}
+ 	
+ 	.status_hoadon_red { 
+ 		color: #DC1414; 
+ 		background-color: rgba(255, 0, 0, 0.1); 
+ 		padding: 8px 0px; 
+ 		border-radius: 34px;
+ 		font-weight: bold;
+ 		text-align: center;
+ 		line-height: 14px;
+ 	}
 </style>
 <!-- 	================================================= -->
 
 <div class="container">
+	<div class="row">
+		<div style="margin-left: 0px;width:1300px" class="col-md-8 offset-md-2">
+			<form action="/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang/tim_kiem" class="custom-form" method="GET">
+			    <div class="row mb-3">
+			        <div class="col">
+			            <label for="field1" class="form-label">Mã hóa đơn</label>
+			            <input type="text" class="form-control" id="field1" name="search_hoadonid">
+			        </div>
+			        <div class="col">
+			            <label for="field2" class="form-label">Mã khách hàng</label>
+			            <input type="text" class="form-control" id="field2" name="search_khachhangid">
+			        </div>
+			        <div class="col">
+			            <label for="field4" class="form-label">Ngày tạo</label>
+			            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_ngaytao">
+			        </div>
+			    </div>
+			    <div class="row mb-3">
 
-<div class="row">
-	<div style="margin-left: 0px;width:1300px" class="col-md-8 offset-md-2">
-		<form action="/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem" class="custom-form" method="GET">
-		    <div class="row mb-3">
-		        <div class="col">
-		            <label for="field1" class="form-label">Mã lịch sử đo</label>
-		            <input type="text" class="form-control" id="field1" name="search_lsdid">
-		        </div>
-		        <div class="col">
-		            <label for="field2" class="form-label">Mã khách hàng</label>
-		            <input type="text" class="form-control" id="field2" name="search_khachhangid">
-		        </div>
-		        <div class="col">
-		            <label for="field3" class="form-label">Mã đồng hồ điện</label>
-		            <input type="text" class="form-control" id="field3" name="search_dhdid">
-		        </div>
-		        <div class="col">
-		            <label for="field4" class="form-label">Ngày đo</label>
-		            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_ngaydo">
-		        </div>
-		    </div>
-			<button name="action" value="search" style="margin-left: 1000px;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
-			<button name="action" value="reset" style="float: right;" type="submit" class="btn btn-primary submit-btn">Về mặc định</button>
-		</form>
+	    	   		<div class="col">
+			            <label for="field1" class="form-label">Tháng</label>
+			            <select name="search_month" class="form-select" aria-label="Default select example">
+				        	<option value="-1" selected hidden></option>
+					        <c:forEach var="i" begin="1" end="12">
+						    	<option value="${i}">${i}</option>
+					        </c:forEach>
+				        </select>
+		            </div>
+		            
+		             <div class="col">
+			        	<label for="field1" class="form-label">Năm</label>
+			            <select name="search_year" class="form-select" aria-label="Default select example">
+				        	<option value="-1" selected hidden></option>
+					        <%
+					        	java.util.Calendar calendar = java.util.Calendar.getInstance();
+			        			int currentYear = calendar.get(java.util.Calendar.YEAR);
+								for (int i = currentYear; i >= 1900; i--) {
+							%>
+								<option value="<%= i %>"><%= i %></option>
+							<% 
+								}
+							%>
+				        </select>
+			        </div>
+			        
+			        <div class="col">
+			        	<label for="field1" class="form-label">Trạng thái</label>
+			            <select name="search_status" class="form-select" aria-label="Default select example"> -->
+				          <option value="-1" selected hidden></option>
+				          <option value="0">Chưa thanh toán</option>
+				          <option value="1">Đã thanh toán</option>
+				        </select>		        	
+			        </div>
+			        
+			        
+			        <div class="col">
+			        </div>
+			        
+			        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;">
+						<button name="action" value="search" style="float: right;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
+			        </div>
+			        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;">
+						<button name="action" value="reset" style="float: right;" type="submit" class="btn btn-primary submit-btn">Về mặc định</button>
+			        </div>
+			    </div>
+			</form>
+		</div>
 	</div>
-</div>
 	<%
 		String mess = (String) session.getAttribute("message");
 		Boolean isError = (Boolean) session.getAttribute("isError");
@@ -60,7 +121,6 @@
 	<div id="successMessage" class="alert alert-success" role="alert" style="margin-top: 20px;"><%= mess %></div>
 	<script>
     	sessionStorage.removeItem("formType");
-		sessionStorage.removeItem("chiso")
 	// Sau khi tải xong trang, tự động ẩn thông báo sau 3 giây
 	setTimeout(function() {
 		var successMessage = document.getElementById("successMessage");
@@ -68,14 +128,11 @@
 			successMessage.style.display = "none";
 		}
 	}, 3000);
-		
 		sessionStorage.removeItem("formType");
-		sessionStorage.removeItem("lsd_id");
 		sessionStorage.removeItem("khachhang_id");
-		sessionStorage.removeItem("chiso");
-		sessionStorage.setItem("ngay", "");
 		sessionStorage.setItem("thang", "");
 		sessionStorage.setItem("nam", "");
+		sessionStorage.removeItem("thue");
 	</script>
 	<%
 			session.removeAttribute("message");
@@ -91,15 +148,12 @@
 			errorMessage.style.display = "none";
 		}
 	}, 3000);
-	
+
 		sessionStorage.removeItem("formType");
-		sessionStorage.removeItem("lsd_id");
 		sessionStorage.removeItem("khachhang_id");
-		sessionStorage.removeItem("chiso");
-		sessionStorage.setItem("ngay", "");
 		sessionStorage.setItem("thang", "");
 		sessionStorage.setItem("nam", "");
-)
+		sessionStorage.removeItem("thue");
 	</script>
 	<%
 			session.removeAttribute("message");
@@ -110,11 +164,11 @@
             <div class="table-title">
                 <div class="row">
                     <div class="col-md-6">
-                        <h2>Quản lý <b>Lịch Sử Đo</b></h2>
+                        <h2>Quản lý <b>Hóa đơn</b></h2>
                     </div>
                     <div class="col-md-6 text-md-end">
                         <button type="button" class="btn btn-success btn-add" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" onclick="setSelectForm('addForm')">
-                            <i class="material-icons">&#xE147;</i> <span>Thêm lịch sử đo mới</span>
+                            <i class="material-icons">&#xE147;</i> <span>Thêm hóa đơn mới</span>
                         </button>
                         <!-- <a href="#deleteEmployeeModal" class="btn btn-danger" data-bs-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a> -->
                     </div>
@@ -122,40 +176,60 @@
             </div>
             
 <!--             <div class="row"> -->
-<!-- 		      <div class="col-2"> -->
-<!-- 		      <form id="form_makh" method="GET"> -->
-<!-- 		        <select id="select_makh" name="selected_makh" class="form-select" aria-label="Default select example"> -->
-<%-- 		        <c:forEach var="info" items="${list_info}"> --%>
-<%-- 		          <option value="${info.khachhang_id}">${info.khachhang_id}</option> --%>
-<%-- 		        </c:forEach> --%>
-<!-- 		        </select>		       -->
-<!-- 		      </form> -->
+<!-- 		      <div class="col-1"> -->
+<%-- 		      <c:forEach var="hoadon" items="${list_hoadon}"> --%>
+<%-- 		      	<input disabled value="${hoadon.khachhang_id}" style="width: 100px; text-align: center; font-weight: bold;"> --%>
+<%-- 		      </c:forEach> --%>
 <!-- 		      </div> -->
 <!-- 		    </div> -->
+				
+<%-- 				<fmt:setTimeZone value="America/New_York" />  --%>
+<%-- 				<c:set var = "now" value = "<%= new java.util.Date()%>" /> --%>
+<!-- 			    <h2>Date and Time Example</h2>  -->
+<%-- 			    <p>Current Date and Time: ${now} : <fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss" /></p>  --%>
             
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Mã lịch sử đo</th>
+                        <th>Mã hóa đơn</th>
                         <th>Mã khách hàng</th>
-                        <th>Mã đồng hồ điện</th>
-                        <th>Ngày đo</th>
-                        <th>Chỉ số</th>
+                        <th>Ngày tạo</th>
+                        <th>Tháng</th>
+                        <th>Năm</th>
+                        <th>Thuế VAT (%)</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                  <c:forEach var="lsd" varStatus="i" items="${list_lsd}">
+                  <c:forEach var="hoadon" varStatus="i" items="${list_hoadon}">
 			      <tr>
-			      	<td>${lsd.lichsu_do_id}</th>
-			        <td>${lsd.khachhang_id}</td>
-			        <td>${lsd.dongho_id}</td>
-			        <td><fmt:formatDate value="${lsd.ngay_do}" pattern="dd-MM-yyyy"/></td>
-			        <td>${lsd.chiso}</td>
+			      	<td>${hoadon.hoadon_id}</th>
+			        <td>${hoadon.khachhang_id}</td>
+<%-- 			        <td><fmt:formatDate value="${hoadon.ngay_tao}" pattern="dd-MM-yyyy HH:mm:ss"/></td> --%>
+					<td>${hoadon.ngay_tao}</td>
+			        <td>${hoadon.month_bill}</td>
+			        <td>${hoadon.year_bill}</td>
+			        <td>${hoadon.thue}</td>
+			        <td><fmt:formatNumber value="${hoadon.tong_tien}" pattern="#,###"/></td>
+				    <td>
+				    <c:if test="${hoadon.trangthai == 'Đã thanh toán'}">
+					    <div class="status_hoadon_green">
+					    	<span>${hoadon.trangthai}</span>
+					    </div>
+					</c:if>
+					
+					<c:if test="${hoadon.trangthai == 'Chưa thanh toán'}">
+						<div class="status_hoadon_red">
+					    	<span>${hoadon.trangthai}</span>
+					    </div>
+					</c:if>
+				    </td>
 			        <td>
 			        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button>
 
-                       	<input type="hidden" class="lsd_id" name="lsd_id" value="${lsd.lichsu_do_id}">
+                       	<input type="hidden" class="hoadon_id" name="hoadon_id" value="${hoadon.hoadon_id}">
                        	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
 			        </td>
 			      </tr>
@@ -169,12 +243,12 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addEmployeeModalLabel">Thêm lịch sử đo</h5>
+                        <h5 class="modal-title" id="addEmployeeModalLabel">Thêm hóa đơn</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Add employee form -->
-                        <form action = "/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/them" method="POST" id ="addCustomer">
+                        <form action = "/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang/them" method="POST" id ="addCustomer">
                             <div class="mb-3">
                                 <label for="add_khachhang_id" class="form-label">Mã khách hàng</label>
                                 <input type="text" class="form-control" id="add_khachhang_id" name="add_khachhangid" required>
@@ -182,19 +256,11 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="addDOB" class="form-label">Ngày đo</label>
+                                <label for="addDOB" class="form-label">Thời gian hóa đơn</label>
                                 <div class="container">
 								  <div class="row">
 								    <div class="col">
-								    	<select class="form-select addDay" id="addngaydo" name="ngay" required>
-	                                		<option value="0" selected hidden>Ngày</option>
-						                	<c:forEach var = "i" begin = "1" end = "31">
-						                    	<option value="${i}">${i}</option>
-						                    </c:forEach>
-								      	</select>
-								    </div>
-								    <div class="col">
-								      	<select class="form-select addMonth" id="addngaydo" name="thang" required>
+								      	<select class="form-select addMonth" id="add_thoigian_hoadon" name="thang" required>
 		                				<option value="0" selected hidden>Tháng</option>
 				                		<c:forEach var = "i" begin = "1" end = "12">
 				                    		<option value="${i}">${i}</option>
@@ -202,22 +268,32 @@
 				                		</select>
 								    </div>
 								    <div class="col">
-								      	<select class="form-select addYear" id="addngaydo" name="nam" required>
+								      	<select class="form-select addYear" id="add_thoigian_hoadon" name="nam" required>
 		                				<option value="0" selected hidden>Năm</option>
 				                		<c:forEach var = "i" begin = "1900" end = "2024">
 				                    		<option value="${i}">${i}</option>
 				                    	</c:forEach>
 		                				</select>
 								    </div>
-								    <h6 style="color:red; padding-left:5px; padding-top:5px" id="addngaydo">${err_mess_addNgaydo}</h6>
+								    <h6 style="color:red; padding-left:5px; padding-top:5px" id="add_thoigian_hoadon">${err_mess_addThoigianhoadon}</h6>
 								  </div>
 								</div>
                             </div>
+                            
                             <div class="mb-3">
-                                <label for="add_chiso" class="form-label">Chỉ số</label>
-                                <input type="number" class="form-control" id="add_chiso" name ="add_chiso" min="0" required>
-                                <h6 style="color:red; padding-left:5px; padding-top:5px" id="add_chiso">${err_mess_addChiso}</h6>
+                                <label for="add_thue" class="form-label">Thuế VAT (%)</label>
+                                <input type="number" class="form-control" id="add_thue" name ="add_thue" min="0" max="100" required>
+                                <h6 style="color:red; padding-left:5px; padding-top:5px" id="add_thue">${err_mess_addThue}</h6>
                             </div>
+                            
+<!--                             <div class="mb-3"> -->
+<!--                                 <label for="add_status" class="form-label">Trạng thái</label> -->
+<!--                                 <select name="add_status" class="form-select" aria-label="Default select example"> -->
+<!-- 						          <option value="0"selected>Chưa thanh toán</option> -->
+<!-- 						          <option value="1">Đã thanh toán</option> -->
+<!-- 						        </select>		         -->
+<%--                                 <h6 style="color:red; padding-left:5px; padding-top:5px" id="add_status">${err_mess_addStatus}</h6> --%>
+<!--                             </div> -->
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -233,26 +309,33 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editEmployeeModalLabel">Chỉnh sửa lịch sử đo</h5>
+                        <h5 class="modal-title" id="editEmployeeModalLabel">Chỉnh sửa hóa đơn</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Edit employee form -->
-                        <form action = "/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/sua" method="POST" id ="editCustomer">
+                        <form action = "/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang/sua" method="POST" id ="editCustomer">
                         	<div class="mb-3">
-								<label for="editDOB" class="form-label">Ngày đo</label>
+                        		<div class="container">
+                        		  <div class="row">
+								  	<div class="col">
+		                                <label for="editHoadon_id" class="form-label">Mã hóa đơn</label>
+		                                <input type="text" class="form-control editHoadon_id" id="editHoadon_id" name="hoadon_id" disabled>								  	
+								  	</div>
+								  	<div class="col">
+		                                <label for="editKhachhang_id" class="form-label">Mã khách hàng</label>
+		                                <input type="text" class="form-control editKhachhang_id" id="editKhachhang_id" name="khachhang_id" disabled>								  	
+								  	</div>
+								  </div>
+                            	</div>
+                            </div>
+                        
+                        	<div class="mb-3">
+								<label for="editDOB" class="form-label">Thời gian hóa đơn</label>
 								<div class="container">
 								  <div class="row">
 									<div class="col">
-										<select class="form-select editDay" id="editngaydo" name="ngay">
-											<option value="0" disabled selected hidden>Ngày</option>
-											<c:forEach var = "i" begin = "1" end = "31">
-												<option value="${i}">${i}</option>
-											</c:forEach>
-										</select>
-									</div>
-									<div class="col">
-										  <select class="form-select editMonth" id="editngaydo" name="thang">
+										  <select class="form-select editMonth" id="editthoigian" name="thang">
 											<option value="0" disabled selected hidden>Tháng</option>
 											<c:forEach var = "i" begin = "1" end = "12">
 												<option value="${i}">${i}</option>
@@ -260,7 +343,7 @@
 										</select>
 									</div>
 									<div class="col">
-										  <select class="form-select editYear" id="editngaydo" name="nam">
+										  <select class="form-select editYear" id="editthoigian" name="nam">
 											<option value="0" disabled selected hidden>Năm</option>
 											Sử dụng vòng lặp từ 0 đến 124 (2024 - 1900)
 											<% for (int i = 0; i <= 124; i++) { %>
@@ -271,16 +354,29 @@
 											<% } %>
 										</select>
 									</div>
-									<h6 style="color:red; padding-left: 5px; padding-top: 5px;" id="editngaydo">${err_mess_editNgaydo}</h6>
+									<h6 style="color:red; padding-left: 5px; padding-top: 5px;" id="editthoigian">${err_mess_editThoigian}</h6>
 								  </div>
 								</div>
 							</div>
-                        
                             <div class="mb-3">
-                                <label for="editChiso" class="form-label">Chỉ số</label>
-                                <input type="number" class="form-control" id="editChiso" name="chiso" required min="0">
+                        		<div class="container">
+                        		  <div class="row">
+								  	<div class="col">
+		                                <label for="editThue" class="form-label">Thuế VAT (%)</label>
+                                		<input type="number" class="form-control editTax" id="editThue" name="thue" required min="0" max="100">								  	
+								  	</div>
+								  	<div class="col">
+		                                <label for="field1" class="form-label">Trạng thái</label>
+							            <select name="edit_status" class="form-select editStatus" aria-label="Default select example"> -->
+								          <option value="-1" disabled selected hidden></option>
+								          <option value="0">Chưa thanh toán</option>
+								          <option value="1">Đã thanh toán</option>
+								        </select>		     								  	
+								  	</div>
+								  </div>
+                            	</div>
                             </div>
-                            <input type="hidden" class="lsd_id-edit" name="lsd_id" value="">
+                            <input type="hidden" class="hoadon_id-edit" name="hoadon_id" value="">
                             <input type="hidden" class="khachhang_id-edit" name="khachhang_id" value="">
 	                        <h6 style="color:red; padding-left:5px; padding-top:5px" id="editChiso">${err_mess_editChiso}</h6>
                         </form>
@@ -306,8 +402,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <form id="formToDelete" action="/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/xoa" method="POST">
-                        	<input type="hidden" class="lsd_id-delete" name="lsd_id" value="">
+                        <form id="formToDelete" action="/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang/xoa" method="POST">
+                        	<input type="hidden" class="hoadon_id-delete" name="hoadon_id" value="">
                         	<button id="confirmDeleteButton" type="submit" class="btn btn-danger" >Xóa</button>
                         </form>
                     </div>
@@ -326,14 +422,6 @@
 		var ngay = sessionStorage.getItem("ngay");
 		var thang = sessionStorage.getItem("thang");
 		var nam = sessionStorage.getItem("nam");
-		var chiso = sessionStorage.getItem("chiso");
-		
-		if (ngay == '') {
-			console.log("ngay null")
-			document.querySelector('.addDay').selectedIndex = 0;
-		} else {
-			document.querySelector('.addDay').value = ngay;			
-		}
 		
 		if (thang == '') {
 			document.querySelector('.addMonth').selectedIndex = 0;
@@ -358,53 +446,63 @@
 	    button.addEventListener('click', (event) => {
 	
 	        const row = event.target.closest('tr'); // Lấy hàng bảng chứa nút "Edit"
-	        const lsd_id = row.querySelector('td:nth-child(1)').textContent; 
+	        const hoadon_id = (row.querySelector('td:nth-child(1)').textContent).trim(); 
 	        const khachhang_id = row.querySelector('td:nth-child(2)').textContent;
-	        const dongho_id = row.querySelector('td:nth-child(3)').textContent; 
-	        const dob = row.querySelector('td:nth-child(4)').textContent; 
-	        const chiso = row.querySelector('td:nth-child(5)').textContent;
-	
+	        const ngaytao = row.querySelector('td:nth-child(3)').textContent; 
+	        const thang = row.querySelector('td:nth-child(4)').textContent; 
+	        const nam = row.querySelector('td:nth-child(5)').textContent;
+	        const thue = row.querySelector('td:nth-child(6)').textContent;
+	        const tongtien = row.querySelector('td:nth-child(7)').textContent;
+			const trangthai = (row.querySelector('td:nth-child(8)').textContent).trim();
 	        // Điền giá trị vào các trường input trong modal
+	        
+	        console.log("hoadon_id: " + hoadon_id)
+	        console.log("khachhang_id: " + khachhang_id)
+	        console.log("ngaytao: " + ngaytao)
+	        console.log("trangthai: " + trangthai)
+	        
 			
-	        document.getElementById('editChiso').value = chiso;
 	        
-	        sessionStorage.setItem("lsd_id", lsd_id);
+	        sessionStorage.setItem("hoadon_id", hoadon_id);
 	        sessionStorage.setItem("khachhang_id", khachhang_id);
-	        sessionStorage.setItem("chiso", chiso);
-
-        
-	        var parts = dob.split("-");
-	        const day = parseInt(parts[0],10);
-	        const month = parseInt(parts[1],10);
-	        const year = parseInt(parts[2],10);
+	        sessionStorage.setItem("thang", thang);
+	        sessionStorage.setItem("nam", nam);
+	        sessionStorage.setItem("thue", thue);
+	        sessionStorage.setItem("trangthai", trangthai);
 	        
-	        sessionStorage.setItem("ngay", day);
-	        sessionStorage.setItem("thang", month);
-	        sessionStorage.setItem("nam", year);
+	        document.querySelector('.editHoadon_id').value = hoadon_id;
+	        document.querySelector('.editKhachhang_id').value = khachhang_id;
+	        document.querySelector('.editMonth').value = thang;
+	        document.querySelector('.editYear').value = nam;
+	        document.querySelector('.editTax').value = thue;
 	        
-	        document.querySelector('.editDay').value = day;
-	        document.querySelector('.editMonth').value = month;
-	        document.querySelector('.editYear').value = year;
+	        if (trangthai == "Chưa thanh toán") {
+		        document.querySelector('.editStatus').value = 0	        	
+	        } else {
+	        	document.querySelector('.editStatus').value = 1	    
+	        }
 
-	        document.querySelector('.lsd_id-edit').value = lsd_id
+	        document.querySelector('.hoadon_id-edit').value = hoadon_id
 	        document.querySelector('.khachhang_id-edit').value = khachhang_id
 	        
 	        
 // 	        document.querySelector('.khachhang_id').value = khachhang_id;
-// 	        console.log("lich su do id: " + document.querySelector('.lsd_id-edit').value);
+// 	        console.log("lich su do id: " + document.querySelector('.hoadon_id-edit').value);
 	    });
 	});
-
+	
+	
+	// Lấy nút Delete
 	const deleteButtons = document.querySelectorAll('.btn-delete');
 	
 	deleteButtons.forEach((button) => {
 	    button.addEventListener('click', (event) => {
 	    	const row = event.target.closest('tr');
 	
-	        const lsd_id = row.querySelector('.lsd_id').value
-	        console.log(lsd_id)
+	        const hoadon_id = row.querySelector('.hoadon_id').value
+	        console.log(hoadon_id)
 	
-	        document.querySelector('.lsd_id-delete').value = lsd_id
+	        document.querySelector('.hoadon_id-delete').value = hoadon_id
 	
 	    });
 	});
@@ -436,8 +534,6 @@
 		
 		// edit form
 		if (formType == "editForm") {
-	        sessionStorage.setItem("chiso", document.querySelector('input[name="chiso"]').value);
-	        sessionStorage.setItem("ngay", document.querySelector('.editDay').value);
 	        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
 	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);			
 		}
@@ -445,43 +541,43 @@
         // add form
         if (formType == "addForm") {
 	        sessionStorage.setItem("khachhang_id", document.querySelector('input[name="add_khachhangid"]').value);
-	        sessionStorage.setItem("ngay", document.querySelector('.addDay').value);
 	        sessionStorage.setItem("thang", document.querySelector('.addMonth').value);
 	        sessionStorage.setItem("nam", document.querySelector('.addYear').value);
-	        sessionStorage.setItem("chiso", document.querySelector('input[name="add_chiso"]').value);        	
+	        sessionStorage.setItem("thue", document.querySelector('input[name="add_thue"]').value);
         }
         
 	});
 	
 	document.addEventListener("DOMContentLoaded", function() {
 			
-		var chiso = sessionStorage.getItem("chiso");
-		var lsd_id = sessionStorage.getItem("lsd_id");
+		var thue = sessionStorage.getItem("thue");
+		var hoadon_id = sessionStorage.getItem("hoadon_id");
 		var khachhang_id = sessionStorage.getItem("khachhang_id");
 		var ngay = sessionStorage.getItem("ngay");
 		var thang = sessionStorage.getItem("thang");
 		var nam = sessionStorage.getItem("nam");
+		var status = sessionStorage.getItem("trangthai");
 		
 		
 		// binding data khi tải lại trang
 		// edit form
-		document.querySelector('input[name="chiso"]').value = chiso;
-		document.querySelector('.lsd_id-edit').value = lsd_id;
+		document.querySelector('.editHoadon_id').value = hoadon_id;
+		document.querySelector('.editKhachhang_id').value = khachhang_id;
+		document.querySelector('.hoadon_id-edit').value = hoadon_id;
 		document.querySelector('.khachhang_id-edit').value = khachhang_id;
-		document.querySelector('.editDay').value = ngay;
 		document.querySelector('.editMonth').value = thang;
 		document.querySelector('.editYear').value = nam;
+		document.querySelector('.editTax').value = thue;
+		if (status == "Chưa thanh toán") {
+			document.querySelector('.editStatus').value = 0;			
+		} else {
+			document.querySelector('.editStatus').value = 1;
+		}
+		
 		
 		
 		// add form
 		document.querySelector('#add_khachhang_id').value = khachhang_id;
-		if (ngay == '') {
-			console.log("ngay null")
-			document.querySelector('.addDay').selectedIndex = 0;
-		} else {
-			document.querySelector('.addDay').value = ngay;			
-		}
-		
 		if (thang == '') {
 			document.querySelector('.addMonth').selectedIndex = 0;
 		} else {
@@ -493,8 +589,7 @@
 		} else {
 			document.querySelector('.addYear').value = nam;			
 		}
-		
-		document.querySelector('input[name="add_chiso"]').value = chiso;
+
 		
 		var formType = sessionStorage.getItem("formType");
 		if (formType == "addForm") {
@@ -505,10 +600,8 @@
 		
 		$('.modal').on('hidden.bs.modal', function () {
 			sessionStorage.removeItem("formType");
-			sessionStorage.removeItem("lsd_id");
 			sessionStorage.removeItem("khachhang_id");
-			sessionStorage.removeItem("chiso");
-			sessionStorage.setItem("ngay", '');
+			sessionStorage.removeItem("thue");
 			sessionStorage.setItem("thang", '');
 			sessionStorage.setItem("nam", '');
 			

@@ -6,7 +6,7 @@ public class HoaDon {
 	private int hoadon_id;
 	private String khachhang_id;
 	private int dongho_id;
-	private Date ngay_tao;
+	private String ngay_tao;
 	private int month_bill;
 	private String ngay_batdau;
 	private String ngay_ketthuc;
@@ -41,10 +41,10 @@ public class HoaDon {
 	public void setDongho_id(int dongho_id) {
 		this.dongho_id = dongho_id;
 	}
-	public Date getNgay_tao() {
+	public String getNgay_tao() {
 		return ngay_tao;
 	}
-	public void setNgay_tao(Date ngay_tao) {
+	public void setNgay_tao(String ngay_tao) {
 		this.ngay_tao = ngay_tao;
 	}
 	public int getMonth_bill() {

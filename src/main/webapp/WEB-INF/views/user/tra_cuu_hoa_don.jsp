@@ -81,7 +81,6 @@
 <!-- 	       	</div> -->
 <!--   		</div> -->
   		
-  		<div class="container">
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Tra cứu hóa đơn</h3>
 			
 		    <form method="POST">

@@ -112,30 +112,16 @@ table.table td button {
 
 
 <body>
-	<div class="container">
-	<div class="row">
-		<div style="margin-left: 0px;width:1300px" class="col-md-8 offset-md-2">
-			<form class="custom-form">
-			    <div class="row mb-3">
-			        <div class="col">
-			            <label for="field1" class="form-label">Field 1</label>
-			            <input type="text" class="form-control" id="field1" placeholder="Enter Field 1">
-			        </div>
-			        <div class="col">
-			            <label for="field2" class="form-label">Field 2</label>
-			            <input type="text" class="form-control" id="field2" placeholder="Enter Field 2">
-			        </div>
-			    </div>
-			   
-	    		<!-- Thêm các hàng input khác nếu cần -->
-				<button style="float: right;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
-			</form>
-		</div>
-	</div>
-	
+
+<style>
+.btn-success {
+	background-color: #5cb85c;
+}
+</style>
+	<div class="container mt-5" style="margin-top: 0px !important">
 		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
 		
-		<div class="table-wrapper">
+		<div class="table-wrapper" style="margin-top: 0px !important">
 			<div class="table-title">
 				<div class="row">
 					<div class="col-md-6">
@@ -319,6 +305,7 @@ table.table td button {
             sessionStorage.setItem("addUsername", document.querySelector('input[name="addUsername"]').value);
             sessionStorage.setItem("addPassWord", document.querySelector('input[name="addPassWord"]').value);
             sessionStorage.setItem("newPass", document.querySelector('input[name="newPass"]').value);
+            sessionStorage.setItem("selectedUsername", document.querySelector('input[name="selectedUsername"]').value);
 		});
 
 		document.addEventListener("DOMContentLoaded", function() {
@@ -356,12 +343,14 @@ table.table td button {
 			        var addUsernameValue = sessionStorage.getItem("addUsername");
 			        var addPassWordValue = sessionStorage.getItem("addPassWord");
 			        var newPassValue = sessionStorage.getItem("newPass"); 
+			        var selectedUsernameValue = sessionStorage.getItem("selectedUsername"); 
 			      
 			        
 				 	document.querySelector('input[name="addUsernameId"]').value = addUsernameIdValue;
 			        document.querySelector('input[name="addUsername"]').value = addUsernameValue;
 			        document.querySelector('input[name="addPassWord"]').value = addPassWordValue;
 			        document.querySelector('input[name="newPass"]').value = newPassValue;
+			        document.querySelector('input[name="selectedUsername"]').value = selectedUsernameValue;
 				if (formType === "editForm") {
 					// Hiển thị form chỉnh sửa khi session storage có giá trị "editForm"
 					$('#editEmployeeModal').modal('show');
@@ -380,6 +369,7 @@ table.table td button {
 				sessionStorage.removeItem("addUsername");
 				sessionStorage.removeItem("addPassWord");
 				sessionStorage.removeItem("newPass");
+				sessionStorage.removeItem("selectedUsernameValue");
 				
 			    let headers = document.querySelectorAll('h6');
 	            headers.forEach(function(header) {

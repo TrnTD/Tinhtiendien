@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.AlternativeJdkIdGenerator;
 
 import com.Tinhtiendien.Entity.MapperMeasurementHistory;
 import com.Tinhtiendien.Models.MeasurementHistory;
@@ -26,6 +27,20 @@ public class MeasurementHistoryDAO {
 			System.out.println("Truy van lich su do bang khach hang id thanh cong");
 		} catch(DataAccessException e) {
 			System.out.println("Truy van lich su do bang khach hang id that bai");
+		}
+		return listMH;
+	}
+	
+	public List<MeasurementHistory> getLSDoTheoFirstChuhoID(){
+		List<MeasurementHistory> listMH = new ArrayList<MeasurementHistory>();
+		String sql = "select lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
+				+ "inner join dong_ho_dien dhd on dhd.dongho_id = lsd.dongho_id\r\n"
+				+ "where dhd.khachhang_id = (select top 1 khachhang_id from khachhang order by khachhang_id) order by lsd.ngay_do DESC";
+		try {
+			listMH = jdbcTemplate.query(sql, new MapperMeasurementHistory());
+			System.out.println("Truy van lich su do bang khach hang id dau tien thanh cong");
+		} catch(DataAccessException e) {
+			System.out.println("Truy van lich su do bang khach hang id dau tien that bai");
 		}
 		return listMH;
 	}
@@ -141,7 +156,7 @@ public class MeasurementHistoryDAO {
 		if (lsd_id.isEmpty() && khachhang_id.isEmpty() && dhd_id.isEmpty() && ngaydo.isEmpty()) {
 			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
 					+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id \r\n"
-					+ "where dhd.khachhang_id = 'KH001'";			
+					+ "where 1=0";			
 		} else {
 			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
 					+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id \r\n"
@@ -170,6 +185,8 @@ public class MeasurementHistoryDAO {
 		
 		query += " order by lsd.ngay_do DESC";
 		
+//		System.out.println(query);
+		
 		try {
 			list_lsd = jdbcTemplate.query(query, params.toArray(), new MapperMeasurementHistory());
 			System.out.println("Tim kiem lich su do khach hang thanh cong!");
@@ -179,6 +196,7 @@ public class MeasurementHistoryDAO {
 		
 		return list_lsd;
 	}
+	
 	
 	public boolean addNewLsd(String khachhang_id, String ngay_do, String chiso) {
 		boolean isAdd = false;
@@ -210,6 +228,25 @@ public class MeasurementHistoryDAO {
 		
 		
 		return isDelete;
+	}
+	
+	public boolean checkExistLsdBefore(String khachhang_id, String thang, String nam) {
+		int count = 0;
+		
+		String query = "exec sp_CheckExistLsdBefore @khachangID = ?, @thang = ?, @nam = ?";
+		
+		try {
+			count = jdbcTemplate.queryForObject(query, new Object[] {khachhang_id, thang, nam}, Integer.class);
+			System.out.println("Check ton tai lich su do thang sau thanh cong!");
+		} catch (DataAccessException e) {
+			System.out.println("Check ton tai lich su do thang sau that bai!");
+		}
+		
+		if (count == 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 }
