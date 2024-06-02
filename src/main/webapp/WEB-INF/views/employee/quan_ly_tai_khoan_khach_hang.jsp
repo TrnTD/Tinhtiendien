@@ -15,9 +15,8 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css"
 	rel="stylesheet">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script> <%@include file="/paging/jquery.twbsPagination.js" %></script>
 <style>
 body {
 	color: #566787;
@@ -95,9 +94,7 @@ table.table td button {
 	display: inline-block;
 }
 
-.btn-success {
-	background-color: #5cb85c;
-}
+
 
 /* .table-striped>tbody>tr:nth-of-type(odd) {
     --bs-table-accent-bg: none;
@@ -120,8 +117,17 @@ table.table td button {
 </style>
 	<div class="container mt-5" style="margin-top: 0px !important">
 		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
-		
-		<div class="table-wrapper" style="margin-top: 0px !important">
+		<div id="thong_bao_err" class="alert alert-danger" role="alert" style="margin-top: 20px; display: none">${tb_err}</div>
+	
+		<form action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/tim_kiem" class="custom-form" method="GET">
+		<div style="margin:10px 0">
+			<label for="field1" class="form-label"  style="display:block">Mã khách hàng</label>
+		    <input type="text" class="form-control" name="kh_id" value="${search_id}" style="display:inline-block; width:40%">
+			<button type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
+			<button type="submit" class="btn btn-primary submit-btn" name ="all" value="search_all">Tất cả</button>
+		</div>
+		</form>
+		<div class="table-wrapper" style="margin-top: 0px !important; padding-bottom: 0px">
 			<div class="table-title">
 				<div class="row">
 					<div class="col-md-6">
@@ -133,48 +139,56 @@ table.table td button {
 						<button type="button" class="btn btn-success"
 							data-bs-toggle="modal" data-bs-target="#addEmployeeModal"
 							onclick="setSelectForm('addForm','')">
-							<i class="material-icons">&#xE147;</i> <span>Thêm tài khoản</span>
+							<i class="material-icons">&#xE147;</i> <span>Thêm tài
+								khoản</span>
 						</button>
 					</div>
 				</div>
 			</div>
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th style="width: 150px;">STT</th>
-						<th style="width: 200px;">Mã khách hàng</th>
-						<th style="width: 200px;">Tên đăng nhập</th>
-						<th>Mật khẩu</th>
-						<th style="width: 300px;">Chức năng</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="acc" varStatus="i" items="${list_acc}">
-						<tr>
-							<th scope="row">${i.index + 1}</th>
-							<td>${acc.khachhang_id}</td>
-							<td>${acc.username}</td>
-							<td>${acc.password}</td>
-							<td style="display: flex; justify-content: center; gap: 20px;">
-								<button type="button" class="btn btn-primary btn-sm"
-									data-bs-toggle="modal" data-bs-target="#editEmployeeModal"
-									onclick="setSelectForm('editForm', '${acc.username}')">
-									<i class="bi bi-pencil-fill"></i> Chỉnh sửa
-								</button>
-								<button type="button" class="btn btn-danger btn-sm"
-									data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"
-									onclick="setSelectForm('deleteForm', '${acc.username}')">
-									<i class="bi bi-trash-fill"></i> Xoá
-								</button>
-							</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-
+				<c:choose>
+					<c:when test="${empty list_acc}">
+						<p>Không có tài khoản theo tìm kiếm.</p>
+					</c:when>
+					<c:otherwise>
+						<table class="table table-hover">
+						<thead>
+							<tr>
+								<th style="width: 150px;">STT</th>
+								<th style="width: 200px;">Mã khách hàng</th>
+								<th style="width: 200px;">Tên đăng nhập</th>
+								<th>Mật khẩu</th>
+								<th style="width: 300px;">Chức năng</th>
+							</tr>
+						</thead>
+						<tbody>
+						<c:forEach var="acc" varStatus="i" items="${list_acc}">
+							<tr>
+								<th scope="row">${i.index + 1}</th>
+								<td>${acc.khachhang_id}</td>
+								<td>${acc.username}</td>
+								<td>${acc.password}</td>
+								<td style="display: flex; justify-content: center; gap: 20px;">
+									<button type="button" class="btn btn-primary btn-sm"
+										data-bs-toggle="modal" data-bs-target="#editEmployeeModal"
+										onclick="setSelectForm('editForm', '${acc.username}')">
+										<i class="bi bi-pencil-fill"></i> Chỉnh sửa
+									</button>
+									<button type="button" class="btn btn-danger btn-sm"
+										data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"
+										onclick="setSelectForm('deleteForm', '${acc.username}')">
+										<i class="bi bi-trash-fill"></i> Xoá
+									</button>
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+					</table>
+					</c:otherwise>
+				</c:choose>
 			<form method="POST">
 				<input type="hidden" id="selectedUsername" name="selectedUsername"
-					value="">
+					value=""> 
+				<input type="hidden" id="actionForm" name="action" value="">
 				<input type="hidden" id="actionForm" name="action" value="">
 
 
@@ -193,20 +207,29 @@ table.table td button {
 								<!-- Add employee form -->
 								<div class="mb-3">
 									<label class="form-label">Mã khách hàng</label> <input
-										type="text" class="form-control" name="addUsernameId" id="themMKH">
-										<h6 style="color:red; padding-left:5px;padding-top:5px" id="themMKH">${tbThemMKH}</h6>
+										type="text" class="form-control" name="addUsernameId"
+										id="themMKH">
+									<h6 style="color: red; padding-left: 5px; padding-top: 5px"
+										id="themMKH">${tbThemMKH}</h6>
 								</div>
 								<div class="mb-3">
 									<label class="form-label">Tên đăng nhập</label> <input
-										type="text" class="form-control" name="addUsername" id="themTK">
-										<h6 style="color:red; padding-left:5px;padding-top:5px" id="themTK">${tbThemTK}</h6>
-										 <i>Tên đăng nhập hợp lệ chỉ chứa chữ in hoa (A-Z), chữ in thường (a-z) và chữ số (0-9), không bao gồm tiếng Việt có dấu. Ví dụ: User12</i>
+										type="text" class="form-control" name="addUsername"
+										id="themTK">
+									<h6 style="color: red; padding-left: 5px; padding-top: 5px"
+										id="themTK">${tbThemTK}</h6>
+									<i>Tên đăng nhập hợp lệ chỉ chứa chữ in hoa (A-Z), chữ in
+										thường (a-z) và chữ số (0-9), không bao gồm tiếng Việt có dấu.
+										Ví dụ: User12</i>
 								</div>
 								<div class="mb-3">
 									<label class="form-label">Mật khẩu </label> <input type="text"
 										class="form-control" name="addPassWord" id="themMK">
-										<h6 style="color:red; padding-left:5px;padding-top:5px" id="themMK">${tbThemMK}</h6>
-										<i>Mật khẩu bao gồm tối thiểu 06 ký tự, có ít nhất một chữ in hoa (A-Z), một chữ in thường (a-z), một chữ số (0-9) và một ký tự đặc biệt (#?.!@$%^&*-). Ví dụ: Matkhau@123</i>
+									<h6 style="color: red; padding-left: 5px; padding-top: 5px"
+										id="themMK">${tbThemMK}</h6>
+									<i>Mật khẩu bao gồm tối thiểu 06 ký tự, có ít nhất một chữ
+										in hoa (A-Z), một chữ in thường (a-z), một chữ số (0-9) và một
+										ký tự đặc biệt (#?.!@$%^&*-). Ví dụ: Matkhau@123</i>
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -235,16 +258,19 @@ table.table td button {
 								<div class="mb-3">
 									<label class="form-label">Mật khẩu</label> <input type="text"
 										class="form-control" name="newPass" id="doiMK">
-										<h6 style="color:red; padding-left:5px;padding-top:5px" id="doiMK">${tbDoiMK}</h6>
-										<i>Mật khẩu bao gồm tối thiểu 06 ký tự, có ít nhất một chữ in hoa (A-Z), một chữ in thường (a-z), một chữ số (0-9) và một ký tự đặc biệt (#?.!@$%^&*-). Ví dụ: Matkhau@123</i>
+									<h6 style="color: red; padding-left: 5px; padding-top: 5px"
+										id="doiMK">${tbDoiMK}</h6>
+									<i>Mật khẩu bao gồm tối thiểu 06 ký tự, có ít nhất một chữ
+										in hoa (A-Z), một chữ in thường (a-z), một chữ số (0-9) và một
+										ký tự đặc biệt (#?.!@$%^&*-). Ví dụ: Matkhau@123</i>
 								</div>
 
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary"
 									data-bs-dismiss="modal">Huỷ</button>
-								<button type="submit" 
-									class="btn btn-primary">Đổi mật khẩu</button>
+								<button type="submit" class="btn btn-primary">Đổi mật
+									khẩu</button>
 							</div>
 						</div>
 					</div>
@@ -274,7 +300,16 @@ table.table td button {
 				</div>
 			</form>
 		</div>
-
+		<div style="display: flex; justify-content: center">
+			<form action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/" class="custom-form" id="submitPage" method="GET">
+				 <nav aria-label="Page navigation">
+		        	<ul class="pagination" id="pagination"></ul>
+		    	</nav>
+		    	<input type="hidden" id="cur_page" name="cur_page" value="${curr_page}">
+		    	<input type="hidden" id="limit" name="limit" value="${total_page}">
+	    	</form>
+		</div>
+		
 
 	</div>
 
@@ -310,6 +345,7 @@ table.table td button {
 
 		document.addEventListener("DOMContentLoaded", function() {
 			var message = "${tb}";
+			var message_err = "${tb_err}";
 			console.log(message);
 
 			if (message && message.trim() !== "") {
@@ -328,7 +364,25 @@ table.table td button {
 				sessionStorage.removeItem("addUsername");
 				sessionStorage.removeItem("addPassWord");
 				sessionStorage.removeItem("newPass");
-			} else {
+			}
+			else if (message_err && message_err.trim() !== "") {
+				
+				var tb_err = document.getElementById('thong_bao_err');
+				tb_err.style.display = 'block'; // Hiển thị thông báo
+
+		        // Ẩn thông báo sau 3 giây
+		        setTimeout(function() {
+		        	tb_err.style.display = 'none';
+		        }, 3000);
+				
+				// Xoá session
+				sessionStorage.removeItem("formType");
+				sessionStorage.removeItem("addUsernameId");
+				sessionStorage.removeItem("addUsername");
+				sessionStorage.removeItem("addPassWord");
+				sessionStorage.removeItem("newPass");
+			}
+			else {
 					var formType = sessionStorage.getItem("formType");
 					if (formType === "editForm") {
 						  document.getElementById("actionForm").value = 'edit';
@@ -405,9 +459,53 @@ table.table td button {
 		    });
 			
 		});
-		
+/* ============================ Phân trang =====================================	 */	
+		let isPageClicked = false;
+		var curPage = parseInt($('#cur_page').val())
+		 $(function() {
+			window.pagObj = $('#pagination').twbsPagination({
+				totalPages : ${total_page},
+				visiblePages : 3,
+				first : '<<',
+				prev : '<',
+	    		next:'>',
+				last : '>>',
+				startPage: curPage,
+				onPageClick : function(event, page) {
+					if (isPageClicked) {
+	                    $('#cur_page').val(page);
+	                    $('#submitPage').submit();
+	                }
+	                isPageClicked = true;
+			
+				}
+			})
+		});
 
 	</script>
+	
+	<!-- <script type="text/javascript">
+    $(function () {
+        window.pagObj = $('#pagination').twbsPagination({
+            totalPages: 35,
+            visiblePages: 10,
+            first:'Đầu',
+            prev:'Trước',
+            next:'Tiến',
+            last:'Cuối',
+            lastClass:'',
+            firstClass:'',
+
+            onPageClick: function (event, page) {
+                console.info(page + ' (from options)');
+            }
+        }).on('page', function (event, page) {
+            console.info(page + ' (from event listening)');
+        });
+    });
+</script> -->
+	
+
 
 </body>
 

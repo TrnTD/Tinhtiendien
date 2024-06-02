@@ -19,9 +19,9 @@ public class MeasurementHistoryDAO {
 	
 	public List<MeasurementHistory> getLSDoTheoChuhoID(String chuho_id){
 		List<MeasurementHistory> listMH = new ArrayList<MeasurementHistory>();
-		String sql = "select lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join dong_ho_dien dhd on dhd.dongho_id = lsd.dongho_id\r\n"
-				+ "where dhd.khachhang_id = ? order by lsd.ngay_do DESC";
+		String sql = "select lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join khachhang kh on kh.dongho_id = lsd.dongho_id\r\n"
+				+ "where kh.khachhang_id = ? order by lsd.ngay_do DESC";
 		try {
 			listMH = jdbcTemplate.query(sql, new Object[] {chuho_id}, new MapperMeasurementHistory());
 			System.out.println("Truy van lich su do bang khach hang id thanh cong");
@@ -58,7 +58,7 @@ public class MeasurementHistoryDAO {
 	}
 	
 	public boolean checkKhachHangInLSD(String khachhang_id) {
-		String sql = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do lsd inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id where dhd.khachhang_id = ?";
+		String sql = "select lsd.lichsu_do_id, lsd.dongho_id, kh.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do lsd inner join khachhang kh on lsd.dongho_id = kh.dongho_id where kh.khachhang_id = ?";
 		List<MeasurementHistory> lsd = null;
 		try {
 			lsd = jdbcTemplate.query(sql, new Object[] {khachhang_id}, new MapperMeasurementHistory());
@@ -93,15 +93,15 @@ public class MeasurementHistoryDAO {
 		return isUpdate;
 	}
 	
-	public MeasurementHistory getPreviousLDSByLsdIdAndKhId(int lsd_id, String khachhang_id) {
+	public MeasurementHistory getPreviousLDSByLsdIdAndKhId(int lsd_id, String dongho_id) {
 		MeasurementHistory lsd = null;
 		
-		String query = "select top 1 lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id\r\n"
-				+ "where lsd.lichsu_do_id < ? and dhd.khachhang_id = ? order by lsd.ngay_do desc";
+		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
+				+ "where lsd.lichsu_do_id < ? and lsd.dongho_id = ? order by lsd.ngay_do desc";
 		
 		try {
-			lsd = jdbcTemplate.queryForObject(query, new Object[] {lsd_id, khachhang_id}, new MapperMeasurementHistory());
+			lsd = jdbcTemplate.queryForObject(query, new Object[] {lsd_id, dongho_id}, new MapperMeasurementHistory());
 			System.out.println("Lay Previous lsd thanh cong!!");
 			
 		} catch (DataAccessException e) {
@@ -111,16 +111,16 @@ public class MeasurementHistoryDAO {
 		return lsd;
 	}
 	
-	public MeasurementHistory getNextLDSByLsdIdAndKhId(int lsd_id, String khachhang_id) {
+	public MeasurementHistory getNextLDSByLsdIdAndKhId(int lsd_id, String dongho_id) {
 		MeasurementHistory lsd = null;
 		
-		String query = "select top 1 lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id\r\n"
-				+ "where lsd.lichsu_do_id > ? and dhd.khachhang_id = ? order by lsd.ngay_do asc";
+		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
+				+ "where lsd.lichsu_do_id > ? and lsd.dongho_id = ? order by lsd.ngay_do asc";
 		
 		
 		try {
-			lsd = jdbcTemplate.queryForObject(query, new Object[] {lsd_id, khachhang_id}, new MapperMeasurementHistory());
+			lsd = jdbcTemplate.queryForObject(query, new Object[] {lsd_id, dongho_id}, new MapperMeasurementHistory());
 			System.out.println("Lay Next lsd thanh cong!!");
 			
 		} catch (DataAccessException e) {
@@ -130,15 +130,15 @@ public class MeasurementHistoryDAO {
 		return lsd;
 	}
 	
-	public MeasurementHistory getLatestLsdByKhachhangId(String khachhang_id) {
+	public MeasurementHistory getLatestLsdByDongHoId(String dongho_id) {
 		MeasurementHistory lsd = null;
 		
-		String query = "select top 1 lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id\r\n"
-				+ "where dhd.khachhang_id = ? order by lsd.chiso desc";
+		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
+				+ "where kh.dongho_id = ? order by lsd.chiso desc";
 		
 		try {
-			lsd = jdbcTemplate.queryForObject(query, new Object[] {khachhang_id}, new MapperMeasurementHistory());
+			lsd = jdbcTemplate.queryForObject(query, new Object[] {dongho_id}, new MapperMeasurementHistory());
 			System.out.println("Lay Latest lsd thanh cong!!");
 		} catch (DataAccessException e) {
 			System.out.println("Lay Latest lsd that bai!!");
@@ -147,43 +147,49 @@ public class MeasurementHistoryDAO {
 		return lsd;
 	}
 	
-	public List<MeasurementHistory> searchLsdKhachhang(String lsd_id, String khachhang_id, String dhd_id, String ngaydo) {
+	public List<MeasurementHistory> searchLsdKhachhang(int page, String lsd_id, String khachhang_id, String dhd_id, String ngaydo) {
 		List<MeasurementHistory> list_lsd = new ArrayList<MeasurementHistory>();
 		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
 		
 		String query = "";
 		
 		if (lsd_id.isEmpty() && khachhang_id.isEmpty() && dhd_id.isEmpty() && ngaydo.isEmpty()) {
 			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
-					+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id \r\n"
+					+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id \r\n"
 					+ "where 1=0";			
 		} else {
-			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
-					+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id \r\n"
-					+ "where 1=1";
+//			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
+//					+ "inner join dong_ho_dien dhd on lsd.dongho_id = dhd.dongho_id \r\n"
+//					+ "where 1=1";
+			
+			query = "exec sp_SearchLichSuDo @PageNumber = ?, @PageSize = 10,";
+			params.add(page);
 			
 			if (!lsd_id.isEmpty()) {
-				query += " and lsd.lichsu_do_id = ?";
+				conditions.add("@LichSuDoID = ?");
 				params.add(lsd_id);
 			}
 			
 			if (!khachhang_id.isEmpty()) {
-				query += " and dhd.khachhang_id = ?";
+				conditions.add("@KhachHangID = ?");
 				params.add(khachhang_id);
 			}
 			
 			if (!dhd_id.isEmpty()) {
-				query += " and lsd.dongho_id = ?";
+				conditions.add("@DongHoID = ?");
 				params.add(dhd_id);
 			}
 			
 			if (!ngaydo.isEmpty()) {
-				query += " and lsd.ngay_do = ?";
+				conditions.add("@NgayDo = ?");
 				params.add(ngaydo);
 			}
+			
+			if (!conditions.isEmpty()) {
+		        query += " " + String.join(", ", conditions);
+		    }
 		}
-		
-		query += " order by lsd.ngay_do DESC";
 		
 //		System.out.println(query);
 		
@@ -198,13 +204,13 @@ public class MeasurementHistoryDAO {
 	}
 	
 	
-	public boolean addNewLsd(String khachhang_id, String ngay_do, String chiso) {
+	public boolean addNewLsd(String dhd_id, String ngay_do, String chiso) {
 		boolean isAdd = false;
 		
-		String query = "insert into lichsu_do2 (dongho_id, ngay_do, chiso) values ((select dongho_id from dong_ho_dien where khachhang_id = ?), ?, ?)";
+		String query = "insert into lichsu_do2 (dongho_id, ngay_do, chiso) values (?, ?, ?)";
 		
 		try {
-			jdbcTemplate.update(query, new Object[] {khachhang_id, ngay_do, chiso});
+			jdbcTemplate.update(query, new Object[] {dhd_id, ngay_do, chiso});
 			isAdd = true;
 			System.out.println("Them lich su do moi thanh cong!");
 		} catch (DataAccessException e) {
@@ -247,6 +253,86 @@ public class MeasurementHistoryDAO {
 		} else {
 			return true;
 		}
+	}
+	
+	
+//	============================ Phan trang ============================
+	
+	// Tong trang binh thuong
+	public int tong_trang()
+	{
+		int temp = -1;
+		String sql = "exec sp_GetTotalPagesAllLSD @PageSize = 10";
+		try {
+			  temp = jdbcTemplate.queryForObject(sql, Integer.class);	
+			  System.out.println(temp);
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	// Tổng trang tìm kiếm
+	public int tong_trang_search(String lsd_id, String khachhang_id, String dhd_id, String ngaydo)
+	{
+		int temp = -1;
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
+		
+		String sql = "exec sp_GetTotalPagesAllSearchLSD @PageSize = 10,";
+		
+		if (!lsd_id.isEmpty()) {
+			conditions.add("@LichSuDoID = ?");
+			params.add(lsd_id);
+		}
+		
+		if (!khachhang_id.isEmpty()) {
+			conditions.add("@KhachHangID = ?");
+			params.add(khachhang_id);
+		}
+		
+		if (!dhd_id.isEmpty()) {
+			conditions.add("@DongHoID = ?");
+			params.add(dhd_id);
+		}
+		
+		if (!ngaydo.isEmpty()) {
+			conditions.add("@NgayDo = ?");
+			params.add(ngaydo);
+		}
+		
+		if (!conditions.isEmpty()) {
+	        sql += " " + String.join(", ", conditions);
+	    }
+		
+		System.out.println(sql);
+		
+		try {
+			temp = jdbcTemplate.queryForObject(sql, params.toArray(), Integer.class);	
+			System.out.println(sql);
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	public List<MeasurementHistory> getAllLSDInPage(int page) {
+		List<MeasurementHistory> list_lsd = new ArrayList<MeasurementHistory>();
+		
+		String query = "exec sp_GetPagedAllLSD @PageNumber = ?, @PageSize = 10";
+		
+		try {
+			list_lsd = jdbcTemplate.query(query, new Object[] {page}, new MapperMeasurementHistory());
+			System.out.println("Truy van tat ca lsd page " + page + " thanh cong!");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca lsd page " + page + " that bai!");
+		}
+		
+		return list_lsd;
 	}
 	
 }

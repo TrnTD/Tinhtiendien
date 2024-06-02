@@ -49,7 +49,7 @@ public class AuthController {
 
 				session.setAttribute("info_khachhang", info);
 				
-				return "redirect:nguoi_dung/quan_ly_chung";
+				return "redirect:nguoi_dung/lich_su_do";
 			} else if (accountDAO.getRole(username) == 2) {
 				System.out.print("Dang nhap vao quan ly thanh cong");
 				

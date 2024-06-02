@@ -38,6 +38,27 @@ public class QuanLyAccountDAO {
 		return listAccount;
 	}
 	
+	public List<QuanLyAccount> getAccByKHID(String khachhang_id)
+	{
+		String sql = "SELECT k.khachhang_id, t.*\r\n"
+				+ "FROM khachhang AS k\r\n"
+				+ "LEFT JOIN taikhoan AS t ON k.username = t.username\r\n"
+				+ "WHERE khachhang_id = ? ";
+		List<QuanLyAccount> account = new ArrayList<QuanLyAccount>();
+		try {
+			account = jdbcTemplate.query(sql,new Object[] {khachhang_id} ,new MapperQuanLyAccount());
+			System.out.println("Truy van khoan nguoi dung thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tai khoan nguoi dung that bai!!");
+		}
+		
+		if (account.isEmpty()) {
+	        System.out.println("Không có tài khoản nào được trả về");
+
+	    }
+		return account;
+	}
+	
 	public String changePassword (String username, String newpassword,String thong_bao) {
 		String sql = "UPDATE taikhoan SET password = ? WHERE username = ?"; 
 		int result = 0;
@@ -75,5 +96,39 @@ public class QuanLyAccountDAO {
 			System.out.println("Them tai khoan that bai");
 		}
 		return thong_bao;
+	}
+	
+/* ===================================== Phân Trang =========================== */
+	
+	public int tong_trang()
+	{
+		int temp = -1;
+		String sql = "exec sp_GetTotalPagesAllAccKhachHang @PageSize = 2";
+		try {
+			  temp = jdbcTemplate.queryForObject(sql, Integer.class);	
+			  System.out.println(temp);
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		return temp;
+	}
+	
+	public List<QuanLyAccount> getAllAccountsUserInPage(int page) {
+		List<QuanLyAccount> listAccount = new ArrayList<QuanLyAccount>();
+		String sql = "exec sp_GetPagedAllAccKhachHang @PageNumber = ?, @PageSize = 2";
+		
+		try {
+			listAccount = jdbcTemplate.query(sql,new Object[] {page} ,new MapperQuanLyAccount());
+			System.out.println("Truy van tat ca tai khoan nguoi dung thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca tai khoan nguoi dung that bai!!");
+		}
+		
+		if (listAccount.isEmpty()) {
+	        System.out.println("Không có tài khoản nào được trả về");
+	    }
+		
+		return listAccount;
 	}
 }

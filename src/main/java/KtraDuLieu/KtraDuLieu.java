@@ -39,4 +39,11 @@ public class KtraDuLieu {
 
         return tenChuanHoa.toString().trim();
     }
+	 
+	 public static boolean ktraDuLieu_Dien(String giaDien) {
+		    String regex = "\\d+";
+		    Pattern pattern = Pattern.compile(regex);
+		    Matcher matcher = pattern.matcher(giaDien);
+		    return matcher.matches();
+	 }
 }

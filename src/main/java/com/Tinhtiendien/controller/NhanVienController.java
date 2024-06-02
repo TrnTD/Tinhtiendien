@@ -34,6 +34,8 @@ import com.Tinhtiendien.Entity.*;
 import com.Tinhtiendien.Models.*;
 import com.Tinhtiendien.DAO.*;
 import KtraDuLieu.KtraDuLieu;
+import KtraDuLieu.isError;
+import KtraDuLieu.isSuccess;
 
 @Controller
 public class NhanVienController {
@@ -320,25 +322,54 @@ public class NhanVienController {
 
 
 	@RequestMapping("/nhan_vien/quan_ly_tai_khoan_khach_hang")
-	public String layChuKiDO(HttpSession session, Model model) {
-		List<QuanLyAccount> listAcc = qlaccountDAO.getAllAccountsUser();
-
+	public String layChuKiDO(Model model, 
+			@RequestParam(value ="cur_page",defaultValue = "1") int cur_page,
+			@RequestParam(value = "limit",defaultValue = "10") int limit) {
+//		List<QuanLyAccount> listAcc = qlaccountDAO.getAllAccountsUser();
+		List<QuanLyAccount> listAcc = qlaccountDAO.getAllAccountsUserInPage(cur_page);
 		model.addAttribute("list_acc", listAcc);
-
+		int ttp = qlaccountDAO.tong_trang();
+		model.addAttribute("curr_page", cur_page);
+		model.addAttribute("total_page", ttp);
+		return "employee/quan_ly_tai_khoan_khach_hang";
+	}
+	
+	@RequestMapping(value = "/nhan_vien/quan_ly_tai_khoan_khach_hang/tim_kiem", method= RequestMethod.GET)
+	public String tim_kiem(HttpSession session, Model model,RedirectAttributes redirectAttributes,@RequestParam("kh_id") String kh_id,
+			@RequestParam(value = "all", required = false) String all) 
+	{
+		if ("search_all".equals(all))
+		{
+			int ttp = qlaccountDAO.tong_trang();
+			redirectAttributes.addAttribute("curr_page", 1);
+			redirectAttributes.addAttribute("limit", ttp);
+			return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+		}
+		 
+		List<QuanLyAccount> account = qlaccountDAO.getAccByKHID(kh_id);
+		model.addAttribute("list_acc", account);
+		model.addAttribute("search_id",kh_id);
 		return "employee/quan_ly_tai_khoan_khach_hang";
 	}
 
 	@RequestMapping(value = "/nhan_vien/quan_ly_tai_khoan_khach_hang", method = RequestMethod.POST)
-	public String xu_li_hanh_dong(HttpSession session, RedirectAttributes redirectAttributes,
+	public String xu_li_hanh_dong(HttpSession session, RedirectAttributes redirectAttributes,Model model,HttpServletRequest request,
 			@RequestParam("selectedUsername") String username, @RequestParam("action") String action,
 			@RequestParam("addUsernameId") String addUsernameId, @RequestParam("addUsername") String addUsername,
 			@RequestParam("addPassWord") String addPassWord, @RequestParam("newPass") String newPass) {
 		String thong_bao = null;
+		addUsernameId = addUsernameId.trim();
+		addUsername = addUsername.trim();
+		addPassWord = addPassWord.trim();
+		newPass = newPass.trim();
+		String url = request.getHeader("Referer");
+		action = action.replace(",", "");
 		if (action.equals("edit")) {
 			if (username == "")
 			{
-				redirectAttributes.addFlashAttribute("tb", "Khách hàng chưa có tài khoản để chỉnh sửa!");
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+//				redirectAttributes.addFlashAttribute("tb", "Khách hàng chưa có tài khoản để chỉnh sửa!");
+				redirectAttributes.addFlashAttribute("tb_err", "Khách hàng chưa có tài khoản để chỉnh sửa!");
+				return "redirect:" + url;
 			}
 			if (newPass != "") {
 				if (!KtraDuLieu.ktraMatKhau(newPass)) {
@@ -360,18 +391,18 @@ public class NhanVienController {
 				if (addPassWord == "") {
 					redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không được để trống!");
 				}
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+				return "redirect:" + url;
 			}
 			if (addUsername == "") {
 				redirectAttributes.addFlashAttribute("tbThemTK", "Tên đăng nhập không được để trống!");
 				if (addPassWord == "") {
 					redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không được để trống!");
 				}
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+				return "redirect:" + url;
 			}
 			if (addPassWord == "") {
 				redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không được để trống!");
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+				return "redirect:" + url;
 			}
 			
 			if (infoDAO.checkKhachHangIDandUsername(addUsernameId) == false) {
@@ -381,16 +412,15 @@ public class NhanVienController {
 					if (!KtraDuLieu.ktraMatKhau(addPassWord)) {
 						redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không đúng yêu cầu!");
 					}
-					return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+					return "redirect:" + url;
 				}
 				if (account.checkUsernameAccount(addUsername) == true) {
 					redirectAttributes.addFlashAttribute("tbThemTK", "Tên đăng nhập đã tồn tại!");
 				}
-				if (KtraDuLieu.ktraMatKhau(addPassWord)) {
+				if (!KtraDuLieu.ktraMatKhau(addPassWord)) {
 					redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không đúng yêu cầu!");
 				}
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
-
+				return "redirect:" + url;
 			}
 
 			if (!KtraDuLieu.ktraTenDN(addUsername)) {
@@ -398,32 +428,36 @@ public class NhanVienController {
 				if (!KtraDuLieu.ktraMatKhau(addPassWord)) {
 					redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không đúng yêu cầu!");
 				}
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+				return "redirect:" + url;
 			}
 			if (account.checkUsernameAccount(addUsername) == true) {
 				redirectAttributes.addFlashAttribute("tbThemTK", "Tên đăng nhập đã tồn tại!");
 				if (!KtraDuLieu.ktraMatKhau(addPassWord)) {
 					redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không đúng yêu cầu!");
 				}
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+				return "redirect:" + url;
 			}
 			if (!KtraDuLieu.ktraMatKhau(addPassWord)) {
 				redirectAttributes.addFlashAttribute("tbThemMK", "Mật khẩu không đúng yêu cầu!");
-				return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+				return "redirect:" + url;
 			}
 
 			thong_bao = qlaccountDAO.addAcc(addUsernameId, addUsername, addPassWord, thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 
-		} else {
+		} else if (action.equals("delete")) {
+			if (username == "")
+			{
+				redirectAttributes.addFlashAttribute("tb_err", "Khách hàng chưa có tài khoản để xoá!");
+				return "redirect:" + url;
+			}
 			thong_bao = qlaccountDAO.deleteAcc(username, thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 		}
-		
 		System.out.println(username);
 		System.out.println(action);
-		
-		return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
+//		return "redirect:" + url;
+		return "redirect:" + url;
 	}
 	
 	
@@ -460,17 +494,23 @@ public class NhanVienController {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang", method = RequestMethod.GET)
-	public String get_lsd_khachhang(Model model) {
+	public String get_lsd_khachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+			@RequestParam(value = "limit",defaultValue = "10") int limit) {
 		
-		List<MeasurementHistory> list_lsd = mdDAO.getLSDoTheoFirstChuhoID();
-		
+//		List<MeasurementHistory> list_lsd = mdDAO.getLSDoTheoFirstChuhoID();
+		List<MeasurementHistory> list_lsd = mdDAO.getAllLSDInPage(cur_page);
 		model.addAttribute("list_lsd", list_lsd);
+		
+		int total_page = mdDAO.tong_trang();
+		
+		model.addAttribute("curr_page", cur_page);
+		model.addAttribute("total_page", total_page);
 
 		return "employee/quan_ly_lich_su_do_khach_hang";
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang/them", method = RequestMethod.POST)
-	public String them_lsd_khachhang(@RequestParam("add_khachhangid") String khachhang_id, @RequestParam("ngay") String ngay, @RequestParam("thang") String thang, 
+	public String them_lsd_khachhang(@RequestParam("add_dongho_id") String dongho_id, @RequestParam("ngay") String ngay, @RequestParam("thang") String thang, 
 			@RequestParam("nam") String nam, @RequestParam("add_chiso") String chiso, RedirectAttributes redirectAttributes,
 			HttpSession session, HttpServletRequest request) {
 		
@@ -485,22 +525,22 @@ public class NhanVienController {
 		
 		String ngaydo = "";
 
-		if (khachhang_id == "") {
+		if (dongho_id == "") {
 			redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không được để trống!");
 			canAdd = false;
 		} else {
-			if (infoDAO.checkExistKhachHangById(khachhang_id) == false) {
-				redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không tồn tại!");
+			if (infoDAO.checkExistKhachHangByDongHoId(dongho_id) == false) {
+				redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Đồng hồ điện không tồn tại!");
 				canAdd = false;
 			} else {
 				
-				System.out.println("Ma khach hang: " + khachhang_id);
+				System.out.println("Ma dong ho: " + dongho_id);
 				
 				System.out.println("Chi so: " + chiso);
 				
 				
 				
-				MeasurementHistory latest_lsd = mdDAO.getLatestLsdByKhachhangId(khachhang_id);
+				MeasurementHistory latest_lsd = mdDAO.getLatestLsdByDongHoId(dongho_id);
 				
 				if (latest_lsd != null) {
 					if (chiso != null && Integer.parseInt(chiso) < latest_lsd.getChiso()) {
@@ -543,7 +583,7 @@ public class NhanVienController {
 		url = url.substring(index);
 		
 		if (canAdd) {
-			if (mdDAO.addNewLsd(khachhang_id, ngaydo, chiso)) {
+			if (mdDAO.addNewLsd(dongho_id, ngaydo, chiso)) {
 				message = "Bạn đã cập nhật chỉ số khách hàng thành công";
 				session.setAttribute("message", message);
 				session.setAttribute("isError", isError);
@@ -557,7 +597,7 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang/sua", method = RequestMethod.POST)
-	public String sua_lsd_khachhang(@RequestParam("khachhang_id") String khachhang_id, @RequestParam("chiso") String chiso_jsp, 
+	public String sua_lsd_khachhang(@RequestParam("dongho_id") String dongho_id, @RequestParam("chiso") String chiso_jsp, 
 			@RequestParam("lsd_id") int lsd_id, @RequestParam("ngay") int ngay, @RequestParam("thang") int thang, 
 			@RequestParam("nam") int nam, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
 		
@@ -565,7 +605,7 @@ public class NhanVienController {
 		
 		System.out.println("Chi so:  " + chiso);
 		System.out.println("lsd id: " + lsd_id);
-		System.out.println("khach hang id: " + khachhang_id);
+		System.out.println("dong ho id: " + dongho_id);
 		
 		String ngay_do = String.format("%04d-%02d-%02d", nam, thang, ngay);
 		
@@ -574,8 +614,8 @@ public class NhanVienController {
 		String message = "";
 		boolean isError = false;
 		
-		MeasurementHistory prelsd = mdDAO.getPreviousLDSByLsdIdAndKhId(lsd_id, khachhang_id);
-		MeasurementHistory nextlsd = mdDAO.getNextLDSByLsdIdAndKhId(lsd_id, khachhang_id);
+		MeasurementHistory prelsd = mdDAO.getPreviousLDSByLsdIdAndKhId(lsd_id, dongho_id);
+		MeasurementHistory nextlsd = mdDAO.getNextLDSByLsdIdAndKhId(lsd_id, dongho_id);
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		formatter.setLenient(false);
@@ -671,12 +711,20 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem", method = RequestMethod.GET)
-	public String search_lsd_khachhang(Model model, @RequestParam("search_lsdid") String lsd_id,
+	public String search_lsd_khachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+			@RequestParam(value = "limit",defaultValue = "10") int limit, @RequestParam("search_lsdid") String lsd_id,
 			@RequestParam("search_khachhangid") String khachhang_id, @RequestParam("search_dhdid") String dhd_id, @RequestParam("search_ngaydo") String ngaydo,
-			@RequestParam("action") String action) {
+			@RequestParam("action") String action, HttpServletRequest request) {
+		
+		String url = request.getHeader("Referer");
 		
 		if (action.equals("search")) {
-			List<MeasurementHistory> list_lsd = mdDAO.searchLsdKhachhang(lsd_id, khachhang_id, dhd_id, ngaydo);
+			List<MeasurementHistory> list_lsd = mdDAO.searchLsdKhachhang(cur_page, lsd_id, khachhang_id, dhd_id, ngaydo);
+			
+			int total_page = mdDAO.tong_trang_search(lsd_id, khachhang_id, dhd_id, ngaydo);
+			
+			model.addAttribute("curr_page", cur_page);
+			model.addAttribute("total_page", total_page);
 			model.addAttribute("list_lsd", list_lsd);			
 		} else {
 			return "redirect:/nhan_vien/quan_ly_lich_su_do_khach_hang";
@@ -871,35 +919,92 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_gia_dien", method = RequestMethod.POST)
-	public String quan_ly_gia_dien_xuLyHanhDong(Model model, HttpServletRequest request,
-												@RequestParam("action") String action) {
-		
-		try {
-			if (action.equals("add")) {
-				int add_bacDien = Integer.parseInt(request.getParameter("add_bacDien"));
-				int add_giaDien = Integer.parseInt(request.getParameter("add_giaDien"));
-				giaDien_DAO.Them(add_bacDien, add_giaDien);
-				
-			} else if (action.equals("edit")) {
-				int bacDien = Integer.parseInt(request.getParameter("bacDien_key"));
-				int edit_giaDien = Integer.parseInt(request.getParameter("edit_giaDien"));
-				giaDien_DAO.CapNhat(bacDien, edit_giaDien);
-				
-			} else if (action.equals("delete")) {
-				int bacDien = Integer.parseInt(request.getParameter("bacDien_key"));
-				giaDien_DAO.Xoa(bacDien);
-				
-			} else {
-				model.addAttribute("error", "Hành động không hợp lệ.");
-				return "redirect:/nhan_vien/quan_ly_gia_dien";
-			}
-			
-		} catch (NumberFormatException e) {
-			model.addAttribute("error", "Giá trị nhập không hợp lệ. Vui lòng nhập số hợp lệ.");
-			e.printStackTrace();
-			return "redirect:/nhan_vien/quan_ly_gia_dien";
-		}
-		
-		return "redirect:/nhan_vien/quan_ly_gia_dien"; 
+	public String quan_ly_gia_dien_xuLyHanhDong(RedirectAttributes redirectAttributes,
+	        @RequestParam("action") String action,
+	        @RequestParam(value = "add_bacDien", required = false) String add_bacDienstr,
+	        @RequestParam(value = "add_giaDien", required = false) String add_giaDienstr,
+	        @RequestParam(value = "edit_giaDien", required = false) String edit_giaDienstr,
+	        @RequestParam(value = "bacDien_key", required = false) String bacDienstr) {
+
+	    System.out.println("action: " + action);
+	    System.out.println("add_bacDien: " + add_bacDienstr);
+	    System.out.println("add_giaDien: " + add_giaDienstr);
+	    System.out.println("edit_giaDien: " + edit_giaDienstr);
+	    System.out.println("bacDien_key: " + bacDienstr);
+	    boolean isAction = true;
+
+	    try {
+	        if (action.equals("add")) {
+	        	// Kiểm tra null và định dạng cho bậc điện
+	            if (add_bacDienstr == null || add_bacDienstr.isEmpty()) {
+	                redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isNull("Bậc Điện"));
+	                isAction = false;
+	            
+	            } else if (!KtraDuLieu.ktraDuLieu_Dien(add_bacDienstr)) {
+	                redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isType("Bậc Điện"));
+	                isAction = false;
+	            }
+	            // kiểm tra null và định dạng cho giá điện 
+	            if (add_giaDienstr == null || add_giaDienstr.isEmpty()) {
+	                redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isNull("Giá Điện"));
+	                isAction = false;
+	            } else if (!KtraDuLieu.ktraDuLieu_Dien(add_giaDienstr)) {
+	                redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isType("Giá Điện"));
+	                isAction = false;
+	            }
+	            if (isAction) {
+	                try {
+	                    int add_bacDien = Integer.parseInt(add_bacDienstr);
+	                    int add_giaDien = Integer.parseInt(add_giaDienstr);
+	                    // Kiểm tra trùng lặp bậc điện
+	                    if (giaDien_DAO.checkExist(add_bacDien)) {
+	                        redirectAttributes.addFlashAttribute("add_bacDien_id", isError.is_Exist("Bậc Điện"));
+	                        return "redirect:/nhan_vien/quan_ly_gia_dien";
+	                    }
+	                    giaDien_DAO.Them(add_bacDien, add_giaDien);
+	                    redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Thêm"));
+	                } catch (NumberFormatException e) {
+	                    redirectAttributes.addFlashAttribute("message", isError.isFormat(""));
+	                    return "redirect:/nhan_vien/quan_ly_gia_dien";
+	                }
+	            }
+
+	        } else if (action.equals("edit")) {
+	        	// kiểm tra null
+	            if (edit_giaDienstr == null || edit_giaDienstr.isEmpty()) {
+	                redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isNull("Giá Điện"));
+	                isAction = false;
+	            // kiểm tra định dạng 
+	            } else if (!KtraDuLieu.ktraDuLieu_Dien(edit_giaDienstr)) {
+	                redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isType("Giá Điện"));
+	                isAction = false;
+	            }
+
+	            if (isAction) {
+	                try {
+	                    int bacDien = Integer.parseInt(bacDienstr);
+	                    int edit_giaDien = Integer.parseInt(edit_giaDienstr);
+	                    giaDien_DAO.CapNhat(bacDien, edit_giaDien);
+	                    redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Cập Nhật"));
+	                } catch (NumberFormatException e) {
+	                    redirectAttributes.addFlashAttribute("message", isError.isFormat("Giá Điện"));
+	                    return "redirect:/nhan_vien/quan_ly_gia_dien";
+	                }
+	            }
+	        } else if (action.equals("delete")) {
+	            try {
+	                int bacDien = Integer.parseInt(bacDienstr);
+	                giaDien_DAO.Xoa(bacDien);
+	                redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Xóa"));
+	            } catch (NumberFormatException e) {
+	                redirectAttributes.addFlashAttribute("message", isError.isFormat("Bậc Điện"));
+	                return "redirect:/nhan_vien/quan_ly_gia_dien";
+	            }
+	        }
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("message", isError.isNone(""));
+	    }
+
+	    return "redirect:/nhan_vien/quan_ly_gia_dien";
 	}
 }

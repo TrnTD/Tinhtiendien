@@ -94,6 +94,24 @@ public class InfoDAO {
 		return false;
 	}
 	
+	public boolean checkExistKhachHangByDongHoId(String dongho_id) {
+		String query = "select * from khachhang where dongho_id = ?";
+		Info info = null;
+		
+		try {
+			info = jdbcTemplate.queryForObject(query, new Object[] {dongho_id}, new MapperInfo());
+			System.out.println("Ton tai khach hang voi khachhang_id: " + dongho_id);
+		} catch (DataAccessException e) {
+			System.out.println("Co loi khi truy van khachhang_id: " + dongho_id);
+		}
+		
+		if (info != null) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public List<Info> getAllKhachHang(){
 		List<Info> infos = new  ArrayList<Info>();
 		String sql = "select * from khachhang";

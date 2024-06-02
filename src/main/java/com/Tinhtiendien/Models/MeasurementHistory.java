@@ -5,7 +5,7 @@ import java.sql.Date;
 public class MeasurementHistory {
 	private int lichsu_do_id;
 	private String khachhang_id;
-	private int dongho_id;
+	private String dongho_id;
 	private Date ngay_do;
 	private int chiso;
 	
@@ -15,10 +15,10 @@ public class MeasurementHistory {
 	public void setLichsu_do_id(int lichsu_do_id) {
 		this.lichsu_do_id = lichsu_do_id;
 	}
-	public int getDongho_id() {
+	public String getDongho_id() {
 		return dongho_id;
 	}
-	public void setDongho_id(int dongho_id) {
+	public void setDongho_id(String dongho_id) {
 		this.dongho_id = dongho_id;
 	}
 	public String getKhachhang_id() {

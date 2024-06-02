@@ -58,4 +58,16 @@ public class GiaDienDAO {
             e.printStackTrace();
         }
     }
+    public boolean checkExist(int bacDien) {
+        try {
+            String sql = "select * from gia_dien where bac = ?";
+            GiaDien isExist = jdbcTemplate.queryForObject(sql, new Object[]{bacDien}, new MapperGiaDien());
+            return true;
+        } catch (Exception e) {
+            System.out.println("Truy vấn thất bại");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
