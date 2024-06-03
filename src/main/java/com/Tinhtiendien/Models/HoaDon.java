@@ -5,7 +5,7 @@ import java.sql.Date;
 public class HoaDon {
 	private int hoadon_id;
 	private String khachhang_id;
-	private int dongho_id;
+	private String dongho_id;
 	private String ngay_tao;
 	private int month_bill;
 	private String ngay_batdau;
@@ -20,9 +20,25 @@ public class HoaDon {
 	private int thue;
 	private String ngay_thanhtoan;
 	private String trangthai;
+	private int phuongthuc_id;
+	private String ten_phuongthuc;
 	
 	private String loai_hoadon = "Tiền điện";
 	
+	
+	
+	public String getTen_phuongthuc() {
+		return ten_phuongthuc;
+	}
+	public void setTen_phuongthuc(String ten_phuongthuc) {
+		this.ten_phuongthuc = ten_phuongthuc;
+	}
+	public int getPhuongthuc_id() {
+		return phuongthuc_id;
+	}
+	public void setPhuongthuc_id(int phuongthuc_id) {
+		this.phuongthuc_id = phuongthuc_id;
+	}
 	public int getHoadon_id() {
 		return hoadon_id;
 	}
@@ -35,10 +51,10 @@ public class HoaDon {
 	public void setKhachhang_id(String khachhang_id) {
 		this.khachhang_id = khachhang_id;
 	}
-	public int getDongho_id() {
+	public String getDongho_id() {
 		return dongho_id;
 	}
-	public void setDongho_id(int dongho_id) {
+	public void setDongho_id(String dongho_id) {
 		this.dongho_id = dongho_id;
 	}
 	public String getNgay_tao() {

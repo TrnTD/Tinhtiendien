@@ -628,12 +628,6 @@
 			})
 		});
 
-// 	const urlObject = new URL(document.URL);
-// 	const url = urlObject.pathname + urlObject.search
-// 	const pageForm = document.querySelector('#submitPage');
-// 	if (url.includes("tim_kiem")) {
-// 	    pageForm.action = url;
-// 	}
 	
 </script>
 </body>

@@ -96,6 +96,7 @@
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_lich_ghi_chi_so_khach_hang" style="font-size: 13px">Quản lý lịch ghi chỉ số</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang" style="font-size: 13px">Quản lý lịch sử đo</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang" style="font-size: 13px">Quản lý hóa đơn</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang" style="font-size: 13px">Quản lý lịch sử thanh toán</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_gia_dien" style="font-size: 13px">Quản lý giá điện</a></li>
                 
             </ul>

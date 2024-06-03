@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.Tinhtiendien.Entity.*;
 import com.Tinhtiendien.Models.*;
+import com.fasterxml.jackson.databind.deser.impl.JDKValueInstantiators;
 
 @Repository
 public class HoaDonDAO {
@@ -39,26 +40,6 @@ public class HoaDonDAO {
 		return list_hoadon;
 	}
 	
-	public List<HoaDon> getFirstAllInfoHoaDon() {
-		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
-		String sql = "declare @KhachangID varchar(50)\r\n"
-				+ "select top 1 @KhachangID = khachhang_id from khachhang order by khachhang_id\r\n"
-				+ "exec sp_GetChiTietHoaDonByKhachHangID2 @KhachHangID = @KhachangID";
-
-		try {
-			list_hoadon = jdbcTemplate.query(sql, new MapperHoaDon());
-			System.out.println("Truy van hoa don tu tu ma khach hang dau tien thanh cong");
-			
-		} catch (DataAccessException e) {
-			System.out.println("Truy van hoa don tu tu ma khach hang dau tien that bai");
-		}
-		
-		if (list_hoadon.isEmpty()) {
-			System.out.println("Khong co hoa don nao lay tu ma khach hang duoc tra ve");
-		}
-		
-		return list_hoadon;
-	}
 	
 	public HoaDon getAllInfoHoaDonByDate(String khachhang_id, int thang, int nam) {
 		HoaDon hoadon = null;
@@ -173,6 +154,7 @@ public class HoaDonDAO {
 		
 		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
 		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
 		
 		String query = "";
 		
@@ -190,64 +172,42 @@ public class HoaDonDAO {
 			list_hoadon = null;
 			return list_hoadon;
 		} else {
-			query = "SELECT \r\n"
-					+ "		hd.hoadon_id,\r\n"
-					+ "		hd.khachhang_id,\r\n"
-					+ "		--lsd1.lichsu_do_id,\r\n"
-					+ "		lsd1.dongho_id,\r\n"
-					+ "		format(hd.ngay_tao, 'dd-MM-yyyy HH:mm:ss') as ngay_tao,\r\n"
-					+ "		hd.month_bill,\r\n"
-					+ "		hd.year_bill,\r\n"
-					+ "		lsd1.ngay_do as ngay_batdau,\r\n"
-					+ "		lsd2.ngay_do as ngay_ketthuc,\r\n"
-					+ "		lsd1.chiso AS chiso_cu,\r\n"
-					+ "		lsd2.chiso AS chiso_moi,\r\n"
-					+ "		(lsd2.chiso - lsd1.chiso) as dien_tieu_thu,\r\n"
-					+ "		dbo.CalculateSum(lsd1.chiso, lsd2.chiso) as so_tien,\r\n"
-					+ "		dbo.CalculateTax2(hd.hoadon_id, lsd1.chiso, lsd2.chiso) as tien_thue,\r\n"
-					+ "		(dbo.CalculateSum(lsd1.chiso, lsd2.chiso) + dbo.CalculateTax2(hd.hoadon_id, lsd1.chiso, lsd2.chiso)) as tong_tien,\r\n"
-					+ "		hd.thue,\r\n"
-					+ "		FORMAT(hd.ngay_thanhtoan, 'dd-MM-yyyy') as ngay_thanhtoan,\r\n"
-					+ "		hd.trangthai\r\n"
-					+ "	FROM \r\n"
-					+ "		hoa_don2 hd\r\n"
-					+ "	INNER JOIN \r\n"
-					+ "		dong_ho_dien dhd ON hd.khachhang_id = dhd.khachhang_id\r\n"
-					+ "	INNER JOIN \r\n"
-					+ "		lichsu_do2 lsd1 ON hd.month_bill = month(lsd1.ngay_do) AND hd.year_bill = year(lsd1.ngay_do) AND dhd.dongho_id = lsd1.dongho_id\r\n"
-					+ "	LEFT JOIN \r\n"
-					+ "		lichsu_do2 lsd2 ON hd.month_bill + 1 = month(lsd2.ngay_do) AND hd.year_bill = year(lsd2.ngay_do) AND dhd.dongho_id = lsd2.dongho_id\r\n"
-					+ "								OR (hd.month_bill = 12 AND 1 = month(lsd2.ngay_do) AND hd.year_bill + 1 = year(lsd2.ngay_do))\r\n"
-					+ "	WHERE 1=1";
+			query = "exec sp_SearchHoaDon @PageNumber = 1, @PageSize = 10,";
 			
 			if (!hoadon_id.isEmpty()) {
-				query += " and hd.hoadon_id = ?";
+				conditions.add("@HoaDonID = ?");
 				params.add(hoadon_id);
 			}
+			
 			if (!khachhang_id.isEmpty()) {
-				query += " and hd.khachhang_id = ?";
+				conditions.add("@KhachHangID = ?");
 				params.add(khachhang_id);
 			}
+			
 			if (!ngaytao.isEmpty()) {
-				query += " and hd.ngay_tao = ?";
+				conditions.add("@NgayTao = ?");
 				params.add(ngaytao);
 			}
+			
 			if (!month_bill.isEmpty()) {
-				query += " and hd.month_bill = ?";
+				conditions.add("@Month_Bill = ?");
 				params.add(month_bill);
 			}
+			
 			if (!year_bill.isEmpty()) {
-				query += " and hd.year_bill = ?";
+				conditions.add("@Year_Bill = ?");
 				params.add(year_bill);
 			}
+			
 			if (!search_status.isEmpty()) {
-				System.out.println("search_status: " + search_status);
-				query += " and hd.trangthai = N'" + search_status + "'";
-//				params.add("N'" + search_status + "'");
+				conditions.add("@Status = N'" + search_status + "'");
 			}
+			
+			if (!conditions.isEmpty()) {
+				query += " " + String.join(", ", conditions);
+		    }
 		}
 		
-		query += " ORDER BY hd.ngay_tao DESC";
 		
 //		System.out.println(query);
 		
@@ -277,16 +237,16 @@ public class HoaDonDAO {
 		return isAdd;
 	}
 	
-	public boolean editHoaDon(String hoadon_id, String thang, String nam, String thue, String status) {
+	public boolean editHoaDon(String hoadon_id, String thang, String nam, String thue, String status, String pttt) {
 		boolean isEdit = false;
 		
 		String query = "";
 		
 		if (!checkExistHoaDonByHoaDonIdAndTime(hoadon_id, thang, nam)) {
-			query = "update hoa_don2 set ngay_tao = getdate(), month_bill = ?, year_bill = ?, thue = ?, trangthai = N'" + status + "' where hoadon_id = ?";	
+			query = "update hoa_don2 set month_bill = ?, year_bill = ?, thue = ?, trangthai = N'" + status + "', phuongthuc_id = ? where hoadon_id = ?";	
 			
 			try {
-				jdbcTemplate.update(query, new Object[] {thang, nam, thue, hoadon_id});
+				jdbcTemplate.update(query, new Object[] {thang, nam, thue, pttt, hoadon_id});
 				System.out.println("Cap nhat hoa don thanh cong!");
 				isEdit = true;
 			} catch (DataAccessException e) {
@@ -294,10 +254,10 @@ public class HoaDonDAO {
 				
 			}
 		} else {
-			query = "update hoa_don2 set ngay_tao = getdate(), thue = ?, trangthai = N'" + status + "' where hoadon_id = ?";	
+			query = "update hoa_don2 set thue = ?, trangthai = N'" + status + "', phuongthuc_id = ? where hoadon_id = ?";	
 			
 			try {
-				jdbcTemplate.update(query, new Object[] {thue, hoadon_id});
+				jdbcTemplate.update(query, new Object[] {thue, pttt, hoadon_id});
 				System.out.println("Cap nhat hoa don thanh cong!");
 				isEdit = true;
 			} catch (DataAccessException e) {
@@ -325,6 +285,119 @@ public class HoaDonDAO {
 		}
 		
 		return isDelete;
+	}
+	
+	// -------------------------------- Phan trang -----------------------------------
+	
+	public List<HoaDon> getAllPageHoaDon(int page) {
+		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
+		
+		String query = "exec sp_GetPagedAllHoaDon @PageNumber = ?, @PageSize = 10";
+		
+		try {
+			list_hoadon = jdbcTemplate.query(query, new Object[] {page}, new MapperHoaDon());
+			System.out.println("Truy van tat ca hoa don page " + page + " thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca hoa don page " + page + " that bai");
+		}
+		
+		return list_hoadon;
+	}
+	
+	public int tong_trang_hoadon() {
+		int temp = -1;
+		
+		String query = "exec sp_GetTotalPagesAllHoaDon @PageSize = 10";
+		try {
+			temp = jdbcTemplate.queryForObject(query, Integer.class);
+			System.out.println("Tong so trang cua hoa don la: " + temp);
+		} catch (DataAccessException e) {
+			System.out.println("Lay tong so trang cua hoa don that bai");
+		}
+		
+		return temp;
+	}
+	
+	public int tong_trang_search_hoadon(String hoadon_id, String khachhang_id, String ngaytao, String month_bill, String year_bill, String search_status)
+	{
+		int temp = -1;
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
+		
+		String sql = "exec sp_GetTotalPagesAllSearchHoaDon @PageSize = 10,";
+		
+		if (!hoadon_id.isEmpty()) {
+			conditions.add("@HoaDonID = ?");
+			params.add(hoadon_id);
+		}
+		
+		if (!khachhang_id.isEmpty()) {
+			conditions.add("@KhachHangID = ?");
+			params.add(khachhang_id);
+		}
+		
+		if (!ngaytao.isEmpty()) {
+			conditions.add("@NgayTao = ?");
+			params.add(ngaytao);
+		}
+		
+		if (!month_bill.isEmpty()) {
+			conditions.add("@Month_Bill = ?");
+			params.add(month_bill);
+		}
+		
+		if (!year_bill.isEmpty()) {
+			conditions.add("@Year_Bill = ?");
+			params.add(year_bill);
+		}
+		
+		if (!search_status.isEmpty()) {
+			conditions.add("@Status = N'" + search_status + "'");
+		}
+		
+		if (!conditions.isEmpty()) {
+	        sql += " " + String.join(", ", conditions);
+	    }
+		
+		
+		try {
+			temp = jdbcTemplate.queryForObject(sql, params.toArray(), Integer.class);
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	
+	// LS Thanh Toan
+	public int tong_trang_lsthanhtoan() {
+		int temp = -1;
+		
+		String query = "exec sp_GetTotalPagesAllLSThanhToan @PageSize = 10";
+		try {
+			temp = jdbcTemplate.queryForObject(query, Integer.class);
+			System.out.println("Tong so trang cua ls thanh toan la: " + temp);
+		} catch (DataAccessException e) {
+			System.out.println("Lay tong so trang cua ls thanh toan that bai");
+		}
+		
+		return temp;
+	}
+	
+	public List<HoaDon> getAllPageLSThanhToan(int page) {
+		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
+		
+		String query = "exec sp_GetPagedAllLSThanhToan @PageNumber = ?, @PageSize = 10";
+		
+		try {
+			list_hoadon = jdbcTemplate.query(query, new Object[] {page}, new MapperHoaDon());
+			System.out.println("Truy van tat ca hoa don page " + page + " thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca hoa don page " + page + " that bai");
+		}
+		
+		return list_hoadon;
 	}
 	
 	

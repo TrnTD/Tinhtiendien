@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script> <%@include file="/paging/jquery.twbsPagination.js" %></script>
 </head>
 <body>
 <style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
@@ -160,6 +161,16 @@
 			session.removeAttribute("isError");
 		}
 	%>
+		<div style="display: flex; justify-content: center; margin-bottom: -30px;">
+
+			<form action="/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang" class="custom-form" id="submitPage" method="GET">
+				 <nav aria-label="Page navigation">
+		        	<ul class="pagination" id="pagination"></ul>
+		    	</nav>
+		    	<input type="hidden" id="cur_page" name="cur_page" value="${curr_page}">
+		    	<input type="hidden" id="limit" name="limit" value="${total_page}">
+	    	</form>
+		</div>
         <div class="table-wrapper" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
             <div class="table-title">
                 <div class="row">
@@ -191,14 +202,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Mã hóa đơn</th>
-                        <th>Mã khách hàng</th>
-                        <th>Ngày tạo</th>
-                        <th>Tháng</th>
-                        <th>Năm</th>
-                        <th>Thuế VAT (%)</th>
-                        <th>Tổng tiền</th>
-                        <th>Trạng thái</th>
+                        <th>MÃ HÓA ĐƠN</th>
+                        <th>Mã KHÁCH HÀNG</th>
+                        <th>NGÀY TẠO</th>
+                        <th>THÁNG</th>
+                        <th>NĂM</th>
+                        <th>THUẾ VAT (%)</th>
+                        <th>TỔNG TIỀN (VNĐ)</th>
+                        <th>TRẠNG THÁI</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -216,13 +227,13 @@
 				    <td>
 				    <c:if test="${hoadon.trangthai == 'Đã thanh toán'}">
 					    <div class="status_hoadon_green">
-					    	<span>${hoadon.trangthai}</span>
+					    	<span style="font-size: 14px;">${hoadon.trangthai}</span>
 					    </div>
 					</c:if>
 					
 					<c:if test="${hoadon.trangthai == 'Chưa thanh toán'}">
 						<div class="status_hoadon_red">
-					    	<span>${hoadon.trangthai}</span>
+					    	<span style="font-size: 14px;">${hoadon.trangthai}</span>
 					    </div>
 					</c:if>
 				    </td>
@@ -230,12 +241,21 @@
 			        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button>
 
                        	<input type="hidden" class="hoadon_id" name="hoadon_id" value="${hoadon.hoadon_id}">
+                       	<input type="hidden" class="ten_pttt" name="hoadon_id" value="${hoadon.ten_phuongthuc}">
                        	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
 			        </td>
 			      </tr>
 			      </c:forEach>      
                 </tbody>
             </table>
+            <c:if test="${empty list_hoadon}">
+		     	<div style="display: flex; justify-content: center; align-items: center;">
+			     	<%@include file="/WEB-INF/resource/assets/imgs/nodata.svg"%>
+		     	</div>
+		     	<div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+					<p>Không có dữ liệu</p>				     	
+		     	</div>
+			</c:if>     
         </div>
 
         <!-- Add Employee Modal -->
@@ -367,7 +387,7 @@
 								  	</div>
 								  	<div class="col">
 		                                <label for="field1" class="form-label">Trạng thái</label>
-							            <select name="edit_status" class="form-select editStatus" aria-label="Default select example"> -->
+							            <select name="edit_status" class="form-select editStatus" aria-label="Default select example">
 								          <option value="-1" disabled selected hidden></option>
 								          <option value="0">Chưa thanh toán</option>
 								          <option value="1">Đã thanh toán</option>
@@ -376,8 +396,17 @@
 								  </div>
                             	</div>
                             </div>
+                            <div class="mb-3">
+                            	<label for="editDOB" class="form-label">Phương thức thanh toán</label>
+         						<select class="form-select editPTTT">
+         						<c:forEach var="pttt" varStatus="i" items="${list_pttt}">
+						          <option value="${pttt.phuongthuc_id}">${pttt.ten_phuongthuc}</option>
+						        </c:forEach>
+						        </select>		
+                            </div>
                             <input type="hidden" class="hoadon_id-edit" name="hoadon_id" value="">
                             <input type="hidden" class="khachhang_id-edit" name="khachhang_id" value="">
+                            <input type="hidden" class="pttt-edit" name="editPTTT" value="">
 	                        <h6 style="color:red; padding-left:5px; padding-top:5px" id="editChiso">${err_mess_editChiso}</h6>
                         </form>
                     </div>
@@ -454,12 +483,14 @@
 	        const thue = row.querySelector('td:nth-child(6)').textContent;
 	        const tongtien = row.querySelector('td:nth-child(7)').textContent;
 			const trangthai = (row.querySelector('td:nth-child(8)').textContent).trim();
+			const pttt = (row.querySelector('.ten_pttt').value).trim();
 	        // Điền giá trị vào các trường input trong modal
 	        
 	        console.log("hoadon_id: " + hoadon_id)
 	        console.log("khachhang_id: " + khachhang_id)
 	        console.log("ngaytao: " + ngaytao)
 	        console.log("trangthai: " + trangthai)
+	        console.log("phuong thuc: " + pttt)
 	        
 			
 	        
@@ -469,6 +500,7 @@
 	        sessionStorage.setItem("nam", nam);
 	        sessionStorage.setItem("thue", thue);
 	        sessionStorage.setItem("trangthai", trangthai);
+	        sessionStorage.setItem("pttt", pttt);
 	        
 	        document.querySelector('.editHoadon_id').value = hoadon_id;
 	        document.querySelector('.editKhachhang_id').value = khachhang_id;
@@ -485,9 +517,36 @@
 	        document.querySelector('.hoadon_id-edit').value = hoadon_id
 	        document.querySelector('.khachhang_id-edit').value = khachhang_id
 	        
+	        var statusElement = document.querySelector('.editStatus');
+		    var ptttElement = document.querySelector('.editPTTT');
+		    var hiddenInputElement = document.querySelector('.pttt-edit');
 	        
-// 	        document.querySelector('.khachhang_id').value = khachhang_id;
-// 	        console.log("lich su do id: " + document.querySelector('.hoadon_id-edit').value);
+	        function handleStatusChange() {
+		        if (statusElement.value == '0') {
+		            ptttElement.value = '0';
+		            ptttElement.disabled = true;
+		            ptttElement.options[0].disabled = false;
+		            ptttElement.options[0].hidden = false;
+		            hiddenInputElement.value = ptttElement.value
+		            
+		        } else {
+		            ptttElement.disabled = false;
+		            ptttElement.options[0].disabled = true;
+		            ptttElement.options[0].hidden = true;
+		            ptttElement.options[1].selected = true;
+		            
+		            ptttElement.addEventListener('change', function() {
+		            	hiddenInputElement.value = ptttElement.value
+		            })
+		            
+		        }
+		    }
+
+		    // Gọi hàm khi trang lần đầu tải
+		    handleStatusChange();
+
+		    // Gọi hàm khi có sự kiện change
+		    statusElement.addEventListener('change', handleStatusChange);
 	    });
 	});
 	
@@ -535,7 +594,9 @@
 		// edit form
 		if (formType == "editForm") {
 	        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
-	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);			
+	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);
+	        sessionStorage.setItem("thue", document.querySelector('.editTax').value);
+	        sessionStorage.setItem("pttt", document.querySelector('.editTax').value);
 		}
         
         // add form
@@ -549,7 +610,7 @@
 	});
 	
 	document.addEventListener("DOMContentLoaded", function() {
-			
+
 		var thue = sessionStorage.getItem("thue");
 		var hoadon_id = sessionStorage.getItem("hoadon_id");
 		var khachhang_id = sessionStorage.getItem("khachhang_id");
@@ -638,7 +699,42 @@
             }
         }
 	})
+	
+// 	------------------------------------ phan trang ----------------------------
 
+	let isPageClicked = false;
+	var curPage = parseInt($('#cur_page').val())
+	$(function() {
+		window.pagObj = $('#pagination').twbsPagination({
+			totalPages : ${total_page},
+			visiblePages : 3,
+			first : '<<',
+			prev : '<',
+	   		next:'>',
+			last : '>>',
+			startPage: curPage,
+			onPageClick : function(event, page) {
+				if (isPageClicked) {
+					if ((window.location.pathname).includes("tim_kiem")) {
+						var searchParams = new URLSearchParams(window.location.search);
+						searchParams.delete('cur_page');
+			            searchParams.delete('limit');
+			            
+						var url = window.location.origin + window.location.pathname + "?" + searchParams.toString();
+						url += "&cur_page=" + page + "&limit=3";
+						window.location.href = url
+						
+					} else {
+	                    $('#cur_page').val(page);
+	                    $('#submitPage').submit();							
+					}
+	
+	               }
+	               isPageClicked = true;
+		
+			}
+		})
+	});
 	
 </script>
 </body>

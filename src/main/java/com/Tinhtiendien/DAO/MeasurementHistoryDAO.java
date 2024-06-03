@@ -239,7 +239,7 @@ public class MeasurementHistoryDAO {
 	public boolean checkExistLsdBefore(String khachhang_id, String thang, String nam) {
 		int count = 0;
 		
-		String query = "exec sp_CheckExistLsdBefore @khachangID = ?, @thang = ?, @nam = ?";
+		String query = "exec sp_CheckExistLsdAfter @khachangID = ?, @thang = ?, @nam = ?";
 		
 		try {
 			count = jdbcTemplate.queryForObject(query, new Object[] {khachhang_id, thang, nam}, Integer.class);

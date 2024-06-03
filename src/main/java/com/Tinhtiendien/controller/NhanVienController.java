@@ -64,6 +64,9 @@ public class NhanVienController {
 	@Autowired
 	GiaDienDAO giaDien_DAO = new GiaDienDAO();
 	
+	@Autowired
+	PhuongThucThanhToanDAO ptttDAO = new PhuongThucThanhToanDAO();
+	
 	@RequestMapping(value = "/nhan_vien/quan_ly_chung", method = RequestMethod.GET)
 	public String quan_ly_chung(HttpServletRequest request) {
 		
@@ -732,29 +735,26 @@ public class NhanVienController {
 		
 		return "employee/quan_ly_lich_su_do_khach_hang";
 	}
-
 	
-	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang", method = RequestMethod.GET)
-	public String test(Model model) {
-		
-		model.addAttribute("test_value", "123");
-		System.out.println("test_value");
-		
-		return "employee/quan_ly_lich_su_thanh_toan_khach_hang";
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////// QUAN LY HOA DON ///////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// QUAN LY HOA DON //////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_hoa_don_khach_hang", method = RequestMethod.GET)
-	public String get_hoadonkhachhang(Model model) {
+	public String get_hoadonkhachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+			@RequestParam(value = "limit",defaultValue = "10") int limit) {
 		
-		List<HoaDon> list_hoadon = hoadonDAO.getFirstAllInfoHoaDon();
+		List<HoaDon> list_hoadon = hoadonDAO.getAllPageHoaDon(cur_page);
 		
+		List<PhuongThucThanhToan> list_pttt = ptttDAO.getAllPTTT();
+		
+		int total_page = hoadonDAO.tong_trang_hoadon();
+		
+		model.addAttribute("curr_page", cur_page);
+		model.addAttribute("total_page", total_page);
 		model.addAttribute("list_hoadon", list_hoadon);
+		model.addAttribute("list_pttt", list_pttt);
 		
 		
 		return "employee/quan_ly_hoa_don_khach_hang";
@@ -764,9 +764,17 @@ public class NhanVienController {
 	public String search_hoadon_khachhang(Model model, @RequestParam("search_hoadonid") String search_hoadonid, @RequestParam("search_khachhangid") String search_khachhangid,
 			 @RequestParam("search_ngaytao") String search_ngaytao,  @RequestParam("search_month") String search_month,
 			 @RequestParam("search_year") String search_year,  @RequestParam("search_status") String search_status,
-			 @RequestParam("action") String action) {
+			 @RequestParam("action") String action, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+				@RequestParam(value = "limit",defaultValue = "10") int limit) {
 		
 		List<HoaDon> list_hoadon = new ArrayList<>();
+		
+		if (search_month.equals("-1")) {
+			search_month = "";
+		}
+		if (search_year.equals("-1")) {
+			search_year = "";
+		}
 		
 		if (search_status.equals("0")) {
 			search_status = "Chưa thanh toán";
@@ -780,7 +788,12 @@ public class NhanVienController {
 		
 		
 		if (action.equals("search")) {
-			list_hoadon = hoadonDAO.searchHoaDonKhachHang(search_hoadonid, search_khachhangid, search_ngaytao, search_month, search_year, search_status);			
+			list_hoadon = hoadonDAO.searchHoaDonKhachHang(search_hoadonid, search_khachhangid, search_ngaytao, search_month, search_year, search_status);	
+			
+			int total_page = hoadonDAO.tong_trang_search_hoadon(search_hoadonid, search_khachhangid, search_ngaytao, search_month, search_year, search_status);
+			
+			model.addAttribute("curr_page", cur_page);
+			model.addAttribute("total_page", total_page);
 		} else {
 			return "redirect:/nhan_vien/quan_ly_hoa_don_khach_hang";
 		}
@@ -845,8 +858,8 @@ public class NhanVienController {
 	@RequestMapping(value = "/nhan_vien/quan_ly_hoa_don_khach_hang/sua", method = RequestMethod.POST)
 	public String sua_hoadon_khachhang(@RequestParam("khachhang_id") String khachhang_id, @RequestParam("hoadon_id") String hoadon_id,
 			@RequestParam("thang") String thang, @RequestParam("nam") String nam, @RequestParam("thue") String thue, 
-			@RequestParam("edit_status") String edit_status, RedirectAttributes redirectAttributes, HttpSession session,
-			HttpServletRequest request) {
+			@RequestParam("edit_status") String edit_status, @RequestParam("editPTTT") String editPTTT,
+			RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
 		
 		
 		
@@ -860,6 +873,7 @@ public class NhanVienController {
 		System.out.println("nam: " + nam);
 		System.out.println("thue: " + thue);
 		System.out.println("edit_status: " + edit_status);
+		System.out.println("edit PTTT: " + editPTTT);
 		
 		if (edit_status.equals("0")) {
 			edit_status = "Chưa thanh toán";
@@ -867,7 +881,7 @@ public class NhanVienController {
 			edit_status = "Đã thanh toán";
 		}
 		
-		if (hoadonDAO.editHoaDon(hoadon_id, thang, nam, thue, edit_status)) {
+		if (hoadonDAO.editHoaDon(hoadon_id, thang, nam, thue, edit_status, editPTTT)) {
 			message = "Bạn đã cập nhật lịch sử đo của khách hàng thành công";
 			session.setAttribute("message", message);
 			session.setAttribute("isError", isError);
@@ -907,11 +921,34 @@ public class NhanVienController {
 	}
 	
 	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////// QUAN LY GIA DIEN ///////////////////////////////////////////////////////////////
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////QUAN LY LICH SU THANH TOAN ///////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	@RequestMapping (value = "/nhan_vien/quan_ly_gia_dien", method = RequestMethod.GET)
+	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang", method = RequestMethod.GET)
+	public String get_lichsuthanhtoan_khachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+			@RequestParam(value = "limit",defaultValue = "10") int limit) {
+		
+		List<HoaDon> list_hoadon = hoadonDAO.getAllPageLSThanhToan(cur_page);
+		
+		int total_page = hoadonDAO.tong_trang_lsthanhtoan();
+		
+		model.addAttribute("curr_page", cur_page);
+		model.addAttribute("total_page", total_page);
+		model.addAttribute("list_hoadon", list_hoadon);
+		
+		
+		return "employee/quan_ly_lich_su_thanh_toan_khach_hang";
+	}
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// QUAN LY GIA DIEN /////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	@RequestMapping(value = "/nhan_vien/quan_ly_gia_dien", method = RequestMethod.GET)
 	public String quan_ly_gia_dien(Model model) {
 		List <GiaDien> giaDien = giaDien_DAO.HienThiDanhSach();
 		model.addAttribute("list_giaDien", giaDien);
