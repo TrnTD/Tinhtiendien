@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script> <%@include file="/paging/jquery.twbsPagination.js" %></script>
 </head>
 <body>
 	<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
@@ -20,7 +21,7 @@
 	}
 </style>
 <!-- 	================================================= -->
-	<div class="container mt-5">
+	<div class="container">
 	<div class="row">
 	<div style="margin-left: 0px;width:1300px" class="col-md-8 offset-md-2">
 		<form class="custom-form" action = "/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang/tim_kiem" method="GET">
@@ -69,9 +70,9 @@
     		<!-- Thêm các hàng input khác nếu cần -->
 			<button style="float: right;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
 		</form>
-			<form action="/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang" method="GET">
-				<button style="float: right; margin-right: 5px;" type="submit" class="btn btn-primary submit-btn">Tất Cả</button>
-			</form>
+		<form action="/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang" method="GET">
+			<button style="float: right; margin-right: 5px;" type="submit" class="btn btn-primary submit-btn">Tất Cả</button>
+		</form>
 	</div>
 </div>
 	<%
@@ -130,6 +131,18 @@
 			session.removeAttribute("isError");
 		}
 	%>
+	
+	<div style="display: flex; justify-content: center; margin-bottom: -30px;">
+
+			<form action="/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang" class="custom-form" id="submitPage" method="GET">
+				 <nav aria-label="Page navigation">
+		        	<ul class="pagination" id="pagination"></ul>
+		    	</nav>
+		    	<input type="hidden" id="cur_page" name="cur_page" value="${curr_page}">
+		    	<input type="hidden" id="limit" name="limit" value="${total_page}">
+	    	</form>
+		</div>
+		
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
@@ -151,12 +164,12 @@
                         <th>Mã Khách Hàng</th>
                         <th>Họ Tên</th>
                         <th>Giới tính</th>
-                        <th>Ngày sinh</th>
+                        <th style="width: 100px;">Ngày sinh</th>
                         <th>Email</th>
                         <th>Số điện thoại</th>
                         <th>Căn cước công dân</th>
                         <th>Địa chỉ</th>
-                        <th>Hoạt động</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -682,7 +695,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 })
 
-var errorMessages = document.querySelectorAll('h6');
+	var errorMessages = document.querySelectorAll('h6');
 	errorMessages.forEach(errorMessage => {
 		if (errorMessage.textContent.trim() !== "") {
             
@@ -698,6 +711,43 @@ var errorMessages = document.querySelectorAll('h6');
             }
         }
 	})
+	
+	
+	// 	------------------------------------ phan trang ----------------------------
+
+	let isPageClicked = false;
+	var curPage = parseInt($('#cur_page').val())
+	$(function() {
+		window.pagObj = $('#pagination').twbsPagination({
+			totalPages : ${total_page},
+			visiblePages : 3,
+			first : '<<',
+			prev : '<',
+	   		next:'>',
+			last : '>>',
+			startPage: curPage,
+			onPageClick : function(event, page) {
+				if (isPageClicked) {
+					if ((window.location.pathname).includes("tim_kiem")) {
+						var searchParams = new URLSearchParams(window.location.search);
+						searchParams.delete('cur_page');
+			            searchParams.delete('limit');
+			            
+						var url = window.location.origin + window.location.pathname + "?" + searchParams.toString();
+						url += "&cur_page=" + page + "&limit=3";
+						window.location.href = url
+						
+					} else {
+	                    $('#cur_page').val(page);
+	                    $('#submitPage').submit();							
+					}
+	
+	               }
+	               isPageClicked = true;
+		
+			}
+		})
+	});
 
 </script>
 </body>

@@ -34,10 +34,10 @@
 	}
 </style>
 	<div class="content">
-  		<div class="container" style="width:1000px">
+  		<div class="container" style="width: 1200px">
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Thông tin hóa đơn</h2>
 	        
-	        <table class="table table-hover" style="background-color: white;">
+	        <table class="table table-hover" style="background-color: white; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
 	          <thead>
 	            <tr>
 	              <th>Tháng</th>

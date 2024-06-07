@@ -1,6 +1,7 @@
 package com.Tinhtiendien.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,12 +32,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.Tinhtiendien.DAO.*;
 import com.Tinhtiendien.DAO.*;
 import com.Tinhtiendien.Models.*;
+import KtraDuLieu.KtraDuLieu;
 
 @Controller
 public class KhachHangController {
 	
 	@Autowired
 	AccountDAO accountDAO = new AccountDAO();
+	
+	@Autowired
+	InfoDAO infoDAO = new InfoDAO();
 	
 	@Autowired
 	ChiTietHoaDonDAO chitiethoadonDAO = new ChiTietHoaDonDAO();
@@ -53,9 +58,16 @@ public class KhachHangController {
 	@Autowired
 	HoaDonDAO hoadonDAO = new HoaDonDAO();
 	
+	@Autowired
+	YeuCauDAO yeucauDAO = new YeuCauDAO();
+	
 	@RequestMapping(value = "/nguoi_dung/quan_ly_chung", method = RequestMethod.GET)
 	public String quan_ly_chung(HttpSession session, Model model, RedirectAttributes redirectAttributes,
 			HttpServletRequest request) throws JsonProcessingException, ServletException, IOException {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
         
         Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
@@ -117,6 +129,11 @@ public class KhachHangController {
 	
 	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don", method = RequestMethod.GET)
 	public String thong_tin_hoa_don(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
+		
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDon(makh);
@@ -131,10 +148,14 @@ public class KhachHangController {
 	@RequestMapping(value = "/nguoi_dung/tra_cuu_hoa_don", method = RequestMethod.GET)
 	public String render_tra_cuu_hoa_don(HttpSession session, Model model) {
 
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
+		
 		Info info = (Info) session.getAttribute("info_khachhang");
         String makh = info.getKhachhang_id();
 		
-		int nam_dangky = donghodienDAO.getNamDangKy(makh);
+		int nam_dangky = infoDAO.getNamDangKy(makh);
 		
 		model.addAttribute("nam_dangky", nam_dangky);
 		
@@ -147,7 +168,7 @@ public class KhachHangController {
         Info info = (Info) session.getAttribute("info_khachhang");
         String makh = info.getKhachhang_id();
 
-        int nam_dangky = donghodienDAO.getNamDangKy(makh);
+        int nam_dangky = infoDAO.getNamDangKy(makh);
 		
 		model.addAttribute("nam_dangky", nam_dangky);
         
@@ -166,6 +187,10 @@ public class KhachHangController {
 	
 	@RequestMapping(value = "/nguoi_dung/lich_su_thanh_toan", method = RequestMethod.GET)
 	public String lich_su_thanh_toan(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
 		
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
@@ -194,6 +219,10 @@ public class KhachHangController {
 	@RequestMapping(value = "/nguoi_dung/lich_su_do", method = RequestMethod.GET)
 	public String getLichsu_do(HttpSession session, Model model) {
 		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
+		
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		
@@ -206,6 +235,10 @@ public class KhachHangController {
 
 	@RequestMapping(value = "/nguoi_dung/quan_ly_tai_khoan", method = RequestMethod.GET)
 	public String quan_ly_tai_khoan(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
 		
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
@@ -252,5 +285,113 @@ public class KhachHangController {
 		model.addAttribute("passwordChanged", passwordChanged);
 		
 		return "user/quan_ly_tai_khoan";
+	}
+	
+	
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// LICH SU YEU CAU /////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	@RequestMapping(value = "/nguoi_dung/lich_su_yeu_cau", method = RequestMethod.GET)
+	public String getLichsu_yeu_cau(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
+		
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		String shortContent;
+		List<YeuCau> listYeuCau = new ArrayList<YeuCau>();
+		listYeuCau = yeucauDAO.getYeuCauByID(makh);
+		List<String> listShortContent = new ArrayList<String>();
+		for (YeuCau yc: listYeuCau) {
+			shortContent = KtraDuLieu.shortenString(yc.getNoi_dung(), 10);
+			listShortContent.add(shortContent);
+		}
+		
+		model.addAttribute("listYeuCau", listYeuCau);
+		model.addAttribute("listShortContent", listShortContent);
+		return "user/lich_su_yeu_cau";
+	}
+	
+	@RequestMapping(value = "/nguoi_dung/lich_su_yeu_cau/gui", method = RequestMethod.POST)
+	public String guiYeuCau(HttpSession session, Model model, @RequestParam("tittle") String tittle, @RequestParam("content") String content) {
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String khachhang_id = info.getKhachhang_id();
+		
+		boolean isError = false;
+		String message = "";
+		
+		if (tittle != null) {
+			try {
+				tittle = new String(tittle.getBytes("ISO-8859-1"), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		if (content != null) {
+			try {
+				content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		if (yeucauDAO.themYeuCauMoi(khachhang_id, tittle, content) == true) {
+			message = "Gửi yêu cầu thành công";
+		} else {
+			message = "Gửi yêu cầu không thành công";
+			isError = true;
+		}
+		session.setAttribute("message", message);
+		session.setAttribute("isError", isError);
+		return "redirect:/nguoi_dung/lich_su_yeu_cau";
+	}
+	
+	@RequestMapping(value = "/nguoi_dung/lich_su_yeu_cau/sua", method = RequestMethod.POST)
+	public String suaYeuCau(HttpSession session, Model model, @RequestParam("tittle") String tittle, @RequestParam("content") String content,
+			@RequestParam("yeucau_id") String yeucau_id) {
+		boolean isError = false;
+		String message = "";
+		
+		if (tittle != null) {
+			try {
+				tittle = new String(tittle.getBytes("ISO-8859-1"), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		if (content != null) {
+			try {
+				content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		if (yeucauDAO.suaYeuCau(tittle, content, yeucau_id)) {
+			message = "Sửa yêu cầu thành công";
+		} else {
+			message = "Sửa yêu cầu không thành công";
+			isError = true;
+		}
+		session.setAttribute("message", message);
+		session.setAttribute("isError", isError);
+		return "redirect:/nguoi_dung/lich_su_yeu_cau";
+	}
+	
+	@RequestMapping(value = "/nguoi_dung/lich_su_yeu_cau/xoa", method = RequestMethod.POST)
+	public String xoaYeuCau(HttpSession session, Model model, @RequestParam("yeucau_id") String yeucau_id) {
+		boolean isError = false;
+		String message = "";
+		if (yeucauDAO.xoaYeuCau(yeucau_id)) {
+			message = "Xóa yêu cầu thành công";
+		} else {
+			message = "Xóa yêu cầu không thành công";
+			isError = true;
+		}
+		session.setAttribute("message", message);
+		session.setAttribute("isError", isError);
+		return "redirect:/nguoi_dung/lich_su_yeu_cau";
 	}
 }

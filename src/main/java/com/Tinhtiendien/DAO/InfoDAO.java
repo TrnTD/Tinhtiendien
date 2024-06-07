@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.Tinhtiendien.Entity.MapperHoaDon;
 import com.Tinhtiendien.Entity.MapperInfo;
 import com.Tinhtiendien.Entity.MapperInfoNhanVien;
 import com.Tinhtiendien.Models.*;
@@ -41,6 +42,24 @@ public class InfoDAO {
 		}
 		
 		return infonv;
+	}
+	
+	public int getNamDangKy(String khachhang_id) {
+		int nam = -1;
+		String query = "select YEAR(ngay_dangky) as nam_dangky from khachhang where khachhang_id = ?";
+		
+		try {
+			nam = jdbcTemplate.queryForObject(query, Integer.class, khachhang_id);
+			System.out.println("Truy van nam tu dong ho dien thanh cong!");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van nam tu dong ho dien that bai!");
+		}
+		
+		if (nam == -1) {
+			System.out.println("Khong co nam nao duoc tra ve");
+		}
+		
+		return nam;
 	}
 	
 	public boolean checkUsernameKhachHang(String username) {
@@ -245,58 +264,159 @@ public class InfoDAO {
 	
 	public List<Info> searchKhachHang (String khachhang_id, String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi){
 		List<Info> infos = new  ArrayList<Info>();
-		 String sql = "SELECT * FROM khachhang WHERE 1=1";
-		 List<Object> params = new ArrayList<>();
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
 
-	        if (khachhang_id != null && !khachhang_id.isEmpty()) {
-	            sql += " AND LOWER(khachhang_id) LIKE LOWER(?)";
-	            params.add("%" + khachhang_id + "%");
-	        }
-	        if (hoten != null && !hoten.isEmpty()) {
-	            sql += " AND LOWER(hovaten) LIKE LOWER(?)";
-	            params.add("%" + hoten + "%");
-	        }
-	        if (gioitinh != null && !gioitinh.isEmpty()) {
-	            sql += " AND gioitinh = ?";
-	            params.add(gioitinh);
-	        }
-	        if (ngaysinh != null && !ngaysinh.isEmpty()) {
-	            sql += " AND ngaythangnam_sinh = ?";
-	            params.add(ngaysinh);
-	        }
-	        if (email != null && !email.isEmpty() && !email.equals(".")) {
-	        	sql += " AND LOWER(email) LIKE LOWER(?)";
-	            params.add("%" + email + "%");
-	        } else if (email.equals(".")) {
-	        	sql += " AND email = ''";
-	        }
-	        if (sdt != null && !sdt.isEmpty()) {
-	            sql += " AND sdt = ?";
-	            params.add(sdt);
-	        }
-	        if (cccd != null && !cccd.isEmpty()) {
-	            sql += " AND cccd = ?";
-	            params.add(cccd);
-	        }
-	        if (diachi != null && !diachi.isEmpty()) {
-	            sql += " AND LOWER(diachi) LIKE LOWER(?)";
-	            params.add("%" + diachi + "%");
-	        }
-	        
-	        System.out.println(sql);
-	        
-	        try {
-				infos = jdbcTemplate.query(sql,params.toArray(), new MapperInfo());
-				System.out.println("Tim kiem thong tin khach hang thanh cong");
-			} catch (DataAccessException e) {
-				System.out.println("Tim kiem thong tin khach hang that bai");
-			}
-	        
-	        if (infos.size() == 0) {
-				System.out.println("Khong co khach hang can tim");
-			}
+		String sql = "exec sp_SearchInfoKhachHang @PageNumber = 1, @PageSize = 10,";
+
+		if (!khachhang_id.isEmpty()) {
+			conditions.add("@KhachHangID = ?");
+			params.add(khachhang_id);
+		}
+		
+		if (!hoten.isEmpty()) {
+			conditions.add("@Hoten = N'" + hoten + "'");
+		}
+		
+		if (!gioitinh.isEmpty()) {
+			conditions.add("@GioiTinh = N'" + gioitinh + "'");
+		}
+		
+		if (!ngaysinh.isEmpty()) {
+			conditions.add("@NgaySinh = ?");
+			params.add(ngaysinh);
+		}
+		
+		if (!email.isEmpty()) {
+			conditions.add("@Email = ?");
+			params.add(email);
+		}
+		
+		if (!sdt.isEmpty()) {
+			conditions.add("@Sdt = ?");
+			params.add(sdt);
+		}
+		
+		if (!cccd.isEmpty()) {
+			conditions.add("@Cccd = ?");
+			params.add(cccd);
+		}
+		
+		if (!diachi.isEmpty()) {
+			conditions.add("@DiaChi = N'" + diachi + "'");
+		}
+		
+		if (!conditions.isEmpty()) {
+	        sql += " " + String.join(", ", conditions);
+	    }
+        
+        try {
+			infos = jdbcTemplate.query(sql,params.toArray(), new MapperInfo());
+			System.out.println("Tim kiem thong tin khach hang thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Tim kiem thong tin khach hang that bai");
+		}
+        
+        if (infos.size() == 0) {
+			System.out.println("Khong co khach hang can tim");
+		}
 	        
 		return infos;
+	}
+	
+//	============================================== Phan trang ==================================
+	// Tong trang binh thuong
+	public int tong_trang()
+	{
+		int temp = -1;
+		String sql = "exec sp_GetTotalPagesAllAccKhachHang @PageSize = 10";
+		try {
+			  temp = jdbcTemplate.queryForObject(sql, Integer.class);	
+			  System.out.println(temp);
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	// Tổng trang tìm kiếm
+	public int tong_trang_search(String khachhang_id, String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi)
+	{
+		int temp = -1;
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
+		
+		String sql = "exec sp_GetTotalPagesAllSearchInfoKhachHang @PageSize = 10,";
+		
+		if (!khachhang_id.isEmpty()) {
+			conditions.add("@KhachHangID = ?");
+			params.add(khachhang_id);
+		}
+		
+		if (!hoten.isEmpty()) {
+			conditions.add("@Hoten = N'" + hoten + "'");
+		}
+		
+		if (!gioitinh.isEmpty()) {
+			conditions.add("@GioiTinh = N'" + gioitinh + "'");
+		}
+		
+		if (!ngaysinh.isEmpty()) {
+			conditions.add("@NgaySinh = ?");
+			params.add(ngaysinh);
+		}
+		
+		if (!email.isEmpty()) {
+			conditions.add("@Email = ?");
+			params.add(email);
+		}
+		
+		if (!sdt.isEmpty()) {
+			conditions.add("@Sdt = ?");
+			params.add(sdt);
+		}
+		
+		if (!cccd.isEmpty()) {
+			conditions.add("@Cccd = ?");
+			params.add(cccd);
+		}
+		
+		if (!diachi.isEmpty()) {
+			conditions.add("@DiaChi = N'" + diachi + "'");
+		}
+		
+		if (!conditions.isEmpty()) {
+	        sql += " " + String.join(", ", conditions);
+	    }
+		
+		System.out.println(sql);
+		
+		try {
+			temp = jdbcTemplate.queryForObject(sql, params.toArray(), Integer.class);	
+			System.out.println(sql);
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	public List<Info> getAllPageInfoKhachHang(int page) {
+		List<Info> list_info = new ArrayList<Info>();
+		
+		String query = "exec sp_GetPagedAllInfoKhachHang @PageNumber = ?, @PageSize = 10";
+		
+		try {
+			list_info = jdbcTemplate.query(query, new Object[] {page}, new MapperInfo());
+			System.out.println("Truy van tat ca hoa don page " + page + " thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca hoa don page " + page + " that bai");
+		}
+		
+		return list_info;
 	}
 
 }

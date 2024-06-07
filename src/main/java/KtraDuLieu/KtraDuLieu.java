@@ -46,4 +46,12 @@ public class KtraDuLieu {
 		    Matcher matcher = pattern.matcher(giaDien);
 		    return matcher.matches();
 	 }
+	 
+	 public static String shortenString(String str, int length) {
+		 if (str.length() <= length) {
+			 return str;
+		 } else {
+			 return str.substring(0, length) + "...";
+		 }
+	 } 
 }

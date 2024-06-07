@@ -106,11 +106,11 @@
           <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comment-dots"></i> Lịch sử yêu cầu</a>
+        <a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_yeu_cau_khach_hang"><i class="fa-regular fa-comment-dots"></i> Quản lý yêu cầu</a>
       </li>
       
       <li class="nav-item">
-        <a class="nav-link" href="/Tinhtiendien/nguoi_dung/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
+        <a class="nav-link" href="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
       </li>
     </ul>
 </div>
@@ -130,45 +130,34 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Thêm lớp active cho menu item được nhấp vào
             this.classList.add("active");
+            
+            
 
             // Kiểm tra xem menu item được nhấp có phải là "Tra cứu hóa đơn điện tử" không
             var parentMenuItem = document.querySelector('a[href="#lichsuhoadon"]');
             var collapseMenu = document.querySelector('#lichsuhoadon');
-            
-            var parentMenuItem1 = document.querySelector('a[href="#tracuu"]');
-            var collapseMenu1 = document.querySelector('#tracuu');
 
-            if (this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/tra_cuu_hoa_don" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/thong_tin_hoa_don" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_su_thanh_toan") 
+            if (this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang" || this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_su_thanh_toan") 
             {
-                parentMenuItem1.setAttribute("aria-expanded", "false");
-                collapseMenu1.classList.remove("show");
+            	console.log("44444")
+
                 sessionStorage.setItem("menuState1", "collapsed");
 
                 // Lưu trạng thái vào sessionStorage
                 sessionStorage.setItem("menuState", "expanded");
             }
-            else if (this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_tam_ngung_cap_dien"|| this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_ghi_chi_so" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_su_do" ) 
-            {
-                parentMenuItem.setAttribute("aria-expanded", "false");
-                collapseMenu.classList.remove("show");
-                sessionStorage.setItem("menuState", "collapsed");
-                
-                	
-                sessionStorage.setItem("menuState1", "expanded");
-            } 
+            
             else {
+            	console.log("123")
+            	
                 // Nếu không phải, đặt thuộc tính aria-expanded là false
                 parentMenuItem.setAttribute("aria-expanded", "false");
-                parentMenuItem1.setAttribute("aria-expanded", "false");
-                
+
                 // Xóa class "show" để ẩn ul
                 collapseMenu.classList.remove("show");
-                collapseMenu1.classList.remove("show");
-
 
                 // Lưu trạng thái vào sessionStorage
                 sessionStorage.setItem("menuState", "collapsed");
-                sessionStorage.setItem("menuState1", "collapsed");
 
             }
 
@@ -198,27 +187,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
-    var menuState1 = sessionStorage.getItem("menuState1");
-    if (menuState1 === "expanded") {
-        var parentMenuItem1 = document.querySelector('a[href="#tracuu"]');
-        var collapseMenu1 = document.querySelector('#tracuu');
-        if (parentMenuItem1 && collapseMenu1) {
-            parentMenuItem1.setAttribute("aria-expanded", "true");
-            collapseMenu1.classList.add("show");
-        }
-    }
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </html>
-
-
-
-
-
-
-
-
-
-
 

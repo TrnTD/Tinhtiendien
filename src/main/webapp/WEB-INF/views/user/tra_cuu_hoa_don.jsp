@@ -40,46 +40,46 @@
 </style>	
 	<div class="content">
   		<div class="container" style="width: 1200px;">
-<!-- 	        <h2 style="color:#f6621c;margin-bottom: 20px;">Thông tin khách hàng</h3> -->
-<!-- 	       	<div style="background-color: white;"> -->
-<!-- 	       		<div class="row"> -->
+	        <h2 style="color:#f6621c;margin-bottom: 20px;">Thông tin khách hàng</h3>
+	       	<div style="background-color: white;">
+	       		<div class="row">
 <!-- 		            Cột 1 -->
-<!-- 		            <div class="col-2"> -->
-<!-- 		                <p><strong>Họ và tên:</strong></p> -->
-<!-- 		            </div> -->
+		            <div class="col-2">
+		                <p><strong>Họ và tên:</strong></p>
+		            </div>
 <!-- 		            Cột 2 -->
-<!-- 		            <div class="col-md-3"> -->
-<%-- 		                <p><span class="left-align" id="hoten">${info_khachhang.hovaten}</span></p> --%>
-<!-- 		            </div> -->
+		            <div class="col-md-3">
+		                <p><span class="left-align" id="hoten">${info_khachhang.hovaten}</span></p>
+		            </div>
 <!-- 		            Cột 3 -->
-<!-- 		            <div class="col-2"> -->
-<!-- 		                <p><strong>Mã khách hàng:</strong></p> -->
-<!-- 		            </div> -->
+		            <div class="col-2">
+		                <p><strong>Mã khách hàng:</strong></p>
+		            </div>
 <!-- 		            Cột 4 -->
-<!-- 		            <div class="col-md-3"> -->
-<%-- 		                <p><span class="left-align" id="diachi">${info_khachhang.khachhang_id}</span></p> --%>
-<!-- 		            </div> -->
-<!-- 		        </div> -->
-<!-- 		        <div class="row"> -->
+		            <div class="col-md-3">
+		                <p><span class="left-align" id="diachi">${info_khachhang.khachhang_id}</span></p>
+		            </div>
+		        </div>
+		        <div class="row">
 <!-- 		            Cột 5 -->
-<!-- 		            <div class="col-2"> -->
-<!-- 		                <p><strong>Địa chỉ:</strong></p> -->
-<!-- 		            </div> -->
+		            <div class="col-2">
+		                <p><strong>Địa chỉ:</strong></p>
+		            </div>
 <!-- 		            Cột 6 -->
-<!-- 		            <div class="col-md-3"> -->
-<%-- 		                <p><span class="left-align" id="makh">${info_khachhang.diachi}</span></p> --%>
-<!-- 		            </div> -->
+		            <div class="col-md-3">
+		                <p><span class="left-align" id="makh">${info_khachhang.diachi}</span></p>
+		            </div>
 <!-- 		            Cột 7 -->
-<!-- 		            <div class="col-2"> -->
-<!-- 		                <p><strong>Số điện thoại:</strong></p> -->
-<!-- 		            </div> -->
+		            <div class="col-2">
+		                <p><strong>Số điện thoại:</strong></p>
+		            </div>
 <!-- 		            Cột 8 -->
-<!-- 		            <div class="col-md-3"> -->
-<%-- 		                <p><span class="left-align" id="mahoadon">${info_khachhang.sdt}</span></p> --%>
-<!-- 		            </div> -->
-<!-- 		        </div> -->
-<!-- 	       	</div> -->
-<!--   		</div> -->
+		            <div class="col-md-3">
+		                <p><span class="left-align" id="mahoadon">${info_khachhang.sdt}</span></p>
+		            </div>
+		        </div>
+	       	</div>
+  		</div>
   		
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Tra cứu hóa đơn</h3>
 			

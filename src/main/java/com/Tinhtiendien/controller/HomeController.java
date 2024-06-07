@@ -16,16 +16,11 @@ public class HomeController {
 	@RequestMapping("/nhan_vien")
 	public String nhan_vien(Model model) {
 		
-		model.addAttribute("test_value", "123");
-		
-		System.out.println("testtttt");
-		
 		return "employee/nhan_vien";
 	}
 	
 	@RequestMapping("/index")
 	public String index(RedirectAttributes redirectAttribute, Model model) {
-//		ModelAndView mav = new ModelAndView("redirect:login");
 		
 		redirectAttribute.addFlashAttribute("message", "Hello World!");
 		

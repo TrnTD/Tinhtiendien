@@ -67,18 +67,29 @@ public class NhanVienController {
 	@Autowired
 	PhuongThucThanhToanDAO ptttDAO = new PhuongThucThanhToanDAO();
 	
+	@Autowired
+	YeuCauDAO yeucauDAO = new YeuCauDAO();
+	
+	@RequestMapping(value = "/nhan_vien", method = RequestMethod.GET)
+	public String nhan_vien(HttpSession session, HttpServletRequest request) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+
+		
+		return "redirect:/nhan_vien/quan_ly_chung";
+	}
+	
 	@RequestMapping(value = "/nhan_vien/quan_ly_chung", method = RequestMethod.GET)
-	public String quan_ly_chung(HttpServletRequest request) {
+	public String quan_ly_chung(HttpSession session, HttpServletRequest request) {
 		
-//		List<HoaDon> list_doanhthu = hoadonDAO.get_doanhthu_by_year(2020);
-		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+
 		List<Integer> list_dientieuthu = hoadonDAO.get_dientieuthu_by_year(2010);
 		List<Integer> list_sotien = hoadonDAO.get_doanhthu_by_year(2010);
-		
-//		for (HoaDon hoadon : list_doanhthu) {
-//			list_dientieuthu.add(hoadon.getDien_tieu_thu());
-//			list_sotien.add(hoadon.getSo_tien());
-//		}
 		
 		request.setAttribute("list_dientieuthu", list_dientieuthu);
 		request.setAttribute("list_sotien", list_sotien);
@@ -93,9 +104,22 @@ public class NhanVienController {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@RequestMapping(value = "/nhan_vien/quan_ly_thong_tin_khach_hang", method = RequestMethod.GET)
-	public String quanly_thongtinkhachhang(Model model) {
-		List<Info> listKH = infoDAO.getAllKhachHang();
+	public String quanly_thongtinkhachhang(HttpSession session, Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+			@RequestParam(value = "limit",defaultValue = "10") int limit) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
+		List<Info> listKH = infoDAO.getAllPageInfoKhachHang(cur_page);
+		
+		int total_page = infoDAO.tong_trang();
+				
 		model.addAttribute("listKH", listKH);
+		
+		model.addAttribute("curr_page", cur_page);
+		model.addAttribute("total_page", total_page);
+
 
 		return "employee/quan_ly_thong_tin_khach_hang";
 	}
@@ -296,10 +320,15 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_thong_tin_khach_hang/tim_kiem", method = RequestMethod.GET)
-	public String tim_kiem_khach_hang(Model model,HttpSession session, @RequestParam("search_khachhang_id") String khachhang_id, @RequestParam("search_hoten") String hoten,
+	public String tim_kiem_khach_hang(Model model, HttpSession session, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+			@RequestParam(value = "limit",defaultValue = "10") int limit, @RequestParam("search_khachhang_id") String khachhang_id, @RequestParam("search_hoten") String hoten,
 			@RequestParam("search_gioitinh") String gioitinh, @RequestParam("search_ngaysinh") String ngaysinh, @RequestParam("search_email") String email,
 			@RequestParam("search_sdt") String sdt, @RequestParam("search_cccd") String cccd, @RequestParam("search_diachi") String diachi
 			) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
 		
 		if (khachhang_id.isEmpty() && hoten.isEmpty() && gioitinh.isEmpty() && ngaysinh.isEmpty() && email.isEmpty() && sdt.isEmpty() && cccd.isEmpty() && diachi.isEmpty()) {
 			List<Info> listKH = null;
@@ -312,8 +341,15 @@ public class NhanVienController {
 		} else if (gioitinh.equals("nu")) {
 			gioitinh = "Nữ";
 		}
+		
 		List<Info> listKH = infoDAO.searchKhachHang(khachhang_id, hoten, gioitinh, ngaysinh, email, sdt, cccd, diachi);
+		
+		int total_page = infoDAO.tong_trang_search(khachhang_id, hoten, gioitinh, ngaysinh, email, sdt, cccd, diachi);
+		
 		model.addAttribute("listKH", listKH);
+		model.addAttribute("curr_page", cur_page);
+		model.addAttribute("total_page", total_page);
+		
 		return "employee/quan_ly_thong_tin_khach_hang";
 	}
 	
@@ -325,9 +361,14 @@ public class NhanVienController {
 
 
 	@RequestMapping("/nhan_vien/quan_ly_tai_khoan_khach_hang")
-	public String layChuKiDO(Model model, 
+	public String layChuKiDO(HttpSession session, Model model, 
 			@RequestParam(value ="cur_page",defaultValue = "1") int cur_page,
 			@RequestParam(value = "limit",defaultValue = "10") int limit) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
 //		List<QuanLyAccount> listAcc = qlaccountDAO.getAllAccountsUser();
 		List<QuanLyAccount> listAcc = qlaccountDAO.getAllAccountsUserInPage(cur_page);
 		model.addAttribute("list_acc", listAcc);
@@ -341,6 +382,11 @@ public class NhanVienController {
 	public String tim_kiem(HttpSession session, Model model,RedirectAttributes redirectAttributes,@RequestParam("kh_id") String kh_id,
 			@RequestParam(value = "all", required = false) String all) 
 	{
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
 		if ("search_all".equals(all))
 		{
 			int ttp = qlaccountDAO.tong_trang();
@@ -464,6 +510,11 @@ public class NhanVienController {
 	}
 	
 	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// QUAN LY LICH GHI CHI SO ///////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_ghi_chi_so_khach_hang", method = RequestMethod.GET)
 	public String get_lgcs_khachhang(@RequestParam(value = "selected_makh", required = false) String selected_makh, Model model) {
 		
@@ -497,8 +548,12 @@ public class NhanVienController {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang", method = RequestMethod.GET)
-	public String get_lsd_khachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+	public String get_lsd_khachhang(HttpSession session, Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
 			@RequestParam(value = "limit",defaultValue = "10") int limit) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
 		
 //		List<MeasurementHistory> list_lsd = mdDAO.getLSDoTheoFirstChuhoID();
 		List<MeasurementHistory> list_lsd = mdDAO.getAllLSDInPage(cur_page);
@@ -714,17 +769,22 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem", method = RequestMethod.GET)
-	public String search_lsd_khachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+	public String search_lsd_khachhang(HttpSession session, Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
 			@RequestParam(value = "limit",defaultValue = "10") int limit, @RequestParam("search_lsdid") String lsd_id,
-			@RequestParam("search_khachhangid") String khachhang_id, @RequestParam("search_dhdid") String dhd_id, @RequestParam("search_ngaydo") String ngaydo,
+			@RequestParam("search_khachhangid") String khachhang_id, @RequestParam("search_dhdid") String dhd_id,
+			@RequestParam("search_tungay") String tungay, @RequestParam("search_denngay") String denngay,
 			@RequestParam("action") String action, HttpServletRequest request) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
 		
 		String url = request.getHeader("Referer");
 		
 		if (action.equals("search")) {
-			List<MeasurementHistory> list_lsd = mdDAO.searchLsdKhachhang(cur_page, lsd_id, khachhang_id, dhd_id, ngaydo);
+			List<MeasurementHistory> list_lsd = mdDAO.searchLsdKhachhang(cur_page, lsd_id, khachhang_id, dhd_id, tungay, denngay);
 			
-			int total_page = mdDAO.tong_trang_search(lsd_id, khachhang_id, dhd_id, ngaydo);
+			int total_page = mdDAO.tong_trang_search(lsd_id, khachhang_id, dhd_id, tungay, denngay);
 			
 			model.addAttribute("curr_page", cur_page);
 			model.addAttribute("total_page", total_page);
@@ -742,8 +802,12 @@ public class NhanVienController {
 	
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_hoa_don_khach_hang", method = RequestMethod.GET)
-	public String get_hoadonkhachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+	public String get_hoadonkhachhang(HttpSession session, Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
 			@RequestParam(value = "limit",defaultValue = "10") int limit) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
 		
 		List<HoaDon> list_hoadon = hoadonDAO.getAllPageHoaDon(cur_page);
 		
@@ -761,13 +825,20 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_hoa_don_khach_hang/tim_kiem", method = RequestMethod.GET)
-	public String search_hoadon_khachhang(Model model, @RequestParam("search_hoadonid") String search_hoadonid, @RequestParam("search_khachhangid") String search_khachhangid,
-			 @RequestParam("search_ngaytao") String search_ngaytao,  @RequestParam("search_month") String search_month,
+	public String search_hoadon_khachhang(HttpSession session, Model model, @RequestParam("search_hoadonid") String search_hoadonid, 
+			 @RequestParam("search_khachhangid") String search_khachhangid, @RequestParam("search_tungay") String tungay, 
+			 @RequestParam("search_denngay") String denngay,  @RequestParam("search_month") String search_month,
 			 @RequestParam("search_year") String search_year,  @RequestParam("search_status") String search_status,
 			 @RequestParam("action") String action, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
-				@RequestParam(value = "limit",defaultValue = "10") int limit) {
+			 @RequestParam(value = "limit",defaultValue = "10") int limit) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
 		
 		List<HoaDon> list_hoadon = new ArrayList<>();
+		
+		List<PhuongThucThanhToan> list_pttt = ptttDAO.getAllPTTT();
 		
 		if (search_month.equals("-1")) {
 			search_month = "";
@@ -788,9 +859,9 @@ public class NhanVienController {
 		
 		
 		if (action.equals("search")) {
-			list_hoadon = hoadonDAO.searchHoaDonKhachHang(search_hoadonid, search_khachhangid, search_ngaytao, search_month, search_year, search_status);	
+			list_hoadon = hoadonDAO.searchHoaDonKhachHang(cur_page, search_hoadonid, search_khachhangid, tungay, denngay, search_month, search_year, search_status);	
 			
-			int total_page = hoadonDAO.tong_trang_search_hoadon(search_hoadonid, search_khachhangid, search_ngaytao, search_month, search_year, search_status);
+			int total_page = hoadonDAO.tong_trang_search_hoadon(search_hoadonid, search_khachhangid, tungay, denngay, search_month, search_year, search_status);
 			
 			model.addAttribute("curr_page", cur_page);
 			model.addAttribute("total_page", total_page);
@@ -799,6 +870,7 @@ public class NhanVienController {
 		}
 		
 		model.addAttribute("list_hoadon", list_hoadon);
+		model.addAttribute("list_pttt", list_pttt);
 		
 		return "employee/quan_ly_hoa_don_khach_hang";
 	}
@@ -928,10 +1000,15 @@ public class NhanVienController {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang", method = RequestMethod.GET)
-	public String get_lichsuthanhtoan_khachhang(Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+	public String get_lichsuthanhtoan_khachhang(HttpSession session, Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
 			@RequestParam(value = "limit",defaultValue = "10") int limit) {
 		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
 		List<HoaDon> list_hoadon = hoadonDAO.getAllPageLSThanhToan(cur_page);
+		List<PhuongThucThanhToan> list_pttt = ptttDAO.getAllPTTT();
 		
 		int total_page = hoadonDAO.tong_trang_lsthanhtoan();
 		
@@ -939,9 +1016,58 @@ public class NhanVienController {
 		model.addAttribute("total_page", total_page);
 		model.addAttribute("list_hoadon", list_hoadon);
 		
+		model.addAttribute("list_pttt", list_pttt);
+		
 		
 		return "employee/quan_ly_lich_su_thanh_toan_khach_hang";
 	}
+	
+	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang/tim_kiem", method = RequestMethod.GET)
+	public String search_lichsuthanhtoan_khachhang(HttpSession session, Model model, @RequestParam("search_hoadonid") String search_hoadonid, 
+			 @RequestParam("search_khachhangid") String search_khachhangid, @RequestParam("search_tungay") String tungay, 
+			 @RequestParam("search_denngay") String denngay,  @RequestParam("search_month") String search_month,
+			 @RequestParam("search_year") String search_year,  @RequestParam("search_pttt") String search_pttt,
+			 @RequestParam("action") String action, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
+			 @RequestParam(value = "limit",defaultValue = "10") int limit) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
+		List<HoaDon> list_hoadon = hoadonDAO.getAllPageLSThanhToan(cur_page);
+		List<PhuongThucThanhToan> list_pttt = ptttDAO.getAllPTTT();
+	
+		
+		if (search_month.equals("-1")) {
+			search_month = "";
+		}
+		if (search_year.equals("-1")) {
+			search_year = "";
+		}
+		
+		if (search_pttt.equals("-1")) {
+			search_pttt = "";
+		}
+		
+		if (action.equals("search")) {
+			list_hoadon = hoadonDAO.searchLSThanhToan(cur_page, search_hoadonid, search_khachhangid, tungay, denngay, search_month, search_year, search_pttt);	
+			
+			int total_page = hoadonDAO.tong_trang_search_lsthanhtoan(search_hoadonid, search_khachhangid, tungay, denngay, search_month, search_year, search_pttt);
+			
+			model.addAttribute("curr_page", cur_page);
+			model.addAttribute("total_page", total_page);
+		} else {
+			return "redirect:/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang";
+		}
+		
+		
+		model.addAttribute("list_hoadon", list_hoadon);
+		model.addAttribute("list_pttt", list_pttt);
+		
+		
+		return "employee/quan_ly_lich_su_thanh_toan_khach_hang";
+	}
+	
 	
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -949,7 +1075,12 @@ public class NhanVienController {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_gia_dien", method = RequestMethod.GET)
-	public String quan_ly_gia_dien(Model model) {
+	public String quan_ly_gia_dien(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
 		List <GiaDien> giaDien = giaDien_DAO.HienThiDanhSach();
 		model.addAttribute("list_giaDien", giaDien);
 		return "employee/quan_ly_gia_dien";
@@ -1044,4 +1175,117 @@ public class NhanVienController {
 
 	    return "redirect:/nhan_vien/quan_ly_gia_dien";
 	}
+	
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// QUAN LY TAI KHOAN /////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	@RequestMapping(value = "/nhan_vien/quan_ly_tai_khoan", method = RequestMethod.GET)
+	public String thong_tin_nhan_vien (HttpSession session, InfoNhanVien nhanVien  ) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
+		nhanVien = (InfoNhanVien) session.getAttribute("info_nhanvien");
+		
+		return "employee/quan_ly_tai_khoan";
+	}
+	
+	@RequestMapping(value = "/nhan_vien/quan_ly_tai_khoan", method = RequestMethod.POST)
+	public String doi_mat_khau_nhan_vien(HttpSession session, RedirectAttributes redirectAttributes, 
+	                                     @RequestParam("oldpassword") String oldpassword,
+	                                     @RequestParam("newpassword") String newpassword,
+	                                     @RequestParam("renewpassword") String renewpassword) {
+	    InfoNhanVien info = (InfoNhanVien) session.getAttribute("info_nhanvien");
+	    String username = info.getUsername();	 
+	    // Kiểm tra mật khẩu cũ
+	    if (account.checkOldPassword(username, oldpassword)) {
+	        // Kiểm tra định dạng mật khẩu mới
+	        if (KtraDuLieu.ktraMatKhau(newpassword)) {
+	            // Đảm bảo mật khẩu mới không trùng với mật khẩu cũ
+	            if (!newpassword.equals(oldpassword)) {
+	                // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp không
+	                if (renewpassword.equals(newpassword)) {
+	                    // Thay đổi mật khẩu
+	                    account.changePassword(username, renewpassword);
+	                    //Thông báo lỗi
+	                } else {redirectAttributes.addFlashAttribute("renewpassmessage", isError.isSame("Mật Khẩu Mới"));return "redirect:/nhan_vien/quan_ly_tai_khoan";}
+	            } else {redirectAttributes.addFlashAttribute("newpassmessage", isError.isNotSame("Mật Khẩu"));return "redirect:/nhan_vien/quan_ly_tai_khoan";}
+	        } else {redirectAttributes.addFlashAttribute("newpassmessage", isError.isType("Mật Khẩu Mới"));return "redirect:/nhan_vien/quan_ly_tai_khoan";}
+	    } else {redirectAttributes.addFlashAttribute("oldpassmessage", isError.isIncorrect("Mật Khẩu Cũ"));return "redirect:/nhan_vien/quan_ly_tai_khoan";}
+	    
+	    redirectAttributes.addFlashAttribute("mess", isSuccess.isComplete("Đổi Mật Khẩu"));
+	    return "redirect:/nhan_vien/quan_ly_tai_khoan";
+	}
+	
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////QUAN LY YEU CAU /////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	@RequestMapping(value="/nhan_vien/quan_ly_yeu_cau_khach_hang", method = RequestMethod.GET)
+	public String quanly_yeucau_khachhang(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
+		List<YeuCau> listYC = yeucauDAO.getAllYeuCau();
+		model.addAttribute("listYC", listYC);
+		return "employee/quan_ly_yeu_cau_khach_hang";
+	}
+	
+	@RequestMapping(value="/nhan_vien/quan_ly_yeu_cau_khach_hang/sua_tt", method = RequestMethod.POST)
+	public String suatt_yeucau_khachhang(Model model,HttpSession session, @RequestParam("trangthai") String trang_thai_id, @RequestParam("yeucau_id") String yeucau_id ) {
+		boolean isError = false;
+		String message = "";
+		if (yeucauDAO.suaTrangThai(trang_thai_id, yeucau_id) == true) {
+			message = "Sửa trạng thái yêu cầu thành công";
+		}else {
+			message = "Sửa yêu cầu không thành công";
+			isError = true;
+		}
+		session.setAttribute("message", message);
+		session.setAttribute("isError", isError);
+		return "redirect:/nhan_vien/quan_ly_yeu_cau_khach_hang";
+	}
+	
+	@RequestMapping(value = "/nhan_vien/quan_ly_yeu_cau_khach_hang/xoa", method = RequestMethod.POST)
+	public String xoaYeuCau(HttpSession session, Model model, @RequestParam("yeucau_id") String yeucau_id) {
+		boolean isError = false;
+		String message = "";
+		if (yeucauDAO.xoaYeuCau(yeucau_id)) {
+			message = "Xóa yêu cầu thành công";
+		} else {
+			message = "Xóa yêu cầu không thành công";
+			isError = true;
+		}
+		session.setAttribute("message", message);
+		session.setAttribute("isError", isError);
+		return "redirect:/nhan_vien/quan_ly_yeu_cau_khach_hang";
+	}
+	
+	@RequestMapping(value="/nhan_vien/quan_ly_yeu_cau_khach_hang/tim_kiem", method = RequestMethod.GET)
+	public String timKiemYeuCau (HttpSession session, Model model, @RequestParam("search_khachhang_id") String khachhang_id, 
+			@RequestParam("search_ngay_gui") String ngay_gui, @RequestParam("search_tua_de") String tua_de, @RequestParam("search_trang_thai") String trang_thai_id) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
+		
+		if (khachhang_id.isEmpty() && ngay_gui.isEmpty() && tua_de.isEmpty() && trang_thai_id.isEmpty()) {
+			List<YeuCau> listYC = null;
+			model.addAttribute("listYC", listYC);
+			return "employee/quan_ly_yeu_cau_khach_hang";
+		}
+		List<YeuCau> listYC = yeucauDAO.timKiemYeuCau(khachhang_id, ngay_gui, tua_de, trang_thai_id);
+		model.addAttribute("listYC", listYC);
+		return "employee/quan_ly_yeu_cau_khach_hang";
+	}
+	
+	
 }

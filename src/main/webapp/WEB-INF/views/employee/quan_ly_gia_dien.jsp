@@ -15,26 +15,24 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css"
 	rel="stylesheet">
-<style>
-<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
+
 </head>
-
-
 <body>
-    <div class="container pt-5">
+<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
+    <div class="container">
         <c:if test="${not empty message}">
             <div id="alertMessage" class="alert alert-success" role="alert" style="margin-top: 10px; display: none;">${message}</div>
         </c:if>
         <div class="container mt-5">
-            <div class="table-wrapper">
+            <div class="table-wrapper" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
                 <div class="table-title">
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col-md-6">
                             <h2>Quản lý <b>Giá Điện</b></h2>
                         </div>
                         <div class="col-sm-6 text-sm-end">
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" onclick="setSelectForm('addForm', '')" style="background-color: #5cb85c;">
-                                <i class="material-icons">&#xE147;</i> <span>Thêm</span>
+                                <i class="material-icons">&#xE147;</i> <span>Thêm giá điện mới</span>
                             </button>
                         </div>
                     </div>
@@ -44,7 +42,7 @@
                         <tr>
                             <th style="width: 200px;">Bậc Điện</th>
                             <th style="width: 200px;">Giá Điện</th>
-                            <th style="width: 300px;">Chức năng</th>
+                            <th style="width: 300px;"></th>
                         </tr>
                     </thead>
                     <tbody>

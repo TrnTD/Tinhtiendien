@@ -58,8 +58,12 @@
 			            <input type="text" class="form-control" id="field2" name="search_khachhangid">
 			        </div>
 			        <div class="col">
-			            <label for="field4" class="form-label">Ngày tạo</label>
-			            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_ngaytao">
+			            <label for="field4" class="form-label">Từ ngày (Ngày tạo)</label>
+			            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_tungay">
+			        </div>
+			        <div class="col">
+			            <label for="field4" class="form-label">Đến ngày (Ngày tạo)</label>
+			            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_denngay">
 			        </div>
 			    </div>
 			    <div class="row mb-3">
@@ -104,11 +108,11 @@
 			        </div>
 			        
 			        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;">
-						<button name="action" value="search" style="float: right;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
+						<button name="action" value="search" style="float: right; margin-right: 10px;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
+						<button name="action" value="reset" style="float: right;" type="submit" class="btn btn-primary submit-btn">Tất cả</button>
 			        </div>
-			        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;">
-						<button name="action" value="reset" style="float: right;" type="submit" class="btn btn-primary submit-btn">Về mặc định</button>
-			        </div>
+<!-- 			        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;"> -->
+<!-- 			        </div> -->
 			    </div>
 			</form>
 		</div>
@@ -534,6 +538,8 @@
 		            ptttElement.options[0].disabled = true;
 		            ptttElement.options[0].hidden = true;
 		            ptttElement.options[1].selected = true;
+		            ptttElement.value = '1';
+		            hiddenInputElement.value = ptttElement.value;
 		            
 		            ptttElement.addEventListener('change', function() {
 		            	hiddenInputElement.value = ptttElement.value

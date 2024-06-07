@@ -110,7 +110,7 @@ body {
           <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comment-dots"></i> Lịch sử yêu cầu</a>
+        <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_yeu_cau"><i class="fa-regular fa-comment-dots"></i> Lịch sử yêu cầu</a>
       </li>
       
       <li class="nav-item">
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Thêm lớp active cho menu item được nhấp vào
             this.classList.add("active");
-
+            
             // Kiểm tra xem menu item được nhấp có phải là "Tra cứu hóa đơn điện tử" không
             var parentMenuItem = document.querySelector('a[href="#lichsuhoadon"]');
             var collapseMenu = document.querySelector('#lichsuhoadon');
@@ -161,6 +161,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 sessionStorage.setItem("menuState1", "expanded");
             } 
             else {
+            	
+            	console.log("6666")
                 // Nếu không phải, đặt thuộc tính aria-expanded là false
                 parentMenuItem.setAttribute("aria-expanded", "false");
                 parentMenuItem1.setAttribute("aria-expanded", "false");
@@ -215,14 +217,5 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </html>
-
-
-
-
-
-
-
-
-
 
 

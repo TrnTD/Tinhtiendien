@@ -147,14 +147,14 @@ public class MeasurementHistoryDAO {
 		return lsd;
 	}
 	
-	public List<MeasurementHistory> searchLsdKhachhang(int page, String lsd_id, String khachhang_id, String dhd_id, String ngaydo) {
+	public List<MeasurementHistory> searchLsdKhachhang(int page, String lsd_id, String khachhang_id, String dhd_id, String tungay, String denngay) {
 		List<MeasurementHistory> list_lsd = new ArrayList<MeasurementHistory>();
 		List<Object> params = new ArrayList<>();
 		List<String> conditions = new ArrayList<>();
 		
 		String query = "";
 		
-		if (lsd_id.isEmpty() && khachhang_id.isEmpty() && dhd_id.isEmpty() && ngaydo.isEmpty()) {
+		if (lsd_id.isEmpty() && khachhang_id.isEmpty() && dhd_id.isEmpty() && tungay.isEmpty() && denngay.isEmpty()) {
 			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
 					+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id \r\n"
 					+ "where 1=0";			
@@ -181,9 +181,14 @@ public class MeasurementHistoryDAO {
 				params.add(dhd_id);
 			}
 			
-			if (!ngaydo.isEmpty()) {
-				conditions.add("@NgayDo = ?");
-				params.add(ngaydo);
+			if (!tungay.isEmpty()) {
+				conditions.add("@TuNgay = ?");
+				params.add(tungay);
+			}
+			
+			if (!denngay.isEmpty()) {
+				conditions.add("@DenNgay = ?");
+				params.add(denngay);
 			}
 			
 			if (!conditions.isEmpty()) {
@@ -275,7 +280,7 @@ public class MeasurementHistoryDAO {
 	}
 	
 	// Tổng trang tìm kiếm
-	public int tong_trang_search(String lsd_id, String khachhang_id, String dhd_id, String ngaydo)
+	public int tong_trang_search(String lsd_id, String khachhang_id, String dhd_id, String tungay, String denngay)
 	{
 		int temp = -1;
 		List<Object> params = new ArrayList<>();
@@ -298,9 +303,14 @@ public class MeasurementHistoryDAO {
 			params.add(dhd_id);
 		}
 		
-		if (!ngaydo.isEmpty()) {
-			conditions.add("@NgayDo = ?");
-			params.add(ngaydo);
+		if (!tungay.isEmpty()) {
+			conditions.add("@TuNgay = ?");
+			params.add(tungay);
+		}
+		
+		if (!denngay.isEmpty()) {
+			conditions.add("@DenNgay = ?");
+			params.add(denngay);
 		}
 		
 		if (!conditions.isEmpty()) {

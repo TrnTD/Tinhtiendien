@@ -150,7 +150,7 @@ public class HoaDonDAO {
 		return true;
 	}
 	
-	public List<HoaDon> searchHoaDonKhachHang(String hoadon_id, String khachhang_id, String ngaytao, String month_bill, String year_bill, String search_status) {
+	public List<HoaDon> searchHoaDonKhachHang(int cur_page, String hoadon_id, String khachhang_id, String tungay, String denngay, String month_bill, String year_bill, String search_status) {
 		
 		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
 		List<Object> params = new ArrayList<>();
@@ -168,11 +168,12 @@ public class HoaDonDAO {
 			search_status = "";
 		}
 		
-		if (hoadon_id.isEmpty() && khachhang_id.isEmpty() && ngaytao.isEmpty() && month_bill.isEmpty() && year_bill.isEmpty() && search_status.isEmpty()) {
+		if (hoadon_id.isEmpty() && khachhang_id.isEmpty() && tungay.isEmpty() && denngay.isEmpty() &&month_bill.isEmpty() && year_bill.isEmpty() && search_status.isEmpty()) {
 			list_hoadon = null;
 			return list_hoadon;
 		} else {
-			query = "exec sp_SearchHoaDon @PageNumber = 1, @PageSize = 10,";
+			query = "exec sp_SearchHoaDon @PageNumber = ?, @PageSize = 10,";
+			params.add(cur_page);
 			
 			if (!hoadon_id.isEmpty()) {
 				conditions.add("@HoaDonID = ?");
@@ -184,9 +185,14 @@ public class HoaDonDAO {
 				params.add(khachhang_id);
 			}
 			
-			if (!ngaytao.isEmpty()) {
-				conditions.add("@NgayTao = ?");
-				params.add(ngaytao);
+			if (!tungay.isEmpty()) {
+				conditions.add("@TuNgay = ?");
+				params.add(tungay);
+			}
+			
+			if (!denngay.isEmpty()) {
+				conditions.add("@DenNgay = ?");
+				params.add(denngay);
 			}
 			
 			if (!month_bill.isEmpty()) {
@@ -318,7 +324,7 @@ public class HoaDonDAO {
 		return temp;
 	}
 	
-	public int tong_trang_search_hoadon(String hoadon_id, String khachhang_id, String ngaytao, String month_bill, String year_bill, String search_status)
+	public int tong_trang_search_hoadon(String hoadon_id, String khachhang_id, String tungay, String denngay, String month_bill, String year_bill, String search_status)
 	{
 		int temp = -1;
 		List<Object> params = new ArrayList<>();
@@ -336,9 +342,14 @@ public class HoaDonDAO {
 			params.add(khachhang_id);
 		}
 		
-		if (!ngaytao.isEmpty()) {
-			conditions.add("@NgayTao = ?");
-			params.add(ngaytao);
+		if (!tungay.isEmpty()) {
+			conditions.add("@TuNgay = ?");
+			params.add(tungay);
+		}
+		
+		if (!denngay.isEmpty()) {
+			conditions.add("@DenNgay = ?");
+			params.add(denngay);
 		}
 		
 		if (!month_bill.isEmpty()) {
@@ -395,6 +406,141 @@ public class HoaDonDAO {
 			System.out.println("Truy van tat ca hoa don page " + page + " thanh cong");
 		} catch (DataAccessException e) {
 			System.out.println("Truy van tat ca hoa don page " + page + " that bai");
+		}
+		
+		return list_hoadon;
+	}
+	
+	
+	// Tổng trang tìm kiếm
+	public int tong_trang_search_lsthanhtoan(String hoadon_id, String khachhang_id, String tungay, String denngay, String month_bill, String year_bill, String search_pttt)
+	{
+		int temp = -1;
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
+		
+		String sql = "exec sp_GetTotalPagesAllSearchLSThanhToan @PageSize = 10,";
+		
+		if (!hoadon_id.isEmpty()) {
+			conditions.add("@HoaDonID = ?");
+			params.add(hoadon_id);
+		}
+		
+		if (!khachhang_id.isEmpty()) {
+			conditions.add("@KhachHangID = ?");
+			params.add(khachhang_id);
+		}
+		
+		if (!tungay.isEmpty()) {
+			conditions.add("@TuNgay = ?");
+			params.add(tungay);
+		}
+		
+		if (!denngay.isEmpty()) {
+			conditions.add("@DenNgay = ?");
+			params.add(denngay);
+		}
+		
+		if (!month_bill.isEmpty()) {
+			conditions.add("@Month_Bill = ?");
+			params.add(month_bill);
+		}
+		
+		if (!year_bill.isEmpty()) {
+			conditions.add("@Year_Bill = ?");
+			params.add(year_bill);
+		}
+		
+		if (!search_pttt.isEmpty()) {
+			conditions.add("@PhuongThucTT = N'" + search_pttt + "'");
+		}
+		
+		if (!conditions.isEmpty()) {
+	        sql += " " + String.join(", ", conditions);
+	    }
+		
+		
+		try {
+			temp = jdbcTemplate.queryForObject(sql, params.toArray(), Integer.class);
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	public List<HoaDon> searchLSThanhToan(int cur_page, String hoadon_id, String khachhang_id, String tungay, String denngay, String month_bill, String year_bill, String search_pttt) {
+		
+		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
+		
+		String query = "";
+		
+		if (month_bill.equals("-1")) {
+			month_bill = "";
+		}
+		if (year_bill.equals("-1")) {
+			year_bill = "";
+		}
+		if (search_pttt.equals("-1")) {
+			search_pttt = "";
+		}
+		
+		if (hoadon_id.isEmpty() && khachhang_id.isEmpty() && tungay.isEmpty() && denngay.isEmpty() &&month_bill.isEmpty() && year_bill.isEmpty() && search_pttt.isEmpty()) {
+			list_hoadon = null;
+			return list_hoadon;
+		} else {
+			query = "exec sp_SearchLSThanhToan @PageNumber = ?, @PageSize = 10,";
+			params.add(cur_page);
+			
+			if (!hoadon_id.isEmpty()) {
+				conditions.add("@HoaDonID = ?");
+				params.add(hoadon_id);
+			}
+			
+			if (!khachhang_id.isEmpty()) {
+				conditions.add("@KhachHangID = ?");
+				params.add(khachhang_id);
+			}
+			
+			if (!tungay.isEmpty()) {
+				conditions.add("@TuNgay = ?");
+				params.add(tungay);
+			}
+			
+			if (!denngay.isEmpty()) {
+				conditions.add("@DenNgay = ?");
+				params.add(denngay);
+			}
+			
+			if (!month_bill.isEmpty()) {
+				conditions.add("@Month_Bill = ?");
+				params.add(month_bill);
+			}
+			
+			if (!year_bill.isEmpty()) {
+				conditions.add("@Year_Bill = ?");
+				params.add(year_bill);
+			}
+			
+			if (!search_pttt.isEmpty()) {
+				conditions.add("@PhuongThucTT = N'" + search_pttt + "'");
+			}
+			
+			if (!conditions.isEmpty()) {
+				query += " " + String.join(", ", conditions);
+		    }
+		}
+		
+		
+//		System.out.println(query);
+		
+		try {
+			list_hoadon = jdbcTemplate.query(query, params.toArray(), new MapperHoaDon());
+			System.out.println("Tim kiem hoa don khach hang thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Tim kiem hoa don khach hang that bai");
 		}
 		
 		return list_hoadon;

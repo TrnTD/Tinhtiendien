@@ -42,16 +42,18 @@
 		            <input type="text" class="form-control" id="field3" name="search_dhdid">
 		        </div>
 		        <div class="col">
-		            <label for="field4" class="form-label">Ngày đo</label>
-		            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_ngaydo">
+		            <label for="field4" class="form-label">Từ ngày</label>
+		            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_tungay">
 		        </div>
-		        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;">
+		        <div class="col">
+		            <label for="field4" class="form-label">Đến ngày</label>
+		            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_denngay">
+		        </div>
+	        	<div class="col" style="width: 50px; display: flex; justify-content: flex-end; align-items: flex-end;">
 					<button name="action" value="search" style="margin-right: 10px;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
-					<button name="action" value="reset" style="" type="submit" class="btn btn-primary submit-btn">Về mặc định</button>		        		            
-		        </div>
-<!-- 					<button name="action" value="search" style="margin-left: 1000px;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button> -->
-<!-- 					<button name="action" value="reset" style="float: right;" type="submit" class="btn btn-primary submit-btn">Về mặc định</button>	 -->
-		    </div>
+					<button name="action" value="reset" style="" type="submit" class="btn btn-primary submit-btn">Tất cả</button>		        		            		        	
+	        	</div>
+			</div>				
 		</form>
 	</div>
 </div>

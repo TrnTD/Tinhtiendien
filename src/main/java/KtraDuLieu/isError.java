@@ -29,5 +29,13 @@ public class isError {
 	public static String isFormat (String str) {
 		return str + "Định Dạng Dữ Liệu Không Hợp Lệ!!!";
 	}
-
+	public static String isIncorrect (String str) {
+		return str + " Không Đúng!!!";
+	}
+	public static String isNotSame (String str) {
+		return str + " Không Được Trùng " + str + " Trước Đó!!!";
+	}
+	public static String isSame (String str) {
+		return str + " Phải Trùng " + str + " Trước Đó!!!";
+	}
 }

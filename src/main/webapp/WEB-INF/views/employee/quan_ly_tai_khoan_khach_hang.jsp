@@ -17,104 +17,14 @@
 	rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script> <%@include file="/paging/jquery.twbsPagination.js" %></script>
-<style>
-body {
-	color: #566787;
-	background: #f5f5f5;
-	font-family: 'Varela Round', sans-serif;
-	font-size: 13px;
-}
 
-.table-wrapper {
-	background: #fff;
-	padding: 20px 25px;
-	margin: 30px 0;
-	border-radius: 3px;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-}
-
-.table-title {
-	padding-bottom: 15px;
-	background: #435d7d;
-	color: #fff;
-	padding: 10px 30px;
-	margin: -20px -25px 10px;
-	border-radius: 3px 3px 0 0;
-}
-
-.table-title h2 {
-	margin: 5px 0 0;
-	font-size: 24px;
-}
-
-.table-title .btn-group {
-	float: right;
-}
-
-.table-title .btn {
-	color: #fff;
-	float: right;
-	font-size: 13px;
-	border: none;
-	min-width: 50px;
-	border-radius: 2px;
-	border: none;
-	outline: none !important;
-	margin-left: 10px;
-}
-
-.table-title .btn i {
-	float: left;
-	font-size: 21px;
-	margin-right: 5px;
-}
-
-.table-title .btn span {
-	float: left;
-	margin-top: 2px;
-}
-
-table.table tr th:last-child {
-	width: 180px;
-}
-
-table.table-striped tbody tr:nth-of-type(odd) {
-	background-color: #fafafa;
-}
-
-table.table-striped.table-hover tbody tr:hover {
-	background: #f5f5f5;
-}
-
-table.table tr {
-	text-align: center;
-}
-
-table.table td button {
-	display: inline-block;
-}
-
-
-
-/* .table-striped>tbody>tr:nth-of-type(odd) {
-    --bs-table-accent-bg: none;
-    color: var(--bs-table-striped-color);
-} */
-.error-input {
-    border: 1px solid red !important; /* Đường viền màu đỏ */
-}
-
-</style>
 </head>
 
 
 <body>
+<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
 
-<style>
-.btn-success {
-	background-color: #5cb85c;
-}
-</style>
+
 	<div class="container mt-5" style="margin-top: 0px !important">
 		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
 		<div id="thong_bao_err" class="alert alert-danger" role="alert" style="margin-top: 20px; display: none">${tb_err}</div>
@@ -127,7 +37,18 @@ table.table td button {
 			<button type="submit" class="btn btn-primary submit-btn" name ="all" value="search_all">Tất cả</button>
 		</div>
 		</form>
-		<div class="table-wrapper" style="margin-top: 0px !important; padding-bottom: 0px">
+		
+		<div style="display: flex; justify-content: center">
+			<form action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/" class="custom-form" id="submitPage" method="GET">
+				 <nav aria-label="Page navigation">
+		        	<ul class="pagination" id="pagination"></ul>
+		    	</nav>
+		    	<input type="hidden" id="cur_page" name="cur_page" value="${curr_page}">
+		    	<input type="hidden" id="limit" name="limit" value="${total_page}">
+	    	</form>
+		</div>
+		
+		<div class="table-wrapper" style="margin-top: 0px !important; padding-bottom: 0px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
 			<div class="table-title">
 				<div class="row">
 					<div class="col-md-6">
@@ -147,7 +68,12 @@ table.table td button {
 			</div>
 				<c:choose>
 					<c:when test="${empty list_acc}">
-						<p>Không có tài khoản theo tìm kiếm.</p>
+						<div style="display: flex; justify-content: center; align-items: center;">
+					     	<%@include file="/WEB-INF/resource/assets/imgs/nodata.svg"%>
+				     	</div>
+				     	<div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+							<p>Không có dữ liệu</p>				     	
+				     	</div>
 					</c:when>
 					<c:otherwise>
 						<table class="table table-hover">
@@ -300,17 +226,6 @@ table.table td button {
 				</div>
 			</form>
 		</div>
-		<div style="display: flex; justify-content: center">
-			<form action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/" class="custom-form" id="submitPage" method="GET">
-				 <nav aria-label="Page navigation">
-		        	<ul class="pagination" id="pagination"></ul>
-		    	</nav>
-		    	<input type="hidden" id="cur_page" name="cur_page" value="${curr_page}">
-		    	<input type="hidden" id="limit" name="limit" value="${total_page}">
-	    	</form>
-		</div>
-		
-
 	</div>
 
 	<%-- 	<%

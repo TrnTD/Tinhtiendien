@@ -52,7 +52,7 @@
 <div class="container">
 	<div class="row">
 		<div style="margin-left: 0px;width:1300px" class="col-md-8 offset-md-2">
-			<form action="/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang/tim_kiem" class="custom-form" method="GET">
+			<form action="/Tinhtiendien/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang/tim_kiem" class="custom-form" method="GET">
 			    <div class="row mb-3">
 			        <div class="col">
 			            <label for="field1" class="form-label">Mã hóa đơn</label>
@@ -63,8 +63,12 @@
 			            <input type="text" class="form-control" id="field2" name="search_khachhangid">
 			        </div>
 			        <div class="col">
-			            <label for="field4" class="form-label">Ngày thanh toán</label>
-			            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_ngaytao">
+			            <label for="field4" class="form-label">Từ ngày (Ngày thanh toán)</label>
+			            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_tungay">
+			        </div>
+			        <div class="col">
+			            <label for="field4" class="form-label">Đến ngày (Ngày thanh toán)</label>
+			            <input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_denngay">
 			        </div>
 			    </div>
 			    <div class="row mb-3">
@@ -96,11 +100,14 @@
 			        </div>
 			        
 			        <div class="col">
-			        	<label for="field1" class="form-label">Trạng thái</label>
-			            <select name="search_status" class="form-select" aria-label="Default select example"> -->
-				          <option value="-1" selected hidden></option>
-				          <option value="0">Chưa thanh toán</option>
-				          <option value="1">Đã thanh toán</option>
+			        	<label for="field1" class="form-label">Phương thức</label>
+			            <select name="search_pttt" class="form-select" aria-label="Default select example"> -->
+						<option value="-1" selected hidden></option>
+						<c:forEach var="pttt" varStatus="i" items="${list_pttt}">
+							<c:if test="${pttt.ten_phuongthuc != 'Chưa xác định'}">
+								<option value="${pttt.ten_phuongthuc}">${pttt.ten_phuongthuc}</option>
+							</c:if>
+						</c:forEach>
 				        </select>		        	
 			        </div>
 			        
@@ -109,10 +116,8 @@
 			        </div>
 			        
 			        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;">
-						<button name="action" value="search" style="float: right;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
-			        </div>
-			        <div class="col" style="display: flex; justify-content: flex-end; align-items: flex-end;">
-						<button name="action" value="reset" style="float: right;" type="submit" class="btn btn-primary submit-btn">Về mặc định</button>
+						<button name="action" value="search" style="float: right; margin-right: 10px;" type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
+						<button name="action" value="reset" style="float: right;" type="submit" class="btn btn-primary submit-btn">Tất cả</button>
 			        </div>
 			    </div>
 			</form>
