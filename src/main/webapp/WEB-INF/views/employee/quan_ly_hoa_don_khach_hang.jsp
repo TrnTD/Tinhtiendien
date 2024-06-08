@@ -132,7 +132,7 @@
 		if (successMessage) {
 			successMessage.style.display = "none";
 		}
-	}, 3000);
+	}, 5000);
 		sessionStorage.removeItem("formType");
 		sessionStorage.removeItem("khachhang_id");
 		sessionStorage.setItem("thang", "");
@@ -152,7 +152,7 @@
 		if (errorMessage) {
 			errorMessage.style.display = "none";
 		}
-	}, 3000);
+	}, 5000);
 
 		sessionStorage.removeItem("formType");
 		sessionStorage.removeItem("khachhang_id");
@@ -656,6 +656,7 @@
 		} else {
 			document.querySelector('.addYear').value = nam;			
 		}
+		document.querySelector('#add_thue').value = thue;
 
 		
 		var formType = sessionStorage.getItem("formType");

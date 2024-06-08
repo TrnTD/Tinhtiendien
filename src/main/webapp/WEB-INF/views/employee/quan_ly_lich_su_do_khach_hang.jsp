@@ -73,7 +73,7 @@
 		if (successMessage) {
 			successMessage.style.display = "none";
 		}
-	}, 3000);
+	}, 5000);
 		
 		sessionStorage.removeItem("formType");
 		sessionStorage.removeItem("lsd_id");
@@ -96,7 +96,7 @@
 		if (errorMessage) {
 			errorMessage.style.display = "none";
 		}
-	}, 3000);
+	}, 5000);
 	
 		sessionStorage.removeItem("formType");
 		sessionStorage.removeItem("lsd_id");
@@ -173,7 +173,13 @@
 				        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button>
 	
 	                       	<input type="hidden" class="lsd_id" name="lsd_id" value="${lsd.lichsu_do_id}">
-	                       	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
+							<c:if test="${not enableDelete.contains(lsd.ngay_do)}">
+	                       		<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
+							</c:if>
+							
+							<c:if test="${enableDelete.contains(lsd.ngay_do)}">
+	                       		<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal" disabled><i class="bi bi-trash-fill"></i> Xóa</button>
+							</c:if>
 				        </td>
 				      </tr>
 				      </c:forEach> 
@@ -211,14 +217,14 @@
                                 <label for="addDOB" class="form-label">Ngày đo</label>
                                 <div class="container">
 								  <div class="row">
-								    <div class="col">
-								    	<select class="form-select addDay" id="addngaydo" name="ngay" required>
-	                                		<option value="0" selected hidden>Ngày</option>
-						                	<c:forEach var = "i" begin = "1" end = "31">
-						                    	<option value="${i}">${i}</option>
-						                    </c:forEach>
-								      	</select>
-								    </div>
+<!-- 								    <div class="col"> -->
+<!-- 								    	<select class="form-select addDay" id="addngaydo" name="ngay" required> -->
+<!-- 	                                		<option value="0" selected hidden>Ngày</option> -->
+<%-- 						                	<c:forEach var = "i" begin = "1" end = "31"> --%>
+<%-- 						                    	<option value="${i}">${i}</option> --%>
+<%-- 						                    </c:forEach> --%>
+<!-- 								      	</select> -->
+<!-- 								    </div> -->
 								    <div class="col">
 								      	<select class="form-select addMonth" id="addngaydo" name="thang" required>
 		                				<option value="0" selected hidden>Tháng</option>
@@ -265,42 +271,42 @@
                     <div class="modal-body">
                         <!-- Edit employee form -->
                         <form action = "/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/sua" method="POST" id ="editCustomer">
-                        	<div class="mb-3">
-								<label for="editDOB" class="form-label">Ngày đo</label>
-								<div class="container">
-								  <div class="row">
-									<div class="col">
-										<select class="form-select editDay" id="editngaydo" name="ngay">
-											<option value="0" disabled selected hidden>Ngày</option>
-											<c:forEach var = "i" begin = "1" end = "31">
-												<option value="${i}">${i}</option>
-											</c:forEach>
-										</select>
-									</div>
-									<div class="col">
-										  <select class="form-select editMonth" id="editngaydo" name="thang">
-											<option value="0" disabled selected hidden>Tháng</option>
-											<c:forEach var = "i" begin = "1" end = "12">
-												<option value="${i}">${i}</option>
-											</c:forEach>
-										</select>
-									</div>
-									<div class="col">
-										  <select class="form-select editYear" id="editngaydo" name="nam">
-											<option value="0" disabled selected hidden>Năm</option>
-											Sử dụng vòng lặp từ 0 đến 124 (2024 - 1900)
-											<% for (int i = 0; i <= 124; i++) { %>
-												Tính giá trị năm dựa trên biến i
-												<% int year = 2024 - i; %>
-												Tạo một tùy chọn cho mỗi năm
-												<option value="<%= year %>"><%= year %></option>
-											<% } %>
-										</select>
-									</div>
-									<h6 style="color:red; padding-left: 5px; padding-top: 5px;" id="editngaydo">${err_mess_editNgaydo}</h6>
-								  </div>
-								</div>
-							</div>
+<!--                         	<div class="mb-3"> -->
+<!-- 								<label for="editDOB" class="form-label">Ngày đo</label> -->
+<!-- 								<div class="container"> -->
+<!-- 								  <div class="row"> -->
+<!-- 									<div class="col"> -->
+<!-- 										<select class="form-select editDay" id="editngaydo" name="ngay"> -->
+<!-- 											<option value="0" disabled selected hidden>Ngày</option> -->
+<%-- 											<c:forEach var = "i" begin = "1" end = "31"> --%>
+<%-- 												<option value="${i}">${i}</option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
+<!-- 									</div> -->
+<!-- 									<div class="col"> -->
+<!-- 										  <select class="form-select editMonth" id="editngaydo" name="thang"> -->
+<!-- 											<option value="0" disabled selected hidden>Tháng</option> -->
+<%-- 											<c:forEach var = "i" begin = "1" end = "12"> --%>
+<%-- 												<option value="${i}">${i}</option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
+<!-- 									</div> -->
+<!-- 									<div class="col"> -->
+<!-- 										  <select class="form-select editYear" id="editngaydo" name="nam"> -->
+<!-- 											<option value="0" disabled selected hidden>Năm</option> -->
+<!-- 											Sử dụng vòng lặp từ 0 đến 124 (2024 - 1900) -->
+<%-- 											<% for (int i = 0; i <= 124; i++) { %> --%>
+<!-- 												Tính giá trị năm dựa trên biến i -->
+<%-- 												<% int year = 2024 - i; %> --%>
+<!-- 												Tạo một tùy chọn cho mỗi năm -->
+<%-- 												<option value="<%= year %>"><%= year %></option> --%>
+<%-- 											<% } %> --%>
+<!-- 										</select> -->
+<!-- 									</div> -->
+<%-- 									<h6 style="color:red; padding-left: 5px; padding-top: 5px;" id="editngaydo">${err_mess_editNgaydo}</h6> --%>
+<!-- 								  </div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
                         
                             <div class="mb-3">
                                 <label for="editChiso" class="form-label">Chỉ số</label>
@@ -351,17 +357,17 @@
 	const addButton = document.querySelector('.btn-add');
 	addButton.addEventListener('click', (event) => {
 		var dhd_id = sessionStorage.getItem("khachhang_id");
-		var ngay = sessionStorage.getItem("ngay");
+// 		var ngay = sessionStorage.getItem("ngay");
 		var thang = sessionStorage.getItem("thang");
 		var nam = sessionStorage.getItem("nam");
 		var chiso = sessionStorage.getItem("chiso");
 		
-		if (ngay == '') {
-			console.log("ngay null")
-			document.querySelector('.addDay').selectedIndex = 0;
-		} else {
-			document.querySelector('.addDay').value = ngay;			
-		}
+// 		if (ngay == '') {
+// 			console.log("ngay null")
+// 			document.querySelector('.addDay').selectedIndex = 0;
+// 		} else {
+// 			document.querySelector('.addDay').value = ngay;			
+// 		}
 		
 		if (thang == '') {
 			document.querySelector('.addMonth').selectedIndex = 0;
@@ -411,9 +417,9 @@
 	        sessionStorage.setItem("thang", month);
 	        sessionStorage.setItem("nam", year);
 	        
-	        document.querySelector('.editDay').value = day;
-	        document.querySelector('.editMonth').value = month;
-	        document.querySelector('.editYear').value = year;
+// 	        document.querySelector('.editDay').value = day;
+// 	        document.querySelector('.editMonth').value = month;
+// 	        document.querySelector('.editYear').value = year;
 
 	        document.querySelector('.lsd_id-edit').value = lsd_id
 	        document.querySelector('.dongho_id-edit').value = dongho_id
@@ -466,15 +472,15 @@
 		// edit form
 		if (formType == "editForm") {
 	        sessionStorage.setItem("chiso", document.querySelector('input[name="chiso"]').value);
-	        sessionStorage.setItem("ngay", document.querySelector('.editDay').value);
-	        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
-	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);			
+// 	        sessionStorage.setItem("ngay", document.querySelector('.editDay').value);
+// 	        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
+// 	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);			
 		}
         
         // add form
         if (formType == "addForm") {
-	        sessionStorage.setItem("dongho_id", document.querySelector('input[name="add_donghoid"]').value);
-	        sessionStorage.setItem("ngay", document.querySelector('.addDay').value);
+	        sessionStorage.setItem("dongho_id", document.querySelector('input[name="add_dongho_id"]').value);
+// 	        sessionStorage.setItem("ngay", document.querySelector('.addDay').value);
 	        sessionStorage.setItem("thang", document.querySelector('.addMonth').value);
 	        sessionStorage.setItem("nam", document.querySelector('.addYear').value);
 	        sessionStorage.setItem("chiso", document.querySelector('input[name="add_chiso"]').value);        	
@@ -513,19 +519,19 @@
 		document.querySelector('input[name="chiso"]').value = chiso;
 		document.querySelector('.lsd_id-edit').value = lsd_id;
 		document.querySelector('.dongho_id-edit').value = dongho_id;
-		document.querySelector('.editDay').value = ngay;
-		document.querySelector('.editMonth').value = thang;
-		document.querySelector('.editYear').value = nam;
+// 		document.querySelector('.editDay').value = ngay;
+// 		document.querySelector('.editMonth').value = thang;
+// 		document.querySelector('.editYear').value = nam;
 		
 		
 		// add form
 		document.querySelector('#add_dongho_id').value = dongho_id;
-		if (ngay == '') {
-			console.log("ngay null")
-			document.querySelector('.addDay').selectedIndex = 0;
-		} else {
-			document.querySelector('.addDay').value = ngay;			
-		}
+// 		if (ngay == '') {
+// 			console.log("ngay null")
+// 			document.querySelector('.addDay').selectedIndex = 0;
+// 		} else {
+// 			document.querySelector('.addDay').value = ngay;			
+// 		}
 		
 		if (thang == '') {
 			document.querySelector('.addMonth').selectedIndex = 0;

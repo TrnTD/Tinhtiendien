@@ -74,14 +74,14 @@ public class MeasurementHistoryDAO {
 		return true;
 	}
 	
-	public boolean updateLsdFromLSDId(int chiso, String ngay_do, int lsd_id) {
+	public boolean updateLsdFromLSDId(int chiso, /*String ngay_do,*/ int lsd_id) {
 		boolean isUpdate = false;
 		int result = 0;
 		
-		String query = "update lichsu_do2 set chiso = ?, ngay_do = ? where lichsu_do_id = ?";
+		String query = "update lichsu_do2 set chiso = ? where lichsu_do_id = ?";
 		
 		try {
-			result = jdbcTemplate.update(query, new Object[] {chiso, ngay_do, lsd_id});
+			result = jdbcTemplate.update(query, new Object[] {chiso, lsd_id});
 			System.out.println("Cap nhat lich su do khach hang thanh cong");
 		} catch (DataAccessException e) {
 			System.out.println("Cap nhat lich su do khach hang that bai");
@@ -99,7 +99,7 @@ public class MeasurementHistoryDAO {
 		
 		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
 				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
-				+ "where lsd.lichsu_do_id < ? and lsd.dongho_id = ? order by lsd.ngay_do desc";
+				+ "where lsd.ngay_do < (select ngay_do from lichsu_do2 where lichsu_do_id = ?) and lsd.dongho_id = ? order by lsd.ngay_do desc";
 		
 		try {
 			lsd = jdbcTemplate.queryForObject(query, new Object[] {lsd_id, dongho_id}, new MapperMeasurementHistory());
@@ -117,7 +117,7 @@ public class MeasurementHistoryDAO {
 		
 		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
 				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
-				+ "where lsd.lichsu_do_id > ? and lsd.dongho_id = ? order by lsd.ngay_do asc";
+				+ "where lsd.ngay_do > (select ngay_do from lichsu_do2 where lichsu_do_id = ?) and lsd.dongho_id = ? order by lsd.ngay_do asc";
 		
 		
 		try {
@@ -146,6 +146,28 @@ public class MeasurementHistoryDAO {
 		}
 		
 		return lsd;
+	}
+	
+	public boolean enableDelete(String ngay_do) {
+		boolean isDelete = false;
+	
+		String result = "";
+		String query = "select trangthai from hoa_don2 where month_bill = month(?) and year_bill = year(?)";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, new Object[] {ngay_do, ngay_do}, String.class);
+//			System.out.println("Lay trang thai hoa don thanh cong");
+		} catch (DataAccessException e) {
+//			System.out.println("Lay trang thai hoa don that bai");
+		}
+		
+		if (result.equals("Đã thanh toán")) {
+			isDelete = false;
+		} else {
+			isDelete = true;
+		}
+		
+		return isDelete;
 	}
 	
 	public List<MeasurementHistory> searchLsdKhachhang(int page, String lsd_id, String khachhang_id, String dhd_id, String tungay, String denngay) {
@@ -210,13 +232,14 @@ public class MeasurementHistoryDAO {
 	}
 	
 	
-	public boolean addNewLsd(String dhd_id, String ngay_do, String chiso) {
+	public boolean addNewLsd(String dhd_id, String thang, String nam, String chiso) {
 		boolean isAdd = false;
 		
-		String query = "insert into lichsu_do2 (dongho_id, ngay_do, chiso) values (?, ?, ?)";
+//		String query = "insert into lichsu_do2 (dongho_id, ngay_do, chiso) values (?, ?, ?)";
+		String query = "exec sp_InsertLSD @DongHoID = ?, @Thang = ?, @Nam = ?, @ChiSo = ?";
 		
 		try {
-			jdbcTemplate.update(query, new Object[] {dhd_id, ngay_do, chiso});
+			jdbcTemplate.update(query, new Object[] {dhd_id, thang, nam, chiso});
 			isAdd = true;
 			System.out.println("Them lich su do moi thanh cong!");
 		} catch (DataAccessException e) {
@@ -242,7 +265,7 @@ public class MeasurementHistoryDAO {
 		return isDelete;
 	}
 	
-	public boolean checkExistLsdBefore(String khachhang_id, String thang, String nam) {
+	public boolean checkExistLsdAfter(String khachhang_id, String thang, String nam) {
 		int count = 0;
 		
 		String query = "exec sp_CheckExistLsdAfter @khachangID = ?, @thang = ?, @nam = ?";
@@ -259,6 +282,39 @@ public class MeasurementHistoryDAO {
 		} else {
 			return true;
 		}
+	}
+	
+	public boolean checkExistLsdCurrent(String khachhang_id, String thang, String nam) {
+		int count = 0;
+		
+		String query = "exec sp_CheckExistLsdCurrent @khachangID = ?, @thang = ?, @nam = ?";
+		
+		try {
+			count = jdbcTemplate.queryForObject(query, new Object[] {khachhang_id, thang, nam}, Integer.class);
+			System.out.println("Check ton tai lich su do thang hien tai thanh cong!");
+		} catch (DataAccessException e) {
+			System.out.println("Check ton tai lich su do thang hien tai that bai!");
+		}
+		
+		if (count == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public int getDayFirstLSD(String dongho_id) {
+		int day = 1;
+		String query = "SELECT DAY(ngay_do) from lichsu_do2 where chiso = 0 and dongho_id = ?";
+		
+		try {
+			day = jdbcTemplate.queryForObject(query, new Object[] {dongho_id}, Integer.class);
+			System.out.println("Day: " + day);
+		} catch (DataAccessException e) {
+			System.out.println("Lay ngay khong thanh cong");
+		}
+		
+		return day;
 	}
 	
 	
@@ -297,7 +353,6 @@ public class MeasurementHistoryDAO {
 		String sql = "exec sp_GetTotalPagesAllLSD @PageSize = 10";
 		try {
 			  temp = jdbcTemplate.queryForObject(sql, Integer.class);	
-			  System.out.println(temp);
 			return temp;
 		} catch (DataAccessException e) {
 			System.out.println("111");

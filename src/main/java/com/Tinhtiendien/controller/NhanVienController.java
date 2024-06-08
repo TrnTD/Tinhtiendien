@@ -11,6 +11,7 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Calendar;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -301,17 +302,17 @@ public class NhanVienController {
 											@RequestParam("kh_id") String khachhang_id) {
 		boolean isError = false;
 		String message = "";	
-		if (mdDAO.checkKhachHangInLSD(khachhang_id) == true || lgcsDAO.checkKhachHangInLGCS(khachhang_id) == true || donghodienDAO.checkKhachHangInDongHoDien(khachhang_id) == true) {
-			message  = "Không thể xóa vì xung đột dữ liệu";
-			isError = true;
-		} else {
+//		if (mdDAO.checkKhachHangInLSD(khachhang_id) == true || lgcsDAO.checkKhachHangInLGCS(khachhang_id) == true || donghodienDAO.checkKhachHangInDongHoDien(khachhang_id) == true) {
+//			message  = "Không thể xóa vì xung đột dữ liệu";
+//			isError = true;
+//		} else {
 			if (infoDAO.deleteKhachHang(khachhang_id) == true) {
 				message = "Bạn đã xóa thành công khách hàng có mã: " + khachhang_id;
 			} else {
 				message = "Xóa khách hàng có mã: " + khachhang_id + " không thành công";
 				isError = true;
 			}
-		}
+//		}
 		
 		session.setAttribute("message", message);
 		session.setAttribute("isError", isError);
@@ -647,15 +648,41 @@ public class NhanVienController {
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang", method = RequestMethod.GET)
 	public String get_lsd_khachhang(HttpSession session, Model model, @RequestParam(value ="cur_page",defaultValue = "1") int cur_page, 
-			@RequestParam(value = "limit",defaultValue = "10") int limit) {
+			@RequestParam(value = "limit",defaultValue = "10") int limit, HttpServletRequest request) {
 		
 		if (session.getAttribute("info_nhanvien") == null) {
 			return "redirect:/login";
 		}
 		
-//		List<MeasurementHistory> list_lsd = mdDAO.getLSDoTheoFirstChuhoID();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		
+		
+
 		List<MeasurementHistory> list_lsd = mdDAO.getAllLSDInPage(cur_page);
+		List<Date> enableDelete = new ArrayList<Date>();
+		
+		for (MeasurementHistory lsd : list_lsd) {
+			if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+				
+				enableDelete.add(lsd.getNgay_do());	
+				
+				
+				calendar.setTime(lsd.getNgay_do());
+				calendar.add(Calendar.MONTH, 1);
+				
+				Date newDate = calendar.getTime();
+//				String add_ngaydo = formatter.format(newDate);
+				
+				if (!enableDelete.contains(newDate)) {
+					enableDelete.add(newDate);
+				}
+				
+			}
+		}
+		
 		model.addAttribute("list_lsd", list_lsd);
+		model.addAttribute("enableDelete", enableDelete);
 		
 		int total_page = mdDAO.tong_trang();
 		
@@ -666,7 +693,7 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang/them", method = RequestMethod.POST)
-	public String them_lsd_khachhang(@RequestParam("add_dongho_id") String dongho_id, @RequestParam("ngay") String ngay, @RequestParam("thang") String thang, 
+	public String them_lsd_khachhang(@RequestParam("add_dongho_id") String dongho_id, @RequestParam("thang") String thang, 
 			@RequestParam("nam") String nam, @RequestParam("add_chiso") String chiso, RedirectAttributes redirectAttributes,
 			HttpSession session, HttpServletRequest request) {
 		
@@ -674,7 +701,7 @@ public class NhanVienController {
 		boolean canAdd = true;
 		String message = "";
 		
-		if (ngay == "0" || thang == "0" || nam == "0") {
+		if (thang == "0" || nam == "0") {
 			redirectAttributes.addFlashAttribute("err_mess_addNgaydo", "Ngày đo không được để trống!");
 			canAdd = false;
 		}
@@ -706,11 +733,13 @@ public class NhanVienController {
 					
 					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 					String date = formatter.format(latest_lsd.getNgay_do());
-					if (ngay.equals("0") || thang.equals("0") || nam.equals("0")) {
+					
+					if (thang.equals("0") || nam.equals("0")) {
 						redirectAttributes.addFlashAttribute("err_mess_addNgaydo", "Ngày đo không được để trống!");
 						canAdd = false;
 					} else {
-						LocalDate localDate = LocalDate.of(Integer.parseInt(nam), Integer.parseInt(thang), Integer.parseInt(ngay));
+						int ngay = mdDAO.getDayFirstLSD(dongho_id);
+						LocalDate localDate = LocalDate.of(Integer.parseInt(nam), Integer.parseInt(thang), ngay);
 						
 						ngaydo = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 						System.out.println("Ngay do: " + ngaydo);
@@ -739,8 +768,8 @@ public class NhanVienController {
 		url = url.substring(index);
 		
 		if (canAdd) {
-			if (mdDAO.addNewLsd(dongho_id, ngaydo, chiso)) {
-				message = "Bạn đã cập nhật chỉ số khách hàng thành công";
+			if (mdDAO.addNewLsd(dongho_id, thang, nam, chiso)) {
+				message = "Bạn đã thêm chỉ số khách hàng thành công";
 				session.setAttribute("message", message);
 				session.setAttribute("isError", isError);
 				
@@ -754,8 +783,8 @@ public class NhanVienController {
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang/sua", method = RequestMethod.POST)
 	public String sua_lsd_khachhang(@RequestParam("dongho_id") String dongho_id, @RequestParam("chiso") String chiso_jsp, 
-			@RequestParam("lsd_id") int lsd_id, @RequestParam("ngay") int ngay, @RequestParam("thang") int thang, 
-			@RequestParam("nam") int nam, RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
+			@RequestParam("lsd_id") int lsd_id, /*@RequestParam("ngay") int ngay, @RequestParam("thang") int thang, 
+			@RequestParam("nam") int nam,*/ RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
 		
 		int chiso = Integer.parseInt(chiso_jsp);
 		
@@ -763,7 +792,7 @@ public class NhanVienController {
 		System.out.println("lsd id: " + lsd_id);
 		System.out.println("dong ho id: " + dongho_id);
 		
-		String ngay_do = String.format("%04d-%02d-%02d", nam, thang, ngay);
+//		String ngay_do = String.format("%04d-%02d-%02d", nam, thang, ngay);
 
 		String message = "";
 		boolean isError = false;
@@ -776,12 +805,12 @@ public class NhanVienController {
 		
 		boolean canUpdate = true;
 		
-		try {
-			Date date = formatter.parse(ngay_do);
-		} catch (ParseException e) {
-			redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không hợp lệ!!");
-			canUpdate = false;
-		}
+//		try {
+//			Date date = formatter.parse(ngay_do);
+//		} catch (ParseException e) {
+//			redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không hợp lệ!!");
+//			canUpdate = false;
+//		}
 		
 		
 		if (prelsd != null) {
@@ -790,12 +819,12 @@ public class NhanVienController {
 				canUpdate = false;
 			}
 			
-			String date = formatter.format(prelsd.getNgay_do());
-			
-			if (ngay_do.compareTo(date) <= 0) {
-				redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không được nhỏ hơn hoặc bằng ngày đo của tháng trước!!");
-				canUpdate = false;
-			}
+//			String date = formatter.format(prelsd.getNgay_do());
+//			
+//			if (ngay_do.compareTo(date) <= 0) {
+//				redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không được nhỏ hơn hoặc bằng ngày đo của tháng trước!!");
+//				canUpdate = false;
+//			}
 		}
 		
 		if (nextlsd != null) {
@@ -804,12 +833,12 @@ public class NhanVienController {
 				canUpdate = false;
 			}
 			
-			String date = formatter.format(nextlsd.getNgay_do());
-					
-			if (ngay_do.compareTo(date) >= 0) {
-				redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không được lớn hơn hoặc bằng ngày đo của tháng sau!!");
-				canUpdate = false;
-			}
+//			String date = formatter.format(nextlsd.getNgay_do());
+//					
+//			if (ngay_do.compareTo(date) >= 0) {
+//				redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không được lớn hơn hoặc bằng ngày đo của tháng sau!!");
+//				canUpdate = false;
+//			}
 		}
 		
 		// http://localhost:8080/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem?search_lsdid=&search_khachhangid=kh002&search_dhdid=&search_ngaydo=
@@ -821,7 +850,7 @@ public class NhanVienController {
 		
 		
 		if (canUpdate) {
-			if(mdDAO.updateLsdFromLSDId(chiso, ngay_do, lsd_id)) {
+			if(mdDAO.updateLsdFromLSDId(chiso, lsd_id)) {
 				message = "Bạn đã cập nhật lịch sử đo của khách hàng thành công";
 				redirectAttributes.addFlashAttribute("testahihi", "just test value");
 				session.setAttribute("message", message);
@@ -1000,7 +1029,7 @@ public class NhanVienController {
 		String url = request.getHeader("Referer");
 		
 		if (canAdd) {
-			if (mdDAO.checkExistLsdBefore(khachhang_id, thang, nam)) {
+			if (mdDAO.checkExistLsdAfter(khachhang_id, thang, nam) && mdDAO.checkExistLsdCurrent(khachhang_id, thang, nam)) {
 				if (hoadonDAO.addNewHoaDon(nhanvien_id, khachhang_id, thang, nam, thue) ) {
 					message = "Thêm hóa đơn khách hàng thành công";
 					session.setAttribute("message", message);
@@ -1011,12 +1040,17 @@ public class NhanVienController {
 					redirectAttributes.addFlashAttribute("err_mess_addThoigianhoadon", "Thời gian này đã có hóa đơn");
 				}
 				
-			} else {
-				message = "Thêm hóa đơn khách hàng thất bại! Chưa có kết quả chỉ số đồng hồ điện cho tháng sau!";
+			} else if (!mdDAO.checkExistLsdCurrent(khachhang_id, thang, nam)) {
+				message = "Thêm hóa đơn khách hàng thất bại! Chưa có kết quả chỉ số đồng hồ điện của khách hàng " + khachhang_id + " cho tháng " + thang + " năm " + nam + "!";
 				session.setAttribute("message", message);
 				isError = true;
 				session.setAttribute("isError", isError);
-			}
+			} else if (!mdDAO.checkExistLsdAfter(khachhang_id, thang, nam)) {
+				message = "Thêm hóa đơn khách hàng thất bại! Chưa có kết quả chỉ số đồng hồ điện của khách hàng " + khachhang_id + "cho tháng sau!";
+				session.setAttribute("message", message);
+				isError = true;
+				session.setAttribute("isError", isError);
+			} 
 		}
 		
 		

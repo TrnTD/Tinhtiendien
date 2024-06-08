@@ -183,7 +183,7 @@ public class InfoDAO {
 	}
 	
 	public boolean deleteKhachHang(String khachhang_id) {
-		String sql = "delete khachhang where khachhang_id = ? AND username is null";
+		String sql = "exec sp_DeleteKhachHang @khachhang_id = ?";
 		try {
 			jdbcTemplate.update(sql, new Object[] {khachhang_id});
 			System.out.println("Xoa khach hang thanh cong");
