@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Quản lý tài khoản</title>
+<title>Quản lý tài khoản khách hàng</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -15,15 +15,13 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css"
 	rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script> <%@include file="/paging/jquery.twbsPagination.js" %></script>
-
 </head>
-
-
 <body>
-<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
 
+<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
 
 	<div class="container mt-5" style="margin-top: 0px !important">
 		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
@@ -33,19 +31,24 @@
 		<div style="margin:10px 0">
 			<label for="field1" class="form-label"  style="display:block">Mã khách hàng</label>
 		    <input type="text" class="form-control" name="kh_id" value="${search_id}" style="display:inline-block; width:40%">
-			<button type="submit" class="btn btn-primary submit-btn">Tìm kiếm</button>
-			<button type="submit" class="btn btn-primary submit-btn" name ="all" value="search_all">Tất cả</button>
+			<button type="submit" class="btn btn-primary submit-btn" style="margin:10px; width:91px">Tìm kiếm</button>
+			<button type="submit" class="btn btn-primary submit-btn" name ="all" value="search_all" style="margin:10px; width:91px">Tất cả</button>
 		</div>
 		</form>
+		<div id="thong_bao_rong" class="alert alert-danger" role="alert" style="margin-top: 20px; display: none">${tb_rong}</div>
 		
 		<div style="display: flex; justify-content: center">
-			<form action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/" class="custom-form" id="submitPage" method="GET">
-				 <nav aria-label="Page navigation">
-		        	<ul class="pagination" id="pagination"></ul>
-		    	</nav>
-		    	<input type="hidden" id="cur_page" name="cur_page" value="${curr_page}">
-		    	<input type="hidden" id="limit" name="limit" value="${total_page}">
-	    	</form>
+			<form
+				action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/"
+				class="custom-form" id="submitPage" method="GET">
+				<nav aria-label="Page navigation">
+					<ul class="pagination" id="pagination"></ul>
+				</nav>
+				<input type="hidden" id="cur_page" name="cur_page"
+					value="${curr_page}"> <input type="hidden" id="limit"
+					name="limit" value="${total_page}">
+				 
+			</form>
 		</div>
 		
 		<div class="table-wrapper" style="margin-top: 0px !important; padding-bottom: 0px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
@@ -83,7 +86,7 @@
 								<th style="width: 200px;">Mã khách hàng</th>
 								<th style="width: 200px;">Tên đăng nhập</th>
 								<th>Mật khẩu</th>
-								<th style="width: 300px;">Chức năng</th>
+								<th style="width: 300px;"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -226,6 +229,30 @@
 				</div>
 			</form>
 		</div>
+		
+		<div style="display: flex; justify-content: center">
+			<c:choose>
+				<c:when test="${not empty search_id}">
+					<form
+						action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/tim_kiem"
+						class="custom-form" id="submitPage" method="GET">
+						<nav aria-label="Page navigation">
+							<ul class="pagination" id="pagination"></ul>
+						</nav>
+						<input type="hidden" id="cur_page" name="cur_page"
+							value="${curr_page}"> <input type="hidden" id="limit"
+							name="limit" value="${total_page}">
+						<input type="hidden"
+							name="kh_id" value="${search_id}">
+					</form>
+				</c:when>
+				<c:otherwise>
+					
+				</c:otherwise>
+			</c:choose>
+		</div>
+
+
 	</div>
 
 	<%-- 	<%
@@ -261,8 +288,21 @@
 		document.addEventListener("DOMContentLoaded", function() {
 			var message = "${tb}";
 			var message_err = "${tb_err}";
-			console.log(message);
+			var message_rong = "${tb_rong}";
+			console.log(message_rong);
+			
+			if (message_rong && message_rong.trim() !== "") {
+				
+				var tb = document.getElementById('thong_bao_rong');
+				tb.style.display = 'block'; // Hiển thị thông báo
 
+		        // Ẩn thông báo sau 3 giây
+		        setTimeout(function() {
+		        	tb.style.display = 'none';
+		        }, 3000);
+				
+
+			}
 			if (message && message.trim() !== "") {
 				
 				var tb = document.getElementById('thong_bao');
@@ -375,56 +415,39 @@
 			
 		});
 /* ============================ Phân trang =====================================	 */	
-		let isPageClicked = false;
-		var curPage = parseInt($('#cur_page').val())
-		 $(function() {
-			window.pagObj = $('#pagination').twbsPagination({
-				totalPages : ${total_page},
-				visiblePages : 3,
-				first : '<<',
-				prev : '<',
-	    		next:'>',
-				last : '>>',
-				startPage: curPage,
-				onPageClick : function(event, page) {
-					if (isPageClicked) {
+	let isPageClicked = false;
+	var curPage = parseInt($('#cur_page').val())
+	$(function() {
+		window.pagObj = $('#pagination').twbsPagination({
+			totalPages : ${total_page},
+			visiblePages : 3,
+			first : '<<',
+			prev : '<',
+	   		next:'>',
+			last : '>>',
+			startPage: curPage,
+			onPageClick : function(event, page) {
+				if (isPageClicked) {
+					if ((window.location.pathname).includes("tim_kiem")) {
+						var searchParams = new URLSearchParams(window.location.search);
+						searchParams.delete('cur_page');
+			            searchParams.delete('limit');
+			            
+						var url = window.location.origin + window.location.pathname + "?" + searchParams.toString();
+						url += "&cur_page=" + page + "&limit=3";
+						window.location.href = url
+						
+					} else {
 	                    $('#cur_page').val(page);
-	                    $('#submitPage').submit();
-	                }
-	                isPageClicked = true;
-			
-				}
-			})
-		});
-
+	                    $('#submitPage').submit();							
+					}
+	
+	               }
+	               isPageClicked = true;
+		
+			}
+		})
+	});
 	</script>
-	
-	<!-- <script type="text/javascript">
-    $(function () {
-        window.pagObj = $('#pagination').twbsPagination({
-            totalPages: 35,
-            visiblePages: 10,
-            first:'Đầu',
-            prev:'Trước',
-            next:'Tiến',
-            last:'Cuối',
-            lastClass:'',
-            firstClass:'',
-
-            onPageClick: function (event, page) {
-                console.info(page + ' (from options)');
-            }
-        }).on('page', function (event, page) {
-            console.info(page + ' (from event listening)');
-        });
-    });
-</script> -->
-	
-
-
 </body>
-
-
-
 </html>
-

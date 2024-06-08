@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.Tinhtiendien.DAO.*;
 import com.Tinhtiendien.Models.*;
+import GuiMail.*;
 
 @Controller
 public class AuthController {
@@ -150,6 +151,26 @@ public class AuthController {
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String render_home() {
 		return "redirect:../Tinhtiendien/login";
+	}
+	
+	@RequestMapping(value = "/forgotpass", method = RequestMethod.GET)
+	public String render_forgot() {
+		return "forgotPass";
+	}
+	
+	@Autowired
+	QuanLyAccountDAO qlaccountDAO = new QuanLyAccountDAO();
+	
+	
+	@RequestMapping(value = "/forgotpass", method = RequestMethod.POST)
+	public String xu_li(@RequestParam("email") String email) {
+		QuanLyAccount acc = new QuanLyAccount();
+		acc = qlaccountDAO.getAccByEmail(email);
+		System.out.println(acc.getUsername());
+		System.out.println(acc.getPassword());
+		Email.gui_matkhau(email, acc.getUsername(),acc.getPassword());
+		
+		return "forgotPass";
 	}
 }
 

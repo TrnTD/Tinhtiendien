@@ -12,6 +12,7 @@ import com.Tinhtiendien.Models.MeasurementHistory;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 @Repository
 public class MeasurementHistoryDAO {
 	@Autowired
@@ -258,6 +259,32 @@ public class MeasurementHistoryDAO {
 		} else {
 			return true;
 		}
+	}
+	
+	
+	public List<MeasurementHistory> getLSDoTheoChuhoIDTheoThangNam(String chuho_id, String month, String year){
+		List<MeasurementHistory> listMH = new ArrayList<MeasurementHistory>();
+		String sql = "select lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join khachhang kh on kh.dongho_id = lsd.dongho_id\r\n"
+				+ "where kh.khachhang_id = ? ";
+		List<Object> params = new ArrayList<>();
+		params.add(chuho_id);
+		if (month != null && !month.isEmpty()) {
+            sql += " AND DATEPART(MONTH, lsd.ngay_do) = ?";
+            params.add(month);
+        }
+        if (year != null && !year.isEmpty()) {
+            sql += " AND DATEPART(YEAR, lsd.ngay_do) = ?";
+            params.add(year);
+        }
+        sql += " ORDER BY lsd.ngay_do DESC;";
+        try {
+			listMH = jdbcTemplate.query(sql,params.toArray(), new MapperMeasurementHistory());
+			System.out.println("Tim kiem lich su do thanh cong!!");
+		}catch (DataAccessException e) {
+			System.out.println("Tim kiem lich su do that bai!!");
+		}
+		return listMH;
 	}
 	
 	

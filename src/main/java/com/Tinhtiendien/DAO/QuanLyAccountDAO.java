@@ -100,13 +100,12 @@ public class QuanLyAccountDAO {
 	
 /* ===================================== Phân Trang =========================== */
 	
-	public int tong_trang()
+	public int getToTalPageAllAccKhachHang()
 	{
 		int temp = -1;
-		String sql = "exec sp_GetTotalPagesAllAccKhachHang @PageSize = 2";
+		String sql = "exec sp_GetTotalPagesAllAccKhachHang @PageSize = 10";
 		try {
 			  temp = jdbcTemplate.queryForObject(sql, Integer.class);	
-			  System.out.println(temp);
 			return temp;
 		} catch (DataAccessException e) {
 			System.out.println("111");
@@ -116,7 +115,7 @@ public class QuanLyAccountDAO {
 	
 	public List<QuanLyAccount> getAllAccountsUserInPage(int page) {
 		List<QuanLyAccount> listAccount = new ArrayList<QuanLyAccount>();
-		String sql = "exec sp_GetPagedAllAccKhachHang @PageNumber = ?, @PageSize = 2";
+		String sql = "exec sp_GetPagedAllAccKhachHang @PageNumber = ?, @PageSize = 10";
 		
 		try {
 			listAccount = jdbcTemplate.query(sql,new Object[] {page} ,new MapperQuanLyAccount());
@@ -130,5 +129,56 @@ public class QuanLyAccountDAO {
 	    }
 		
 		return listAccount;
+	}
+	
+	public List<QuanLyAccount> getAllAccountsUserInPageBySearch(int page,String khid) {
+		List<QuanLyAccount> listAccount = new ArrayList<QuanLyAccount>();
+		String sql = "EXEC sp_GetPagedAllAccKhachHangSearch @PageNumber = ?, @PageSize = 10, @KhachHangId = ?;";
+		
+		try {
+			listAccount = jdbcTemplate.query(sql,new Object[] {page,khid} ,new MapperQuanLyAccount());
+			System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem that bai!!");
+		}
+		
+		if (listAccount.isEmpty()) {
+	        System.out.println("Không có tài khoản nào được trả về");
+	    }
+		return listAccount;
+	}
+	
+	public int getToTalPageAllAccKhachHangBySearch(String khid)
+	{
+		int temp = -1;
+		String sql = "exec sp_GetTotalPagesAllAccKhachHangSearch @PageSize = 10, @KhachHangId = ?";
+		try {
+			  temp = jdbcTemplate.queryForObject(sql,new Object[]{khid}, Integer.class);	
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		return temp;
+	}
+	
+//	========================================= Quên Pass ========================== 
+	public QuanLyAccount getAccByEmail(String email)
+	{
+		QuanLyAccount acc = new QuanLyAccount();
+		String sql = "SELECT k.khachhang_id, t.*\r\n"
+				+ "FROM khachhang AS k\r\n"
+				+ "LEFT JOIN taikhoan AS t ON k.username = t.username \r\n"
+				+ "where k.email = ? ";
+		try {
+			  acc = jdbcTemplate.queryForObject(sql,new Object[]{email},new MapperQuanLyAccount());	
+			  System.out.println("Truy van tai khoan nguoi dung thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		if (acc == null) {
+	        System.out.println("Truy van tai khoan nguoi dung thất bại!!");
+
+	    }
+		return acc;
 	}
 }

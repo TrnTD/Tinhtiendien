@@ -324,22 +324,126 @@ public class InfoDAO {
 		return infos;
 	}
 	
+	
+	public String updateDongHoId(String khachhang_id,String thong_bao) {
+		String sql = "exec sp_UpdateNewDongHoId @khachhang_id = ?";
+		int result = 0;
+		try {
+			result =jdbcTemplate.update(sql,new Object[] {khachhang_id});
+			thong_bao= "Cập nhập đồng hồ thành công!";
+			System.out.println("Cập nhập đồng hồ thành công!");
+		} catch (DataAccessException e) {
+			thong_bao= "Cập nhập đồng hồ thất bại!";
+		}
+		
+		return thong_bao;
+	}
+	
+	public String updateNgayDangKy(String khachhang_id,String ngay,String thong_bao) {
+		String sql = "UPDATE khachhang SET ngay_dangky = ? where khachhang_id = ?";
+		int result = 0;
+		try {
+			result =jdbcTemplate.update(sql,new Object[] {ngay,khachhang_id});
+			thong_bao= "Cập nhập ngày đăng ký thành công!";
+			System.out.println("Cập nhập ngày đăng ký thành công!");
+		} catch (DataAccessException e) {
+			thong_bao= "Cập nhập ngày đăng ký thất bại!";
+		}
+		return thong_bao;
+	}
+	
+	public List<Info> getAccBySearch(String khachhang_id,String dongho_id)
+	{
+		String sql = "select * from khachhang where khachhang_id like '%' + ? + '%' and dongho_id like '%' + ? + '%'";
+
+		List<Info> account = new ArrayList<Info>();
+		try {
+
+			account = jdbcTemplate.query(sql,new Object[] {khachhang_id,dongho_id} ,new MapperInfo());
+			System.out.println("Truy van tai khoan nguoi dung thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tai khoan nguoi dung that bai!!");
+		}
+		
+		if (account.isEmpty()) {
+	        System.out.println("Không có tài khoản nào được trả về");
+
+	    }
+		return account;
+	}
+
+
+
+	
+	
 //	============================================== Phan trang ==================================
 	// Tong trang binh thuong
-	public int tong_trang()
+	public int getToTalPageAllKhachHang()
 	{
 		int temp = -1;
 		String sql = "exec sp_GetTotalPagesAllAccKhachHang @PageSize = 10";
 		try {
 			  temp = jdbcTemplate.queryForObject(sql, Integer.class);	
-			  System.out.println(temp);
 			return temp;
 		} catch (DataAccessException e) {
 			System.out.println("111");
 		}
-		
 		return temp;
 	}
+	
+	
+	public int getToTalPageDongHoKhachHang(String khid, String dhid)
+	{
+		int temp = -1;
+		String sql = "exec sp_GetTotalPagesAllDongHoKhachHangSearch @PageSize = 3, @KhachHangId = ?, @DongHoId = ?";
+		try {
+			  temp = jdbcTemplate.queryForObject(sql,new Object[]{khid,dhid}, Integer.class);	
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		return temp;
+	}
+	
+	
+	
+	
+	public List<Info> getPageDongHoKhachHangBySearch(int page ,String khid, String dhid)
+	{
+		List<Info> listdh = new ArrayList<Info>();
+		String sql = "exec sp_GetPagedAllDongHoKhachHangSearch  @PageNumber = ?, @PageSize = 3, @KhachHangId = ?, @DongHoId = ?";
+		try {
+			  listdh = jdbcTemplate.query(sql,new Object[]{page, khid,dhid},new MapperInfo());	
+			  System.out.println("Truy van dong ho dien nguoi dung thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		if (listdh.isEmpty()) {
+	        System.out.println("Không có tài khoản nào được trả về");
+
+	    }
+		return listdh;
+	}
+	
+	public List<Info> getPageDongHoKhachHang(int page)
+	{
+		List<Info> listdh = new ArrayList<Info>();
+		String sql = "exec sp_GetPagedAllInfoKhachHang  @PageNumber = ?, @PageSize = 10";
+		try {
+			  listdh = jdbcTemplate.query(sql,new Object[]{page},new MapperInfo());	
+			  System.out.println("Truy van dong ho dien nguoi dung thanh cong!!");
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		if (listdh.isEmpty()) {
+	        System.out.println("Truy van dong ho dien nguoi dung thất bại!!");
+
+	    }
+		return listdh;
+	}
+
+
+
 	
 	// Tổng trang tìm kiếm
 	public int tong_trang_search(String khachhang_id, String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi)
@@ -418,5 +522,7 @@ public class InfoDAO {
 		
 		return list_info;
 	}
+	
+	
 
 }

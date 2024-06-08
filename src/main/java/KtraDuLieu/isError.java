@@ -38,4 +38,13 @@ public class isError {
 	public static String isSame (String str) {
 		return str + " Phải Trùng " + str + " Trước Đó!!!";
 	}
+	public static String isNext (String str) {
+		return str + " Sau Đó!!!";
+	}
+	public static String isPrevious (String str) {
+		return str + " Trước Đó!!!";
+	}
+	public static String isNotValid (String str) {
+		return str + " Không Hợp Lệ!!!";
+	}
 }

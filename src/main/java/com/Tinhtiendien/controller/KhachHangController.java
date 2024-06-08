@@ -61,6 +61,9 @@ public class KhachHangController {
 	@Autowired
 	YeuCauDAO yeucauDAO = new YeuCauDAO();
 	
+	@Autowired
+	ThongBaoDAO thongbaoDAO = new ThongBaoDAO();
+	
 	@RequestMapping(value = "/nguoi_dung/quan_ly_chung", method = RequestMethod.GET)
 	public String quan_ly_chung(HttpSession session, Model model, RedirectAttributes redirectAttributes,
 			HttpServletRequest request) throws JsonProcessingException, ServletException, IOException {
@@ -127,21 +130,6 @@ public class KhachHangController {
 	}
 	
 	
-	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don", method = RequestMethod.GET)
-	public String thong_tin_hoa_don(HttpSession session, Model model) {
-		
-		if (session.getAttribute("info_khachhang") == null) {
-			return "redirect:/login";
-		}
-		
-		Info info = (Info) session.getAttribute("info_khachhang");
-		String makh = info.getKhachhang_id();
-		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDon(makh);
-		
-		
-		model.addAttribute("list_hoadon", list_hoadon);
-		return "user/thong_tin_hoa_don";
-	}
 	
 	
 	
@@ -185,6 +173,52 @@ public class KhachHangController {
 		return "/user/tra_cuu_hoa_don";
     }
 	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// THONG TIN HOA DON ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don", method = RequestMethod.GET)
+	public String thong_tin_hoa_don(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
+		
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		
+		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDon(makh);
+		int nam_dangky = infoDAO.getNamDangKy(makh);
+		
+		model.addAttribute("nam_dangky", nam_dangky);
+		model.addAttribute("list_hoadon", list_hoadon);
+		
+		return "user/thong_tin_hoa_don";
+	}
+	
+	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don/tim_kiem", method = RequestMethod.GET)
+	public String tim_kiem_thong_tin_hoa_don(HttpSession session, Model model, @RequestParam("search_month") String month,  @RequestParam("search_year") String year) {
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		int nam_dangky = infoDAO.getNamDangKy(makh);
+		if (month.isEmpty() && year.isEmpty()) {
+			List<HoaDon> list_hoadon = null;
+			model.addAttribute("nam_dangky", nam_dangky);
+			model.addAttribute("list_hoadon", list_hoadon);
+			return "user/thong_tin_hoa_don";
+		}
+		
+		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDonTheoThangNam(makh, month, year);
+		model.addAttribute("nam_dangky", nam_dangky);
+		model.addAttribute("list_hoadon", list_hoadon);
+		return "user/thong_tin_hoa_don";
+	}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////// LICH SU THANH TOAN /////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	@RequestMapping(value = "/nguoi_dung/lich_su_thanh_toan", method = RequestMethod.GET)
 	public String lich_su_thanh_toan(HttpSession session, Model model) {
 		
@@ -196,12 +230,36 @@ public class KhachHangController {
 		String makh = info.getKhachhang_id();
 		
 		List<HoaDon> list_lstt = hoadonDAO.getAllInfoHoaDon(makh);
+		int nam_dangky = infoDAO.getNamDangKy(makh);
 		
+		model.addAttribute("nam_dangky", nam_dangky);
 		model.addAttribute("list_lstt", list_lstt);
 		
 		return "/user/lich_su_thanh_toan";
 		
 	}
+	
+	
+	@RequestMapping(value = "/nguoi_dung/lich_su_thanh_toan/tim_kiem", method = RequestMethod.GET)
+	public String tim_kiem_lich_su_thanh_toan(HttpSession session, Model model, @RequestParam("search_month") String month,  @RequestParam("search_year") String year) {
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		
+		int nam_dangky = infoDAO.getNamDangKy(makh);
+
+		if (month.isEmpty() && year.isEmpty()) {
+			List<HoaDon> list_lstt = null;
+			model.addAttribute("nam_dangky", nam_dangky);
+			model.addAttribute("list_lstt", list_lstt);
+			return "user/lich_su_thanh_toan";
+		}
+		
+		List<HoaDon> list_lstt = hoadonDAO.getAllInfoHoaDonTheoThangNam(makh, month, year);
+		model.addAttribute("nam_dangky", nam_dangky);
+		model.addAttribute("list_lstt", list_lstt);
+		return "user/lich_su_thanh_toan";
+	}
+	
 	
 	@RequestMapping("/nguoi_dung/lich_ghi_chi_so")
 	public String layChuKiDO(HttpSession session, Model model) {
@@ -212,8 +270,45 @@ public class KhachHangController {
 
 		model.addAttribute("list_ckd", lckd);
 		return "user/lich_ghi_chi_so";
-	} 
+	}
 	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// HOA DON CHUA THANH TOAN //////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don_chua_thanh_toan", method = RequestMethod.GET)
+	public String thong_tin_hoa_don_chua_thanh_toan(HttpSession session, Model model) {
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDonChuaThanhToan(makh);
+		
+		
+		model.addAttribute("list_hoadon", list_hoadon);
+		return "user/hoa_don_chua_thanh_toan";
+	}
+	
+	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don_chua_thanh_toan/thanh_toan", method = RequestMethod.POST)
+	public String thanh_toan_hoa_don(HttpSession session, Model model,@RequestParam("phuong_thuc") String phuong_thuc, @RequestParam("hoadon_id") String hoadon_id ) {
+		boolean isError = false;
+		String message = "";
+		if (hoadonDAO.thanhToan(hoadon_id, phuong_thuc) == true) {
+			message = "Thanh toán thành công";
+		} else {
+			message = "Thanh toán thất bại";
+			isError = true;
+		}
+		
+		session.setAttribute("message", message);
+		session.setAttribute("isError", isError);
+		return "redirect:/nguoi_dung/thong_tin_hoa_don_chua_thanh_toan";
+	}
+
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// LICH SU DO ///////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	
 	@RequestMapping(value = "/nguoi_dung/lich_su_do", method = RequestMethod.GET)
@@ -228,13 +323,44 @@ public class KhachHangController {
 		
 		List<MeasurementHistory> listLSDo = new ArrayList<MeasurementHistory>();
 		listLSDo = mdDAO.getLSDoTheoChuhoID(makh);
+		int nam_dangky = infoDAO.getNamDangKy(makh);
 		
+		model.addAttribute("nam_dangky", nam_dangky);
 		model.addAttribute("listLSDo", listLSDo);
 		return "user/lich_su_do";
 	}
+	
+	@RequestMapping(value = "/nguoi_dung/lich_su_do/tim_kiem", method = RequestMethod.GET)
+	public String tim_kiem_lich_su_do(HttpSession session, Model model, @RequestParam("search_month") String month,  @RequestParam("search_year") String year) {
+		
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		
+		int nam_dangky = infoDAO.getNamDangKy(makh);
+		
+		if (month.isEmpty() && year.isEmpty()) {
+			List<MeasurementHistory> listLSDo = null;
+			model.addAttribute("nam_dangky", nam_dangky);
+			model.addAttribute("list_LSDo", listLSDo);
+			return "user/lich_su_do";
+		}
+		
+		List<MeasurementHistory> listLSDo = new ArrayList<MeasurementHistory>();
+		listLSDo = mdDAO.getLSDoTheoChuhoIDTheoThangNam(makh, month, year);
+		
+		model.addAttribute("nam_dangky", nam_dangky);
+		model.addAttribute("listLSDo", listLSDo);
+		return "user/lich_su_do";
+	}
+	
 
-	@RequestMapping(value = "/nguoi_dung/quan_ly_tai_khoan", method = RequestMethod.GET)
-	public String quan_ly_tai_khoan(HttpSession session, Model model) {
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// LICH SU THONG BAO ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+	@RequestMapping(value = "/nguoi_dung/lich_su_thong_bao", method = RequestMethod.GET)
+	public String get_Lsthongbao(HttpSession session, Model model) {
 		
 		if (session.getAttribute("info_khachhang") == null) {
 			return "redirect:/login";
@@ -243,55 +369,18 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		
-		int ma_dongho = donghodienDAO.getMaDongHo(makh);
-		model.addAttribute("ma_dongho", ma_dongho);
+		List<ThongBao> list_thongbao = thongbaoDAO.getThongBaoByKhachhangId(makh);
 		
-		return "user/quan_ly_tai_khoan";
+		model.addAttribute("list_thongbao", list_thongbao);
+		
+		return "user/lich_su_thong_bao";
 	}
-	
-	// đổi mật khẩu  
-	@RequestMapping(value = "/nguoi_dung/quan_ly_tai_khoan", method = RequestMethod.POST, params = { "oldpassword", "newpassword", "renewpassword" })
-	public String doi_mat_khau(HttpSession session , Model model, 
-			@RequestParam("oldpassword") String oldpassword,
-			@RequestParam("newpassword") String newpassword,
-			@RequestParam("renewpassword") String renewpassword) {
-		
-		Info info = (Info) session.getAttribute("info_khachhang");
-		String username = info.getUsername();
-		
-		String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?.!@$%^&*-]).{6,}$";
-		boolean isValid = Pattern.matches(regex, newpassword);
-		boolean passwordChanged = false;
 
-		if (accountDAO.checkOldPassword(username, oldpassword)) {
-			if(isValid) {
-				if (newpassword.equals(oldpassword)) {
-					model.addAttribute("newpassmessage", "Mật khẩu không được trùng với mật khẩu cũ");
-				} else {
-					if (newpassword.equals(renewpassword)) {
-						accountDAO.changePassword(username, newpassword);
-						passwordChanged = true;
-					} else {
-						model.addAttribute("renewpassmessage", "Vui lòng nhập lại đúng mật khẩu");
-					}
-				}
-			} else {
-				model.addAttribute("newpassmessage", "Mật khẩu mới không đúng định dạng");
-			}
-		} else {
-			model.addAttribute("oldpassmessage", "Mật khẩu cũ không đúng, vui lòng nhập đúng mật khẩu");
-		}	
-		
-		model.addAttribute("passwordChanged", passwordChanged);
-		
-		return "user/quan_ly_tai_khoan";
-	}
-	
 	
 	
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////// LICH SU YEU CAU /////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// LICH SU YEU CAU //////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@RequestMapping(value = "/nguoi_dung/lich_su_yeu_cau", method = RequestMethod.GET)
 	public String getLichsu_yeu_cau(HttpSession session, Model model) {
@@ -394,4 +483,65 @@ public class KhachHangController {
 		session.setAttribute("isError", isError);
 		return "redirect:/nguoi_dung/lich_su_yeu_cau";
 	}
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////// QUAN LY TAI KHOAN ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	@RequestMapping(value = "/nguoi_dung/quan_ly_tai_khoan", method = RequestMethod.GET)
+	public String quan_ly_tai_khoan(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
+		
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String makh = info.getKhachhang_id();
+		
+		int ma_dongho = donghodienDAO.getMaDongHo(makh);
+		model.addAttribute("ma_dongho", ma_dongho);
+		
+		return "user/quan_ly_tai_khoan";
+	}
+	
+	// đổi mật khẩu  
+	@RequestMapping(value = "/nguoi_dung/quan_ly_tai_khoan", method = RequestMethod.POST, params = { "oldpassword", "newpassword", "renewpassword" })
+	public String doi_mat_khau(HttpSession session , Model model, 
+			@RequestParam("oldpassword") String oldpassword,
+			@RequestParam("newpassword") String newpassword,
+			@RequestParam("renewpassword") String renewpassword) {
+		
+		Info info = (Info) session.getAttribute("info_khachhang");
+		String username = info.getUsername();
+		
+		String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?.!@$%^&*-]).{6,}$";
+		boolean isValid = Pattern.matches(regex, newpassword);
+		boolean passwordChanged = false;
+		
+		if (accountDAO.checkOldPassword(username, oldpassword)) {
+			if(isValid) {
+				if (newpassword.equals(oldpassword)) {
+					model.addAttribute("newpassmessage", "Mật khẩu không được trùng với mật khẩu cũ");
+				} else {
+					if (newpassword.equals(renewpassword)) {
+						accountDAO.changePassword(username, newpassword);
+						passwordChanged = true;
+					} else {
+						model.addAttribute("renewpassmessage", "Vui lòng nhập lại đúng mật khẩu");
+					}
+				}
+			} else {
+				model.addAttribute("newpassmessage", "Mật khẩu mới không đúng định dạng");
+			}
+		} else {
+			model.addAttribute("oldpassmessage", "Mật khẩu cũ không đúng, vui lòng nhập đúng mật khẩu");
+		}	
+		
+		model.addAttribute("passwordChanged", passwordChanged);
+		
+		return "user/quan_ly_tai_khoan";
+	}
+	
+	
 }

@@ -10,7 +10,7 @@
 </head>
 <style>
 body {
-	background-color: #e5e5e5;
+	background-color: #f5f5f5;
 }
 
 .sidebar {
@@ -101,13 +101,13 @@ body {
         <li class="nav-item">
           <a class="nav-link" href="#tracuu" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu<i class="fa-solid fa-chevron-down"></i></a>
           <ul class="collapse list-unstyled" id="tracuu" style="padding-left: 20px;">
-              <li><a class="nav-link menu-item" href="#">Lịch tạm ngưng cấp điện</a></li>
+              <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/thong_tin_hoa_don_chua_thanh_toan">Hóa đơn chưa thanh toán</a></li>
 <!--               <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_ghi_chi_so">Lịch ghi chỉ số</a></li> -->
               <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_do">Lịch sử đo</a></li>
           </ul>
       </li>
       <li class="nav-item">
-          <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a>
+          <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thong_bao"><i class="fa-regular fa-comments"></i> Lịch sử thông báo</a>
       </li>
       <li class="nav-item">
         <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_yeu_cau"><i class="fa-regular fa-comment-dots"></i> Lịch sử yêu cầu</a>

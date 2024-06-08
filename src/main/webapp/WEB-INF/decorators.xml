@@ -5,6 +5,10 @@
 <!--	<decorator name="chu_ki_do" page="user.jsp">-->
 <!--		<pattern>/nguoi_dung/quan_ly_chung</pattern>-->
 <!--	</decorator>-->
+	<decorator name="chu_ki_do" page="user.jsp">
+		<pattern>/nguoi_dung/*</pattern>
+	</decorator>
+	
  	<decorator name="chu_ki_do" page="user.jsp">
 		<pattern>/nguoi_dung/chu_ki_do</pattern>
 	</decorator>

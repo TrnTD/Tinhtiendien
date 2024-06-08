@@ -14,10 +14,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div class="content">
-	<div class="container" style="width: 1200px">	
+	<div class="container" style="width: 550px; float: left;">	
 		<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
-		<br>
-		<br>
+	</div>
+	
+	<div class="container" style="width: 1200px; margin-top: 400px;">	
 		<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
 	</div>
 	

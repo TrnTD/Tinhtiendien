@@ -227,13 +227,13 @@ public class HoaDonDAO {
 		return list_hoadon;
 	}
 	
-	public boolean addNewHoaDon(String khachhang_id, String thang, String nam, String thue) {
+	public boolean addNewHoaDon(String nhanvien_id, String khachhang_id, String thang, String nam, String thue) {
 		boolean isAdd = false;
 		
-		String query = "insert into hoa_don2 (khachhang_id, ngay_tao, month_bill, year_bill, ngay_thanhtoan, thue) values (?, getdate(), ?, ?, null, ?)";
+		String query = "insert into hoa_don2 (nhanvien_id, khachhang_id, ngay_tao, month_bill, year_bill, ngay_thanhtoan, thue) values (?, ?, getdate(), ?, ?, null, ?)";
 		
 		try {
-			jdbcTemplate.update(query, new Object[] {khachhang_id.toUpperCase(), thang, nam, thue});
+			jdbcTemplate.update(query, new Object[] {nhanvien_id, khachhang_id.toUpperCase(), thang, nam, thue});
 			isAdd = true;
 			System.out.println("them hoa don moi thanh cong");
 		} catch (DataAccessException e) {
@@ -292,6 +292,62 @@ public class HoaDonDAO {
 		
 		return isDelete;
 	}
+	
+	
+	public List<HoaDon> getAllInfoHoaDonTheoThangNam(String khachhang_id, String month, String year) {
+		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
+		String sql = "exec sp_GetChiTietHoaDonByKhachHangIDOrMonthOrYear2 @KhachHangID = ?, @Month = ? , @Year = ? ";
+
+		try {
+			list_hoadon = jdbcTemplate.query(sql,  new Object[] {khachhang_id, month, year}, new MapperHoaDon());
+			System.out.println("Truy van hoa don tu ma khach hang theo thang nam thanh cong");
+			
+		} catch (DataAccessException e) {
+			System.out.println("Truy van hoa don tu ma khach hang theo thang nam that bai");
+		}
+		
+		if (list_hoadon.isEmpty()) {
+			System.out.println("Khong co hoa don nao lay tu ma khach hang duoc tra ve");
+		}
+		
+		return list_hoadon;
+	}
+	
+	
+	public List<HoaDon> getAllInfoHoaDonChuaThanhToan(String khachhang_id) {
+		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
+		String sql = "exec sp_GetChiTietHoaDonChuaThanhToanByKhachHangID2 @KhachHangID = ?";
+
+		try {
+			list_hoadon = jdbcTemplate.query(sql,  new Object[] {khachhang_id}, new MapperHoaDon());
+			System.out.println("Truy van hoa don chua thanh toan tu ma khach hang thanh cong");
+			
+		} catch (DataAccessException e) {
+			System.out.println("Truy van hoa don chua thanh toan tu ma khach hang that bai");
+		}
+		
+		if (list_hoadon.isEmpty()) {
+			System.out.println("Khong co hoa don chua thanh toan nao lay tu ma khach hang duoc tra ve");
+		}
+		
+		return list_hoadon;
+	}
+	
+	
+	public boolean thanhToan (String hoadon_id, String phuong_thuc_id) {
+		String sql = "UPDATE hoa_don2 SET ngay_thanhtoan = getdate(), trangthai = N'Đã thanh toán', phuongthuc_id = ? WHERE hoadon_id = ?";
+		try {
+			jdbcTemplate.update(sql, new Object[] {phuong_thuc_id, hoadon_id});
+			System.out.println("Thanh toan thanh cong");
+		}
+		catch (DataAccessException e){
+			System.out.println("Thanh toan that bai");
+			return false;
+		}
+		return true;
+	}
+	
+	
 	
 	// -------------------------------- Phan trang -----------------------------------
 	

@@ -12,12 +12,34 @@ public class Info {
 	private String sdt;
 	private String cccd;
 	private String diachi;
+	private String dongho_id;
+	private Date ngay_dangky;
 	
 	public Info() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
+
+	public String getDongho_id() {
+		return dongho_id;
+	}
+
+
+	public void setDongho_id(String dongho_id) {
+		this.dongho_id = dongho_id;
+	}
+
+
+	public Date getNgay_dangky() {
+		return ngay_dangky;
+	}
+
+
+	public void setNgay_dangky(Date ngay_dangky) {
+		this.ngay_dangky = ngay_dangky;
+	}
+
 
 	public String getKhachhang_id() {
 		return khachhang_id;

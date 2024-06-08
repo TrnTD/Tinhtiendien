@@ -21,6 +21,8 @@ public class MapperInfo implements RowMapper<Info> {
 		info.setSdt(rs.getString("sdt"));
 		info.setCccd(rs.getString("cccd"));
 		info.setDiachi(rs.getString("diachi"));
+		info.setDongho_id(rs.getString("dongho_id"));
+		info.setNgay_dangky(rs.getDate("ngay_dangky"));
 		
 		return info;
 	}

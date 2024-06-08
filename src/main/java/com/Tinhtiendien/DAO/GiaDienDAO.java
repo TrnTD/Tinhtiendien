@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +59,7 @@ public class GiaDienDAO {
             e.printStackTrace();
         }
     }
+    
     public boolean checkExist(int bacDien) {
         try {
             String sql = "select * from gia_dien where bac = ?";
@@ -69,5 +71,41 @@ public class GiaDienDAO {
             return false;
         }
     }
+    
+ // lấy bâcj điênj phía trước
+    public GiaDien getPreviousPrice(int bacDien) {
+        GiaDien previousPrice = null;
+        String sql = 
+               	" SELECT TOP 1 bac, giatien"
+               + " FROM gia_dien"
+               + " WHERE bac < ?"
+               + " ORDER BY bac DESC;";
+        try {
+            previousPrice = jdbcTemplate.queryForObject(sql, new Object[] { bacDien }, new MapperGiaDien());
+            
+        }
+        catch(EmptyResultDataAccessException exception){ 
+        	 System.out.println("Lấy Giá Điện Bậc Trước Thất Bại!!!");
+        	return null; }
+        return previousPrice;
+    }
+    
+    
+ // Lấy Giá Tiền Bậc Điện sau 
+    public GiaDien getNextPrice(int bacDien) {
+        GiaDien nextPrice = null;
+        String sql = " SELECT TOP 1 bac, giatien"
+                + " FROM gia_dien"
+                + " WHERE bac > ?"
+                + " ORDER BY bac ASC;";
+        try {
+            nextPrice = jdbcTemplate.queryForObject(sql, new Object[] { bacDien }, new MapperGiaDien());
+       } 
+            catch(EmptyResultDataAccessException exception){ 
+           	 System.out.println("Lấy Giá Điện Bậc Trước Thất Bại!!!");
+           	return null; }
+        return nextPrice;
+    }
+    
 
 }

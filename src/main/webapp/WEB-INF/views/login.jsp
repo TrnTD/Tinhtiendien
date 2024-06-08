@@ -38,7 +38,7 @@
                         <input type="submit" class="button" value="Đăng nhập">
                     </div>
                     <div class="foot-lnk">
-                        <a href="#forgot">Quên mật khẩu?</a>
+                        <a href="forgotpass">Quên mật khẩu?</a>
                     </div>
                     <div class="signup">
                         <span>Quý khách chưa có tài khoản? </span> 
