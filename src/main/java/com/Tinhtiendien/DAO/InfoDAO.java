@@ -94,6 +94,23 @@ public class InfoDAO {
 			return true;
 		}
 	
+	
+	public boolean checkNhanVienIDandUsername(String nhanvien_id) {
+		String sql = "select * from nhanvien where nhanvien_id = ? AND username is null";
+		InfoNhanVien info = null;
+		try {
+			info = jdbcTemplate.queryForObject(sql, new Object[] {nhanvien_id}, new MapperInfoNhanVien());
+		} catch (DataAccessException e) {
+			System.out.println("Truy van nhanvien that bai");
+		}
+		
+		if (info == null) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 	public boolean checkExistKhachHangById(String khachhang_id) {
 		
 		String query = "select * from khachhang where khachhang_id = ?";
@@ -148,6 +165,37 @@ public class InfoDAO {
 		return infos;
 	}
 	
+	public int getTotalKhachHang() {
+		int result = 0;
+		
+		String query = "select count(*) from khachhang";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, Integer.class);
+		} catch (DataAccessException e) {
+			
+		}
+		
+		return result;
+	}
+	
+	public List<InfoNhanVien> getAllNhanVien(){
+		List<InfoNhanVien> infos = new  ArrayList<InfoNhanVien>();
+		String sql = "select * from nhanvien where nhanvien_id NOT IN ('QL001')";
+		try {
+			infos = jdbcTemplate.query(sql, new MapperInfoNhanVien());
+			System.out.println("Truy van tat ca thong tin nhan vien thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca thong tin nhan vien that bai");
+		}
+		
+		if (infos.size() == 0) {
+			System.out.println("Khong co nhan vien de truy van");
+		}
+		
+		return infos;
+	}
+	
 	public boolean addNewKhachHang(String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi) {
 		boolean isAdd = false;
 		String sql = "insert into khachhang (hovaten, gioitinh, ngaythangnam_sinh, email, sdt, cccd, diachi) "
@@ -159,6 +207,22 @@ public class InfoDAO {
 		}
 		catch (DataAccessException e){
 			System.out.println("Them khach hang moi that bai");
+		}
+		
+		return isAdd;
+	}
+	
+	public boolean addNewNhanVien(String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi) {
+		boolean isAdd = false;
+		String sql = "insert into nhanvien (hovaten, gioitinh, ngaythangnam_sinh, email, sdt, cccd, diachi) "
+				+ "values (?, ?, ?, ?, ?, ?, ?)";
+		try {
+			jdbcTemplate.update(sql, new Object[] {hoten, gioitinh, ngaysinh, email, sdt, cccd, diachi});
+			isAdd = true;
+			System.out.println("Them nhan vien moi thanh cong");
+		}
+		catch (DataAccessException e){
+			System.out.println("Them nhan vien moi that bai");
 		}
 		
 		return isAdd;
@@ -182,6 +246,24 @@ public class InfoDAO {
 		return isUpdate;
 	}
 	
+	public boolean updateNhanVien(String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi, String nhanvien_id) {
+		boolean isUpdate = false;
+		
+		String sql = "UPDATE nhanvien"
+				+ " SET hovaten = ?, gioitinh = ?, ngaythangnam_sinh = ?, email =?, sdt =?, cccd = ?, diachi = ?"
+				+ " WHERE nhanvien_id = ?";
+		try {
+			jdbcTemplate.update(sql, new Object[] {hoten, gioitinh, ngaysinh, email, sdt, cccd, diachi, nhanvien_id});
+			isUpdate = true;
+			System.out.println("Chinh sua nhan vien thanh cong");
+		}
+		catch (DataAccessException e){
+			System.out.println("Chinh sua nhan vien that bai");
+		}
+		
+		return isUpdate;
+	}
+	
 	public boolean deleteKhachHang(String khachhang_id) {
 		String sql = "exec sp_DeleteKhachHang @khachhang_id = ?";
 		try {
@@ -195,14 +277,44 @@ public class InfoDAO {
 
 	}
 	
+	public boolean deleteNhanVien(String nhanvien_id) {
+		String sql = "delete nhanvien where nhanvien_id = ? AND username is null";
+		try {
+			jdbcTemplate.update(sql, new Object[] {nhanvien_id});
+			System.out.println("Xoa nhan vien thanh cong");
+			return true;
+		} catch (DataAccessException e) {
+			System.out.println("Xoa nhan vien that bai");
+			return false;
+		}
+
+	}
+	
 	public boolean checkSoDienThoaiTrung (String sdt) {
 		String sql = "select * from khachhang where sdt = ?";
-		System.out.println("select * from khachhang where sdt = " + sdt);
+
 		Info info = null;
 		try {
 			info = jdbcTemplate.queryForObject(sql, new Object[] {sdt}, new MapperInfo());
 		} catch (DataAccessException e) {
 			System.out.println("Truy van khachhang bang sdt that bai");
+		}
+		
+		if (info == null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean checkSoDienThoaiTrungNV (String sdt) {
+		String sql = "select * from nhanvien where sdt = ?";
+		System.out.println("select * from nhanvien where sdt = " + sdt);
+		InfoNhanVien info = null;
+		try {
+			info = jdbcTemplate.queryForObject(sql, new Object[] {sdt}, new MapperInfoNhanVien());
+		} catch (DataAccessException e) {
+			System.out.println("Truy van nhanvien bang sdt that bai");
 		}
 		
 		if (info == null) {
@@ -228,6 +340,22 @@ public class InfoDAO {
 		return true;
 	}
 	
+	public boolean checkCanCuocCongDanTrungNV (String cccd) {
+		String sql = "select * from nhanvien where cccd = ?";
+		System.out.println("select * from nhanvien where cccd = " + cccd);
+		InfoNhanVien info = null;
+		try {
+			info = jdbcTemplate.queryForObject(sql, new Object[] {cccd}, new MapperInfoNhanVien());
+		} catch (DataAccessException e) {
+			System.out.println("Truy van nhanvien bang cccd that bai");
+		}
+		
+		if (info == null) {
+			return false;
+		}
+		return true;
+	}
+	
 	public Info getKhachHangByID(String khachhang_id){
 		Info info = null;
 		String sql = "select * from khachhang where khachhang_id = ?";
@@ -245,6 +373,23 @@ public class InfoDAO {
 		return info;
 	}
 	
+	public InfoNhanVien getNhanVienByID(String nhanvien_id){
+		InfoNhanVien info = null;
+		String sql = "select * from nhanvien where nhanvien_id = ?";
+		try {
+			info = jdbcTemplate.queryForObject(sql,new Object[] {nhanvien_id}, new MapperInfoNhanVien());
+			System.out.println("Truy van thong tin nhan vien thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van thong tin nhan vien that bai");
+		}
+		
+		if (info == null) {
+			System.out.println("Khong co nhanvien de truy van");
+		}
+		
+		return info;
+	}
+	
 	public boolean checkEmailTrung (String email) {
 		String sql = "select * from khachhang where email = ?";
 		System.out.println("select * from khachhang where sdt = " + email);
@@ -253,6 +398,24 @@ public class InfoDAO {
 			info = jdbcTemplate.queryForObject(sql, new Object[] {email}, new MapperInfo());
 		} catch (DataAccessException e) {
 			System.out.println("Truy van khachhang bang email that bai");
+		}
+		
+		if (info == null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean checkEmailTrungNV (String email) {
+		String sql = "select * from nhanvien where email = ?";
+		System.out.println("select * from nhanvien where email = " + email);
+		InfoNhanVien info = null;
+		try {
+			info = jdbcTemplate.queryForObject(sql, new Object[] {email}, new MapperInfoNhanVien());
+		} catch (DataAccessException e) {
+			System.out.println("Truy van nhanvien bang email that bai");
+			return false;
 		}
 		
 		if (info == null) {
@@ -319,6 +482,69 @@ public class InfoDAO {
         
         if (infos.size() == 0) {
 			System.out.println("Khong co khach hang can tim");
+		}
+	        
+		return infos;
+	}
+	
+	
+	public List<InfoNhanVien> searchNhanVien (String nhanvien_id, String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi){
+		List<InfoNhanVien> infos = new  ArrayList<InfoNhanVien>();
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
+
+		String sql = "exec sp_SearchInfoNhanVien @PageNumber = 1, @PageSize = 10,";
+
+		if (!nhanvien_id.isEmpty()) {
+			conditions.add("@NhanVienID = ?");
+			params.add(nhanvien_id);
+		}
+		
+		if (!hoten.isEmpty()) {
+			conditions.add("@Hoten = N'" + hoten + "'");
+		}
+		
+		if (!gioitinh.isEmpty()) {
+			conditions.add("@GioiTinh = N'" + gioitinh + "'");
+		}
+		
+		if (!ngaysinh.isEmpty()) {
+			conditions.add("@NgaySinh = ?");
+			params.add(ngaysinh);
+		}
+		
+		if (!email.isEmpty()) {
+			conditions.add("@Email = ?");
+			params.add(email);
+		}
+		
+		if (!sdt.isEmpty()) {
+			conditions.add("@Sdt = ?");
+			params.add(sdt);
+		}
+		
+		if (!cccd.isEmpty()) {
+			conditions.add("@Cccd = ?");
+			params.add(cccd);
+		}
+		
+		if (!diachi.isEmpty()) {
+			conditions.add("@DiaChi = N'" + diachi + "'");
+		}
+		
+		if (!conditions.isEmpty()) {
+	        sql += " " + String.join(", ", conditions);
+	    }
+        
+        try {
+			infos = jdbcTemplate.query(sql,params.toArray(), new MapperInfoNhanVien());
+			System.out.println("Tim kiem thong tin nhan vien thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Tim kiem thong tin nhan vien that bai");
+		}
+        
+        if (infos.size() == 0) {
+			System.out.println("Khong co nhan vien can tim");
 		}
 	        
 		return infos;
@@ -392,12 +618,28 @@ public class InfoDAO {
 	}
 	
 	
-	public int getToTalPageDongHoKhachHang(String khid, String dhid)
+	public int getToTalPageAllNhanVien()
 	{
 		int temp = -1;
-		String sql = "exec sp_GetTotalPagesAllDongHoKhachHangSearch @PageSize = 3, @KhachHangId = ?, @DongHoId = ?";
+		String sql = "exec sp_GetTotalPagesAllAccNhanVien @PageSize = 10";
 		try {
-			  temp = jdbcTemplate.queryForObject(sql,new Object[]{khid,dhid}, Integer.class);	
+			  temp = jdbcTemplate.queryForObject(sql, Integer.class);	
+			  System.out.println(temp);
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	
+	public int getToTalPageDongHoKhachHang(String khid, String dhid,String tuNgay, String denNgay)
+	{
+		int temp = -1;
+		String sql = "exec sp_GetTotalPagesAllDongHoKhachHangSearch @PageSize = 3, @KhachHangId = ?, @DongHoId = ?,@TuNgay = ?, @DenNgay = ? ";
+		try {
+			  temp = jdbcTemplate.queryForObject(sql,new Object[]{khid,dhid,tuNgay,denNgay}, Integer.class);	
 			return temp;
 		} catch (DataAccessException e) {
 			System.out.println("111");
@@ -408,22 +650,23 @@ public class InfoDAO {
 	
 	
 	
-	public List<Info> getPageDongHoKhachHangBySearch(int page ,String khid, String dhid)
+	public List<Info> getPageDongHoKhachHangBySearch(int page ,String khid, String dhid,String tuNgay, String denNgay)
 	{
 		List<Info> listdh = new ArrayList<Info>();
-		String sql = "exec sp_GetPagedAllDongHoKhachHangSearch  @PageNumber = ?, @PageSize = 3, @KhachHangId = ?, @DongHoId = ?";
+		String sql = "exec sp_GetPagedAllDongHoKhachHangSearch  @PageNumber = ?, @PageSize = 3, @KhachHangId = ?, @DongHoId = ?,@TuNgay = ?, @DenNgay = ? ";
 		try {
-			  listdh = jdbcTemplate.query(sql,new Object[]{page, khid,dhid},new MapperInfo());	
+			  listdh = jdbcTemplate.query(sql,new Object[]{page, khid,dhid,tuNgay,denNgay},new MapperInfo());	
 			  System.out.println("Truy van dong ho dien nguoi dung thanh cong!!");
 		} catch (DataAccessException e) {
 			System.out.println("111");
 		}
 		if (listdh.isEmpty()) {
-	        System.out.println("Không có tài khoản nào được trả về");
+	        System.out.println("Truy van dong ho dien nguoi dung thất bại!!");
 
 	    }
 		return listdh;
 	}
+
 	
 	public List<Info> getPageDongHoKhachHang(int page)
 	{
@@ -440,6 +683,21 @@ public class InfoDAO {
 
 	    }
 		return listdh;
+	}
+	
+	
+	
+	public String getNgayThangNamSinhKH(String khid)
+	{
+		String ntns = null;
+		String sql = "select  ngaythangnam_sinh from khachhang where khachhang_id = ?";
+		try {
+			ntns = jdbcTemplate.queryForObject(sql,new Object[]{khid}, String.class);	
+			return ntns;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		return ntns;
 	}
 
 
@@ -508,6 +766,70 @@ public class InfoDAO {
 		return temp;
 	}
 	
+	
+	public int tong_trang_search_nhan_vien(String nhanvien_id, String hoten, String gioitinh, String ngaysinh, String email, String sdt, String cccd, String diachi)
+	{
+		int temp = -1;
+		List<Object> params = new ArrayList<>();
+		List<String> conditions = new ArrayList<>();
+		
+		String sql = "exec sp_GetTotalPagesAllSearchInfoNhanVien @PageSize = 10,";
+		
+		if (!nhanvien_id.isEmpty()) {
+			conditions.add("@KhachHangID = ?");
+			params.add(nhanvien_id);
+		}
+		
+		if (!hoten.isEmpty()) {
+			conditions.add("@Hoten = N'" + hoten + "'");
+		}
+		
+		if (!gioitinh.isEmpty()) {
+			conditions.add("@GioiTinh = N'" + gioitinh + "'");
+		}
+		
+		if (!ngaysinh.isEmpty()) {
+			conditions.add("@NgaySinh = ?");
+			params.add(ngaysinh);
+		}
+		
+		if (!email.isEmpty()) {
+			conditions.add("@Email = ?");
+			params.add(email);
+		}
+		
+		if (!sdt.isEmpty()) {
+			conditions.add("@Sdt = ?");
+			params.add(sdt);
+		}
+		
+		if (!cccd.isEmpty()) {
+			conditions.add("@Cccd = ?");
+			params.add(cccd);
+		}
+		
+		if (!diachi.isEmpty()) {
+			conditions.add("@DiaChi = N'" + diachi + "'");
+		}
+		
+		if (!conditions.isEmpty()) {
+	        sql += " " + String.join(", ", conditions);
+	    }
+		
+		System.out.println(sql);
+		
+		try {
+			temp = jdbcTemplate.queryForObject(sql, params.toArray(), Integer.class);	
+			System.out.println(sql);
+			return temp;
+		} catch (DataAccessException e) {
+			System.out.println("111");
+		}
+		
+		return temp;
+	}
+	
+	
 	public List<Info> getAllPageInfoKhachHang(int page) {
 		List<Info> list_info = new ArrayList<Info>();
 		
@@ -522,6 +844,23 @@ public class InfoDAO {
 		
 		return list_info;
 	}
+	
+	public List<InfoNhanVien> getAllPageInfoNhanVien(int page) {
+		List<InfoNhanVien> list_info = new ArrayList<InfoNhanVien>();
+		
+		String query = "exec sp_GetPagedAllInfoNhanVien @PageNumber = ?, @PageSize = 10";
+		
+		try {
+			list_info = jdbcTemplate.query(query, new Object[] {page}, new MapperInfoNhanVien());
+			System.out.println("Truy van tat ca nhan vien page " + page + " thanh cong");
+		} catch (DataAccessException e) {
+			System.out.println("Truy van tat ca nhan vien page " + page + " that bai");
+		}
+		
+		return list_info;
+	}
+	
+	
 	
 	
 

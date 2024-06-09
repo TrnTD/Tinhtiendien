@@ -1,5 +1,8 @@
 package KtraDuLieu;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,5 +56,20 @@ public class KtraDuLieu {
 		 } else {
 			 return str.substring(0, length) + "...";
 		 }
-	 } 
+	 }
+	 
+	 public static boolean isOlderThan18(String birthDateStr, String compareDateStr) {
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	        // Chuyển đổi chuỗi ngày thành đối tượng LocalDate
+	        LocalDate birthDate = LocalDate.parse(birthDateStr, formatter);
+	        LocalDate compareDate = LocalDate.parse(compareDateStr, formatter);
+
+	        // Tính tuổi giữa birthDate và compareDate
+	        long yearsBetween = ChronoUnit.YEARS.between(birthDate, compareDate);
+
+	        // Kiểm tra nếu số năm giữa ngày sinh và ngày so sánh lớn hơn hoặc bằng 18
+	        return yearsBetween >= 18;
+	    }
+	 
 }

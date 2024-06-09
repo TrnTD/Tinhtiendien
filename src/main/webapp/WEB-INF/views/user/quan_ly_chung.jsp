@@ -17,25 +17,40 @@
 <%
 	ArrayList<Integer> list_2YearNearest = (ArrayList) request.getAttribute("list_2YearNearest");
 
+
+	
+
 	if (list_2YearNearest.size() == 1) {
 		ArrayList<Integer> list_chiso_currentyear = (ArrayList) request.getAttribute("list_chiso_currentyear");
 		ArrayList<Integer> list_tien_currentyear = (ArrayList) request.getAttribute("list_tien_currentyear");
+		
+		ArrayList<Integer> list_2thang = (ArrayList) request.getAttribute("list_2thang");
+		ArrayList<Integer> list_2year = (ArrayList) request.getAttribute("list_2year");
+		ArrayList<Integer> list_tien_2thang = (ArrayList) request.getAttribute("list_tien_2thang");
 %>
 <div class="content">
 
 	<div style="display: flex;">
-		<div class="container" style="width: 650px;">		
-			<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 700px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
-		</div>
+		<div class="container" style="width: 650px;">
+			<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>	
 			<br>
 			<br>
 		<div class="container" style="width: 650px;">
 			<canvas id="myChart_tien_2thang" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
 		</div>	
 	</div>
+	
+	
+	<div style="display: flex; margin-top: 40px;">
+		<div class="container" style="width: 650px;">		
+			<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 700px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>
 		<div class="container" style="width: 650px;">
-			<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+			<canvas id="myChart_tiendientrongnam" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
 		</div>	
+	</div>
+		
 </div>
 
 	<script>
@@ -43,8 +58,13 @@
 			var list_chiso_currentyear = <%= list_chiso_currentyear %>; 
 			var list_tien_currentyear = <%= list_tien_currentyear %>;
 			var list_2YearNearest = <%= list_2YearNearest %>;
-			var monthArray = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-		
+			var monthArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+			
+			var sum = list_tien_currentyear.reduce((accumulator, currentValue) => {
+			    return accumulator + currentValue;
+			}, 0)
+			
+			
 			console.log(list_chiso_currentyear)
 			console.log(list_tien_currentyear)
 		
@@ -161,6 +181,208 @@
 		            }
 		        });
 			        
+			        
+		        var list_2thang = <%= list_2thang %>;
+		       	var list_2year = <%= list_2year %>;
+		       	var list_tien_2thang = <%= list_tien_2thang %>
+		       	
+		       	list_2thang = list_2thang.reverse();
+		       	list_2year = list_2year.reverse();
+		       	list_tien_2thang = list_tien_2thang.reverse();
+		       	
+		       	console.log(list_tien_2thang)
+		       	
+		       	var monthsArray = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+		       	var resultArray = list_2thang.map(function(monthNumber) {
+		       	    return monthsArray[monthNumber - 1];
+		       	});
+		       	
+		       	var ctx_tien_2thang = document.getElementById('myChart_tien_2thang').getContext('2d');
+		        
+		       	if (list_2year[0] == list_2year[1]) {
+		       		
+			        var chartData_tien_2thang = {
+			            labels: resultArray,
+			            datasets: [{
+			            	label: list_2year[0],
+			                backgroundColor: "rgba(255, 231, 115, 0.7)",
+			                borderColor: "rgba(153, 107, 0, 1)",
+			                borderWidth: 1,
+			                data: list_tien_2thang, // Dữ liệu từ cơ sở dữ liệu
+			                barPercentage: 0.5, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+			                categoryPercentage: 0.5,
+			            }]
+			        };
+			        
+			        var myChart_tien_2thang = new Chart(ctx_tien_2thang, {
+			            type: 'bar',
+			            data: chartData_tien_2thang,
+			            options: {
+			            	animation: {
+		            	      onComplete: () => {
+		            	        delayed = true;
+		            	      },
+		            	      delay: (context) => {
+		            	        let delay = 0;
+		            	        if (context.type === 'data' && context.mode === 'default' && !delayed) {
+		            	          delay = context.dataIndex * 200 + context.datasetIndex * 50;
+		            	        }
+		            	        return delay;
+		            	      },
+		            	    },
+			                scales: {
+			                    y: {
+			                        beginAtZero: true,
+			                        title: {
+			                            display: true,
+			                            text: 'VND' // Tên trục dọc
+			                        }
+			                    },
+			                    x: {
+			                        title: {
+			                            display: true,
+			                            text: 'Tháng' // Tên trục ngang
+			                        }
+			                    }
+			                },
+			                plugins: {
+			                    title: {
+			                      display: true,
+			                      text: 'Tiền điện 2 tháng gần nhất',
+			                    }
+			                }
+			            }
+			        });
+		       	} else {
+		       		var chartData_tien_2thang = {
+				            labels: resultArray,
+				            datasets: [{
+				            	label: list_2year[0],
+				            	backgroundColor: "rgba(254, 109, 109, 0.7)",
+				                borderColor: "rgba(159, 10, 10, 1)",
+				                borderWidth: 1,
+				                data: [list_tien_2thang[0], 0], // Dữ liệu từ cơ sở dữ liệu
+				                barPercentage: 0.57, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+				                categoryPercentage: 0.7,
+				            },
+				            {
+				            	label: list_2year[1],
+				                backgroundColor: "rgba(255, 231, 115, 0.7)",
+				                borderColor: "rgba(153, 107, 0, 1)",
+				                borderWidth: 1,
+				                data: [0, list_tien_2thang[1]], // Dữ liệu từ cơ sở dữ liệu
+				                barPercentage: 0.7, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+				                categoryPercentage: 0.7,
+				            }]
+				        };
+		       		
+		       		var myChart_tien_2thang = new Chart(ctx_tien_2thang, {
+			            type: 'bar',
+			            data: chartData_tien_2thang,
+			            options: {
+			            	animation: {
+		            	      onComplete: () => {
+		            	        delayed = true;
+		            	      },
+		            	      delay: (context) => {
+		            	        let delay = 0;
+		            	        if (context.type === 'data' && context.mode === 'default' && !delayed) {
+		            	          delay = context.dataIndex * 200 + context.datasetIndex * 50;
+		            	        }
+		            	        return delay;
+		            	      },
+		            	    },
+			                scales: {
+			                    y: {
+			                        beginAtZero: true,
+			                        title: {
+			                            display: true,
+			                            text: 'VND' // Tên trục dọc
+			                        }
+			                    },
+			                    x: {
+			                        title: {
+			                            display: true,
+			                            text: 'Tháng' // Tên trục ngang
+			                        }
+			                    }
+			                },
+			                plugins: {
+			                    title: {
+			                      display: true,
+			                      text: 'Tiền điện 2 tháng gần nhất',
+			                    }
+			                }
+			            }
+			        });
+		       		
+		       }
+		       	
+		       	
+		       	
+		       	var ctx_tiendientrongnam = document.getElementById('myChart_tiendientrongnam').getContext('2d');
+		        
+		       	
+				var chartData_tiendientrongnam = {
+					    labels: list_2YearNearest,
+					    datasets: [
+					        {
+					            label: list_2YearNearest,
+					            backgroundColor: "rgba(254, 109, 109, 0.7)",
+					            borderColor: "rgba(159, 10, 10, 1)",
+					            borderWidth: 1,
+					            data: [sum], // Dữ liệu cho năm đầu tiên
+					            barPercentage: 0.5, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+					            categoryPercentage: 0.5,
+					        }]
+					};
+				
+				
+				var myChart_dien = new Chart(ctx_tiendientrongnam, {
+		            type: 'bar',
+		            data: chartData_tiendientrongnam,
+		            options: {
+	            		animation: {
+	            	      onComplete: () => {
+	            	        delayed = true;
+	            	      },
+	            	      delay: (context) => {
+	            	        let delay = 0;
+	            	        if (context.type === 'data' && context.mode === 'default' && !delayed) {
+	            	          delay = context.dataIndex * 200 + context.datasetIndex * 50;
+	            	        }
+	            	        return delay;
+	            	      },
+	            	    },
+		                scales: {
+		                    y: {
+		                        beginAtZero: true,
+		                        title: {
+		                            display: true,
+		                            text: 'Điện tiêu thụ (Kwh)' // Tên trục dọc
+		                        }
+		                    },
+		                    x: {
+		                        title: {
+		                            display: true,
+// 		                            text: 'Tháng' // Tên trục ngang
+		                        }
+		                    }
+		                },
+		                plugins: {
+		                    title: {
+		                      display: true,
+		                      text: 'Tiền điện đã đóng trong 2 năm gần nhất',
+		                    }
+		                }
+		            }
+		        });
+				
+				
+				
+
+					
+			        
 		})
 	</script>
 <% 
@@ -180,7 +402,6 @@
 <div class="content">
 
 	<div style="display: flex;">
-	
 		<div class="container" style="width: 650px;">
 			<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
 		</div>	
@@ -190,9 +411,16 @@
 			<canvas id="myChart_tien_2thang" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
 		</div>	
 	</div>
-		<div class="container" style="width: 650px; margin-top: 40px;">		
+	
+	
+	<div style="display: flex; margin-top: 40px;">
+		<div class="container" style="width: 650px;">		
 			<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 700px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
 		</div>
+		<div class="container" style="width: 650px;">
+			<canvas id="myChart_tiendientrongnam" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>	
+	</div>
 		
 </div>
 
@@ -205,9 +433,20 @@
 			var list_tien_currentyear = <%= list_tien_currentyear %>;
 			
 			var list_2YearNearest = <%= list_2YearNearest %>;
-			var monthArray = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+			var monthArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+			
+			var sum1 = list_tien_lastyear.reduce((accumulator, currentValue) => {
+			    return accumulator + currentValue;
+			}, 0)
+			
+			var sum2 = list_tien_currentyear.reduce((accumulator, currentValue) => {
+			    return accumulator + currentValue;
+			}, 0)
+			
 		
-			console.log(list_chiso_currentyear)
+			console.log(sum1)
+			console.log(sum2)
+			
 		
 	        let delayed;
 			
@@ -345,9 +584,11 @@
 			       	list_2year = list_2year.reverse();
 			       	list_tien_2thang = list_tien_2thang.reverse();
 			       	
+			       	console.log(list_tien_2thang)
 			       	
+			       	var monthsArray = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
 			       	var resultArray = list_2thang.map(function(monthNumber) {
-			       	    return monthArray[monthNumber - 1];
+			       	    return monthsArray[monthNumber - 1];
 			       	});
 			       	
 			       	var ctx_tien_2thang = document.getElementById('myChart_tien_2thang').getContext('2d');
@@ -406,11 +647,159 @@
 				                }
 				            }
 				        });
-				        
-				        
-			       	}
+			       	} else {
+			       		var chartData_tien_2thang = {
+					            labels: resultArray,
+					            datasets: [{
+					            	label: list_2year[0],
+					            	backgroundColor: "rgba(254, 109, 109, 0.7)",
+					                borderColor: "rgba(159, 10, 10, 1)",
+					                borderWidth: 1,
+					                data: [list_tien_2thang[0], 0], // Dữ liệu từ cơ sở dữ liệu
+					                barPercentage: 0.57, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+					                categoryPercentage: 0.7,
+					            },
+					            {
+					            	label: list_2year[1],
+					                backgroundColor: "rgba(255, 231, 115, 0.7)",
+					                borderColor: "rgba(153, 107, 0, 1)",
+					                borderWidth: 1,
+					                data: [0, list_tien_2thang[1]], // Dữ liệu từ cơ sở dữ liệu
+					                barPercentage: 0.7, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+					                categoryPercentage: 0.7,
+					            }]
+					        };
+			       		
+			       		var myChart_tien_2thang = new Chart(ctx_tien_2thang, {
+				            type: 'bar',
+				            data: chartData_tien_2thang,
+				            options: {
+				            	animation: {
+			            	      onComplete: () => {
+			            	        delayed = true;
+			            	      },
+			            	      delay: (context) => {
+			            	        let delay = 0;
+			            	        if (context.type === 'data' && context.mode === 'default' && !delayed) {
+			            	          delay = context.dataIndex * 200 + context.datasetIndex * 50;
+			            	        }
+			            	        return delay;
+			            	      },
+			            	    },
+				                scales: {
+				                    y: {
+				                        beginAtZero: true,
+				                        title: {
+				                            display: true,
+				                            text: 'VND' // Tên trục dọc
+				                        }
+				                    },
+				                    x: {
+				                        title: {
+				                            display: true,
+				                            text: 'Tháng' // Tên trục ngang
+				                        }
+				                    }
+				                },
+				                plugins: {
+				                    title: {
+				                      display: true,
+				                      text: 'Tiền điện 2 tháng gần nhất',
+				                    }
+				                }
+				            }
+				        });
+			       		
+			       		}
 			       	
+						var ctx_tien_2thang = document.getElementById('myChart_tiendientrongnam').getContext('2d');
 			        
+			       	
+						var chartData_tiendientrongnam = {
+							    labels: list_2YearNearest,
+							    datasets: [
+							        {
+							            label: list_2YearNearest[0],
+							            backgroundColor: "rgba(254, 109, 109, 0.7)",
+							            borderColor: "rgba(159, 10, 10, 1)",
+							            borderWidth: 1,
+							            data: [sum1], // Dữ liệu cho năm đầu tiên
+							            barPercentage: 0.5, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+							            categoryPercentage: 0.5,
+							        },
+							        {
+							            label: list_2YearNearest[1],
+							            backgroundColor: "rgba(255, 231, 115, 0.7)",
+							            borderColor: "rgba(153, 107, 0, 1)",
+							            borderWidth: 1,
+							            data: [sum2], // Dữ liệu cho năm thứ hai
+							            barPercentage: 0.5, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+							            categoryPercentage: 0.5,
+							        }
+							    ]
+							};
+
+							var myChart_tiendientrongnam = new Chart(ctx_tien_2thang, {
+							    type: 'bar',
+							    data: {
+							        labels: ['Tiền điện'], // Nhãn chung cho cả hai cột
+							        datasets: [
+							            {
+							                label: list_2YearNearest[0],
+							                backgroundColor: "rgba(254, 109, 109, 0.7)",
+							                borderColor: "rgba(159, 10, 10, 1)",
+							                borderWidth: 1,
+							                data: [sum1], // Dữ liệu cho năm đầu tiên
+							                barPercentage: 0.5,
+							                categoryPercentage: 0.5,
+							            },
+							            {
+							                label: list_2YearNearest[1],
+							                backgroundColor: "rgba(255, 231, 115, 0.7)",
+							                borderColor: "rgba(153, 107, 0, 1)",
+							                borderWidth: 1,
+							                data: [sum2], // Dữ liệu cho năm thứ hai
+							                barPercentage: 0.5,
+							                categoryPercentage: 0.5,
+							            }
+							        ]
+							    },
+							    options: {
+							        animation: {
+							            onComplete: () => {
+							                delayed = true;
+							            },
+							            delay: (context) => {
+							                let delay = 0;
+							                if (context.type === 'data' && context.mode === 'default' && !delayed) {
+							                    delay = context.dataIndex * 200 + context.datasetIndex * 50;
+							                }
+							                return delay;
+							            },
+							        },
+							        scales: {
+							            y: {
+							                beginAtZero: true,
+							                title: {
+							                    display: true,
+							                    text: 'VND' // Tên trục dọc
+							                }
+							            },
+							            x: {
+							                title: {
+							                    display: true,
+// 							                    text: 'Năm' // Tên trục ngang
+							                }
+							            }
+							        },
+							        plugins: {
+							            title: {
+							                display: true,
+							                text: 'Tiền điện đã đóng trong 2 năm gần nhất',
+							            }
+							        }
+							    }
+							});  
 			        
 		})
 	</script>

@@ -4,9 +4,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="java.time.LocalDate" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,66 +13,15 @@
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
-<style>
-    .thong-ke {
-        display: flex;
-        justify-content: space-evenly;
-        align-items: flex-end;
-    }
-
-    p {
-        font-size: 18px;
-    }
-
-    .so-lieu {
-        padding: 10px;
-        width: 400px;
-        margin-right: 25px;
-        background-color: white;
-    }
-
-    .doanh-thu-thang {
-        border: 3px solid rgb(8, 69, 200);
-    }
-
-    .khach-hang {
-        border: 3px solid rgb(10, 207, 10);
-    }
-
-    .doanh-thu-nam {
-        border: 3px solid rgb(236, 168, 41);
-    }
-
-</style>
-
-<%
-    // Lấy ngày tháng hiện tại
-    LocalDate now = LocalDate.now();
-    
-    // Lấy tháng/năm
-    String monthYear = now.format(DateTimeFormatter.ofPattern("MM/yyyy"));
-    // Lấy năm
-    int year = now.getYear();
-%>
-
 <div class="content">
-	<div class="thong-ke">
-        <div class="so-lieu doanh-thu-thang">
-            <p>Tiền hóa đơn tháng này thu được (<%= monthYear %>)</p>
-            <h4>${doanhthu_thang}</h4>
-        </div>
-
-        <div class="so-lieu khach-hang">
-            <p>Tổng khách hàng</p>
-            <h4>${tongKhachHang}</h4>
-        </div>
-        <div class="so-lieu doanh-thu-nam">
-            <p>Tiền hóa đơn năm nay (<%= year %>)</p>
-            <h4>${doanhthu_nam}</h4>
-        </div>
-    </div>
-
+	<div class="container" style="width: 550px; float: left;">	
+		<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+	</div>
+	
+	<div class="container" style="width: 1200px; margin-top: 400px;">	
+		<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+	</div>
+	
 </div>
 	<%
 		List<Integer> list_dientieuthu = (List) request.getAttribute("list_dientieuthu");

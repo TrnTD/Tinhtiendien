@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.Tinhtiendien.DAO.*;
 import com.Tinhtiendien.DAO.*;
 import com.Tinhtiendien.Models.*;
-import KtraDuLieu.KtraDuLieu;
+import KtraDuLieu.*;
 
 @Controller
 public class KhachHangController {
@@ -101,6 +101,7 @@ public class KhachHangController {
 			request.setAttribute("list_tien_currentyear", list_tien_currentyear);
 			
 		} else {
+			Collections.reverse(list_2YearNearest);
 			list_hoadon_lastyear = hoadonDAO.getAllInfoHoaDonByYear(makh, list_2YearNearest.get(0));
 			list_hoadon_currentyear = hoadonDAO.getAllInfoHoaDonByYear(makh, list_2YearNearest.get(1));
 			
@@ -534,17 +535,15 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String username = info.getUsername();
 		
-		String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?.!@$%^&*-]).{6,}$";
-		boolean isValid = Pattern.matches(regex, newpassword);
 		boolean passwordChanged = false;
-		
-		if (accountDAO.checkOldPassword(username, oldpassword)) {
-			if(isValid) {
+
+		if (accountDAO.checkOldPassword(username, MaHoa.getMD5Hash(oldpassword))) {
+			if(KtraDuLieu.ktraMatKhau(newpassword)) {
 				if (newpassword.equals(oldpassword)) {
 					model.addAttribute("newpassmessage", "Mật khẩu không được trùng với mật khẩu cũ");
 				} else {
 					if (newpassword.equals(renewpassword)) {
-						accountDAO.changePassword(username, newpassword);
+						accountDAO.changePassword(username, MaHoa.getMD5Hash(newpassword));
 						passwordChanged = true;
 					} else {
 						model.addAttribute("renewpassmessage", "Vui lòng nhập lại đúng mật khẩu");

@@ -10,5 +10,7 @@
 	<h1>Day la Index Page</h1>
 	<a href="login">Login here</a>
 	${message}
+	
+	<img alt="" src="images.jpg">
 </body>	
 </html>

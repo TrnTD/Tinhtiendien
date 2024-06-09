@@ -34,9 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.Tinhtiendien.Entity.*;
 import com.Tinhtiendien.Models.*;
 import com.Tinhtiendien.DAO.*;
-import KtraDuLieu.KtraDuLieu;
-import KtraDuLieu.isError;
-import KtraDuLieu.isSuccess;
+import KtraDuLieu.*;
 
 @Controller
 public class NhanVienController {
@@ -83,7 +81,7 @@ public class NhanVienController {
 	}
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_chung", method = RequestMethod.GET)
-	public String quan_ly_chung(HttpSession session, HttpServletRequest request) {
+	public String quan_ly_chung(HttpSession session, HttpServletRequest request, Model model) {
 		
 		if (session.getAttribute("info_nhanvien") == null) {
 			return "redirect:/login";
@@ -94,6 +92,15 @@ public class NhanVienController {
 		
 		request.setAttribute("list_dientieuthu", list_dientieuthu);
 		request.setAttribute("list_sotien", list_sotien);
+		
+		String doanhthu_nam = hoadonDAO.get_doanhthutheonam();
+		int tongKhachHang = infoDAO.getTotalKhachHang();
+		String doanhthu_thang = hoadonDAO.get_doanhthutheothang();
+		
+		
+		model.addAttribute("doanhthu_nam", doanhthu_nam);
+		model.addAttribute("doanhthu_thang", doanhthu_thang);
+		model.addAttribute("tongKhachHang", tongKhachHang);
 		
 		
 		return "employee/quan_ly_chung";
@@ -356,7 +363,7 @@ public class NhanVienController {
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////// QUAN LY TAI KHOAN KHACH HANG ///////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////// QUAN LY TAI KHOAN KHACH HANG /////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -411,10 +418,11 @@ public class NhanVienController {
 
 
 	@RequestMapping(value = "/nhan_vien/quan_ly_tai_khoan_khach_hang", method = RequestMethod.POST)
-	public String xu_li_hanh_dong_quan_li_acc(HttpSession session, RedirectAttributes redirectAttributes,Model model,HttpServletRequest request,
+	public String xu_li_hanh_dong(HttpSession session, RedirectAttributes redirectAttributes,Model model,HttpServletRequest request,
 			@RequestParam("selectedUsername") String username, @RequestParam("action") String action,
 			@RequestParam("addUsernameId") String addUsernameId, @RequestParam("addUsername") String addUsername,
 			@RequestParam("addPassWord") String addPassWord, @RequestParam("newPass") String newPass) {
+		
 		String thong_bao = null;
 		addUsernameId = addUsernameId.trim();
 		addUsername = addUsername.trim();
@@ -429,12 +437,13 @@ public class NhanVienController {
 				redirectAttributes.addFlashAttribute("tb_err", "Khách hàng chưa có tài khoản để chỉnh sửa!");
 				return "redirect:" + url;
 			}
+			
 			if (newPass != "") {
 				if (!KtraDuLieu.ktraMatKhau(newPass)) {
 					redirectAttributes.addFlashAttribute("tbDoiMK", "Mật khẩu không đúng yêu cầu!");
 				} else {
 
-					thong_bao = qlaccountDAO.changePassword(username, newPass, thong_bao);
+					thong_bao = qlaccountDAO.changePassword(username, MaHoa.getMD5Hash(newPass), thong_bao);
 					redirectAttributes.addFlashAttribute("tb", thong_bao);
 				}
 			} else {
@@ -500,7 +509,7 @@ public class NhanVienController {
 				return "redirect:" + url;
 			}
 
-			thong_bao = qlaccountDAO.addAcc(addUsernameId, addUsername, addPassWord, thong_bao);
+			thong_bao = qlaccountDAO.addAcc(addUsernameId, addUsername, MaHoa.getMD5Hash(addPassWord), thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 
 		} else if (action.equals("delete")) {
@@ -540,6 +549,8 @@ public class NhanVienController {
 	public String tim_kiem_dong_ho(HttpSession session, Model model,RedirectAttributes redirectAttributes,HttpServletRequest request,
 			@RequestParam(value = "kh_id") String kh_id,
 			@RequestParam(value = "dh_id") String dh_id,
+			@RequestParam(value = "search_tungay") String tuNgay,
+			@RequestParam(value = "search_denngay") String denNgay,
 			@RequestParam(value ="cur_page",defaultValue = "1") int cur_page,
 			@RequestParam(value = "limit",defaultValue = "10") int limit,
 			@RequestParam(value = "all", required = false) String all) 
@@ -555,18 +566,23 @@ public class NhanVienController {
 			redirectAttributes.addAttribute("limit", ttp);
 			return "redirect:/nhan_vien/quan_ly_dong_ho_dien_khach_hang";
 		}
-		if (kh_id == "" && dh_id == "")
-		{
-			String url = request.getHeader("Referer");
-			redirectAttributes.addFlashAttribute("tb_rong", "Vui lòng nhập thông tin tìm kiếm");
-			return "redirect:" + url;
-		}
+//		if (kh_id == "" && dh_id == "")
+//		{
+//			String url = request.getHeader("Referer");
+//			redirectAttributes.addFlashAttribute("tb_rong", "Vui lòng nhập thông tin tìm kiếm");
+//			return "redirect:" + url;
+//		}
 		else
 		{
+			System.out.println(tuNgay);
 			if (kh_id != "") kh_id = kh_id.trim();
 			if (dh_id != "") dh_id = dh_id.trim();
-			List<Info> listInf = infoDAO.getPageDongHoKhachHangBySearch(cur_page,kh_id, dh_id);
-			int ttp = infoDAO.getToTalPageDongHoKhachHang(kh_id,dh_id);
+			model.addAttribute("search_id_tuNgay",tuNgay);
+			model.addAttribute("search_id_denNgay",denNgay);
+			if (tuNgay == "") tuNgay = null;
+			if (denNgay == "") denNgay = null;
+			List<Info> listInf = infoDAO.getPageDongHoKhachHangBySearch(cur_page,kh_id, dh_id,tuNgay,denNgay);
+			int ttp = infoDAO.getToTalPageDongHoKhachHang(kh_id,dh_id,tuNgay,denNgay);
 			model.addAttribute("total_page", ttp); 
 			model.addAttribute("list_dh", listInf);
 			model.addAttribute("curr_page", cur_page);
@@ -590,17 +606,16 @@ public class NhanVienController {
 		}
 		else if (action.equals("edit"))
 		{
-			SimpleDateFormat sdfInput = new SimpleDateFormat("dd-MM-yyyy");
-            SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd");
-            Date date;
-			try {
-				date = sdfInput.parse(doiNDK);
-				doiNDK = sdfOutput.format(date);
+			String temp = infoDAO.getNgayThangNamSinhKH(khachHangId);
+			if (!KtraDuLieu.isOlderThan18(temp, doiNDK))
+			{
+				redirectAttributes.addFlashAttribute("tbDoiNDK", "Ngày đăng ký phải từ 18 tuổi trở lên!");
+				return "redirect:" + url;
+			}
+			else
+			{
 				thong_bao = infoDAO.updateNgayDangKy(khachHangId, doiNDK, thong_bao);
-				redirectAttributes.addFlashAttribute("tb", thong_bao);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("tb", thong_bao);	
 			}
 		}
 		return "redirect:" + url;
@@ -1133,12 +1148,12 @@ public class NhanVienController {
 		boolean isError = false;
 		
 		if (hoadonDAO.deleteHoaDon(hoadon_id)) {
-			message = "Bạn đã xóa lịch sử đo của khách hàng thành công";
+			message = "Bạn đã hóa đơn của khách hàng thành công";
 			session.setAttribute("message", message);
 			session.setAttribute("isError", isError);
 
 		} else {
-			message = "Bạn đã xóa lịch sử đo của khách hàng thất bại";
+			message = "Bạn đã xóa hóa đơn của khách hàng thất bại";
 			isError = true;
 			
 			session.setAttribute("message", message);

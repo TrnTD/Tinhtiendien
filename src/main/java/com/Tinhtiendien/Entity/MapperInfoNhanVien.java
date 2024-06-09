@@ -14,9 +14,13 @@ public class MapperInfoNhanVien implements RowMapper<InfoNhanVien>{
 		
 		infonv.setNhanvien_id(rs.getString("nhanvien_id"));
 		infonv.setUsername(rs.getString("username"));
-		infonv.setHovaten(rs.getString("hovaten"));
+		infonv.setHovaten(rs.getNString("hovaten"));
+		infonv.setGioitinh(rs.getString("gioitinh"));
+		infonv.setNgaythangnam_sinh(rs.getDate("ngaythangnam_sinh"));
 		infonv.setEmail(rs.getString("email"));
-		infonv.setSdt(rs.getString("sdt"));	
+		infonv.setSdt(rs.getString("sdt"));
+		infonv.setCccd(rs.getString("cccd"));
+		infonv.setDiachi(rs.getNString("diachi"));
 		
 		return infonv;
 	}

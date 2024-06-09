@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -22,16 +23,12 @@
 <body>
 
 <style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
-<style>
-	.error-input {
-	    border: 1px solid red !important; /* Đường viền màu đỏ */
-	}
-</style>
+
 	<div class="container mt-5" style="margin-top: 0px !important">
 		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
 		<div id="thong_bao_err" class="alert alert-danger" role="alert" style="margin-top: 20px; display: none">${tb_err}</div>
 	
-		<form action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/tim_kiem" class="custom-form" method="GET">
+		<form action="/Tinhtiendien/quan_ly/quan_ly_tai_khoan_khach_hang/tim_kiem" class="custom-form" method="GET">
 		<div style="margin:10px 0">
 			<label for="field1" class="form-label"  style="display:block">Mã khách hàng</label>
 		    <input type="text" class="form-control" name="kh_id" value="${search_id}" style="display:inline-block; width:40%">
@@ -43,7 +40,7 @@
 		
 		<div style="display: flex; justify-content: center">
 			<form
-				action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/"
+				action="/Tinhtiendien/quan_ly/quan_ly_tai_khoan_khach_hang/"
 				class="custom-form" id="submitPage" method="GET">
 				<nav aria-label="Page navigation">
 					<ul class="pagination" id="pagination"></ul>
@@ -118,7 +115,7 @@
 					</table>
 					</c:otherwise>
 				</c:choose>
-			<form action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang" method="POST">
+			<form method="POST">
 				<input type="hidden" id="selectedUsername" name="selectedUsername"
 					value=""> 
 				<input type="hidden" id="actionForm" name="action" value="">
@@ -187,8 +184,9 @@
 							</div>
 							<div class="modal-body">
 								<!-- Edit employee form -->
+
 								<div class="mb-3">
-									<label class="form-label">Nhập mật khẩu mới</label> <input type="password"
+									<label class="form-label">Mật khẩu</label> <input type="text"
 										class="form-control" name="newPass" id="doiMK">
 									<h6 style="color: red; padding-left: 5px; padding-top: 5px"
 										id="doiMK">${tbDoiMK}</h6>
@@ -237,7 +235,7 @@
 			<c:choose>
 				<c:when test="${not empty search_id}">
 					<form
-						action="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang/tim_kiem"
+						action="/Tinhtiendien/quan_ly/quan_ly_tai_khoan_khach_hang/tim_kiem"
 						class="custom-form" id="submitPage" method="GET">
 						<nav aria-label="Page navigation">
 							<ul class="pagination" id="pagination"></ul>
@@ -284,7 +282,7 @@
             sessionStorage.setItem("addUsernameId", document.querySelector('input[name="addUsernameId"]').value);
             sessionStorage.setItem("addUsername", document.querySelector('input[name="addUsername"]').value);
             sessionStorage.setItem("addPassWord", document.querySelector('input[name="addPassWord"]').value);
-//             sessionStorage.setItem("newPass", document.querySelector('input[name="newPass"]').value);
+            sessionStorage.setItem("newPass", document.querySelector('input[name="newPass"]').value);
             sessionStorage.setItem("selectedUsername", document.querySelector('input[name="selectedUsername"]').value);
 		});
 

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.Tinhtiendien.DAO.*;
 import com.Tinhtiendien.Models.*;
 import GuiMail.*;
+import KtraDuLieu.*;
 
 @Controller
 public class AuthController {
@@ -37,7 +38,7 @@ public class AuthController {
 			RedirectAttributes redirectAttribute, HttpSession session, Model model) {
 		if (username.isEmpty() || password.isEmpty()) {
 			return "redirect:login";
-		} else if (accountDAO.checkExistAccount(username, password)) {
+		} else if (accountDAO.checkExistAccount(username, MaHoa.getMD5Hash(password))) {
 			if (accountDAO.getRole(username) == 3) {
 				System.out.println("Dang nhap vao khach hang thanh cong");
 				Info info = infoDAO.getAllInfoKhachHang(username);
@@ -52,7 +53,7 @@ public class AuthController {
 				
 				return "redirect:nguoi_dung/quan_ly_chung";
 			} else if (accountDAO.getRole(username) == 2) {
-				System.out.print("Dang nhap vao quan ly thanh cong");
+				System.out.print("Dang nhap vao nhan vien thanh cong");
 				
 				InfoNhanVien infonv = infoDAO.getAllInfoNhanVien(username);
 				
@@ -65,6 +66,18 @@ public class AuthController {
 
 				
 				return "redirect:nhan_vien/";
+			} else if (accountDAO.getRole(username) == 1) {
+				System.out.print("Dang nhap vao quan ly thanh cong");
+				
+				InfoNhanVien infoql = infoDAO.getAllInfoNhanVien(username);
+				
+				redirectAttribute.addFlashAttribute("hoten", infoql.getHovaten());
+				redirectAttribute.addFlashAttribute("makh", infoql.getNhanvien_id());
+				redirectAttribute.addFlashAttribute("email", infoql.getEmail());
+				redirectAttribute.addFlashAttribute("sdt", infoql.getSdt());
+
+				session.setAttribute("info_quanly", infoql);
+				return "redirect:quan_ly/";
 			}
 		} else {
 			model.addAttribute("message_error", "Tài khoản / mã khách hàng hoặc mật khẩu không đúng");
@@ -97,10 +110,6 @@ public class AuthController {
 							@RequestParam("password") String password,
 							@RequestParam("repassword") String repassword
 							) {
-		// Tạo 1 regex để check mật khẩu
-		String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?.!@$%^&*-]).{6,}$";
-		boolean isValid = Pattern.matches(regex, password);
-		
 		// Nếu Chuho_ID tồn tại và username tương ứng null thì tiếp, sai thì báo lỗi
 		if (infoDAO.checkKhachHangIDandUsername(khachhangid)) {
 			// Nếu username có trong bảng Tài Khoản thì báo lỗi, sai thì tiếp
@@ -117,11 +126,11 @@ public class AuthController {
 				} else {
 					// Check mật khẩu có đúng định dạng không
 					// Đúng thì làm tiếp, sai thì báo lỗi
-					if (isValid){
+					if (KtraDuLieu.ktraMatKhau(password)){
 						// Check mật khẩu và nhập lại mật khẩu có trùng ko
 						// Đúng thì đăng kí, sai thì báo lỗi
 						if (password.equals(repassword)) {
-							accountDAO.register(khachhangid, username, password);
+							accountDAO.register(khachhangid, username, MaHoa.getMD5Hash(password));
 							try {
 							    Thread.sleep(5000);
 							    model.addAttribute("message_success", "Đăng ký thành công, đang chuyển tới đăng nhập");

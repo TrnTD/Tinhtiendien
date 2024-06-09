@@ -9,10 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <style>
-body {
-	background-color: #f5f5f5;
-}
-
 .sidebar {
       position: fixed;
       top: 0;
@@ -22,13 +18,14 @@ body {
 /*       padding-top: 15px; */
       background-color: #ffff;
       border-right: 1px solid #ccc; /* Thêm viền bên phải */
-      z-index: 9999999;
+      z-index: 999;
       box-shadow: 1px 0 10px rgba(0, 0, 0, 0.5);
 
       img {
         height: 150px;
-/*         width: 100%; */
+/* 		width: 100%; */
 /*         margin-bottom: 20px; */
+        
       }
 
       .nav-item {
@@ -88,38 +85,43 @@ body {
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/quan_ly_chung"><i class="fa-solid fa-chart-simple"></i> Quản lý chung</a>
+            <a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_chung"><i class="fa-solid fa-chart-simple"></i> Quản lý chung</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#lichsuhoadon" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-regular fa-newspaper"></i> Lịch sử hóa đơn<i class="fa-solid fa-chevron-down"></i></a>
+            <a class="nav-link" href="#lichsuhoadon" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-regular fa-newspaper"></i> Quản lý khách hàng<i class="fa-solid fa-chevron-down"></i></a>
             <ul class="collapse list-unstyled" id="lichsuhoadon" style="padding-left: 20px;">
-                <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/tra_cuu_hoa_don">Tra cứu hóa đơn điện tử</a></li>
-                <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/thong_tin_hoa_don">Thông tin hóa đơn</a></li>
-                <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thanh_toan">Lịch sử thanh toán</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_thong_tin_khach_hang" style="font-size: 13px">Quản lý thông tin khách hàng</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_tai_khoan_khach_hang" style="font-size: 13px">Quản lý tài khoản khách hàng</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang?cur_page=1&limit=${total_page_dongho}" style="font-size: 13px">Quản lý đồng hồ điện</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_lich_su_do_khach_hang" style="font-size: 13px">Quản lý lịch sử đo</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_hoa_don_khach_hang" style="font-size: 13px">Quản lý hóa đơn</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_lich_su_thanh_toan_khach_hang" style="font-size: 13px">Quản lý lịch sử thanh toán</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_gia_dien" style="font-size: 13px">Quản lý giá điện</a></li>
             </ul>
         </li>
+        
         <li class="nav-item">
-          <a class="nav-link" href="#tracuu" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu<i class="fa-solid fa-chevron-down"></i></a>
+        <a class="nav-link" href="#tracuu" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu<i class="fa-solid fa-chevron-down"></i></a>
           <ul class="collapse list-unstyled" id="tracuu" style="padding-left: 20px;">
-              <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/thong_tin_hoa_don_chua_thanh_toan">Hóa đơn chưa thanh toán</a></li>
-<!--               <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_ghi_chi_so">Lịch ghi chỉ số</a></li> -->
-              <li><a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_do">Lịch sử đo</a></li>
+              	<li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_thong_tin_nhan_vien" style="font-size: 13px">Quản lý thông tin nhân viên</a></li>
+                <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_tai_khoan_nhan_vien" style="font-size: 13px">Quản lý tài khoản nhân viên</a></li>
           </ul>
       	</li>
+
+        
       <li class="nav-item">
-          <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_thong_bao"><i class="fa-regular fa-comments"></i> Lịch sử thông báo</a>
+          <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/lich_su_yeu_cau"><i class="fa-regular fa-comment-dots"></i> Lịch sử yêu cầu</a>
+        <a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_yeu_cau_khach_hang"><i class="fa-regular fa-comment-dots"></i> Quản lý yêu cầu</a>
       </li>
       
       <li class="nav-item">
-        <a class="nav-link menu-item" href="/Tinhtiendien/nguoi_dung/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
+        <a class="nav-link" href="/Tinhtiendien/quan_ly/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
       </li>
     </ul>
 </div>
 </body>
-
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
@@ -215,7 +217,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </html>
-
-

@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Quản lý đồng hồ điện khách hàng</title>
+<title>Insert title here</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -28,46 +28,58 @@
 <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
 <script> <%@include file="/paging/jquery.twbsPagination.js" %></script>
 
+</style>
 </head>
 
 <body>
 <style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
+<style>
+	.error-input {
+	    border: 1px solid red !important; /* Đường viền màu đỏ */
+	}
+</style>
+
 
 
 	<div class="container mt-5" style="margin-top: 0px !important">
+		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
 		<form action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang/tim_kiem" class="custom-form" method="GET">
 		<div style="margin:10px 0">
-			<div style="display:inline-block; width:30%; margin:10px 10px 10px 0">
+			<div style="display:inline-block; width:20%; margin:10px 10px 10px 0">
 				<label for="field1" class="form-label"  style="display:block">Mã khách hàng</label>
 			    <input type="text" class="form-control" name="kh_id" value="${search_id_khachhang}">
 			</div>
-			<div style="display:inline-block; width:30%; margin:10px">
+			<div style="display:inline-block; width:20%; margin:10px">
 			    <label for="field1" class="form-label"  style="display:block">Mã đồng hồ</label>
 		    	<input type="text" class="form-control" name="dh_id" value="${search_id_dongho}" >
 			</div>
+			<div style="display:inline-block; width:25%; margin:10px 20px 10px 0">
+				    <label for="field1" class="form-label"  style="display:block">Từ ngày</label>
+			    	<input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_tungay" value="${search_id_tuNgay}">
+				</div>
+				<div style="display:inline-block; width:25%">
+				    <label for="field1" class="form-label"  style="display:block">Đến ngày</label>
+			    	<input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_denngay" value="${search_id_denNgay}">
+				</div>
+			<%-- <div>
+				<div style="display:inline-block; width:30%; margin:10px 20px 10px 0">
+				    <label for="field1" class="form-label"  style="display:block">Từ ngày</label>
+			    	<input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_tungay" value="${search_id_tuNgay}">
+				</div>
+				<div style="display:inline-block; width:30%">
+				    <label for="field1" class="form-label"  style="display:block">Đến ngày</label>
+			    	<input type="date" class="form-control" id="field4"  min="01-01-1990" max="31-12-2024" name="search_denngay" value="${search_id_denNgay}">
+				</div>
+			</div> --%>
+			<div>
+				<button type="submit" class="btn btn-primary submit-btn" style="margin:10px 10px 10px 0; width:91px">Tìm kiếm</button>
+				<button type="submit" class="btn btn-primary submit-btn" name ="all" value="search_all" style="margin:10px; width:91px">Tất cả</button>
+			</div>
 			
-			<button type="submit" class="btn btn-primary submit-btn" style="margin:10px; width:91px">Tìm kiếm</button>
-			<button type="submit" class="btn btn-primary submit-btn" name ="all" value="search_all" style="margin:10px; width:91px">Tất cả</button>
+			
 		</div>
 		</form>
-		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
-		<div id="thong_bao_rong" class="alert alert-danger" role="alert" style="margin-top: 20px; display: none">${tb_rong}</div>
-		
-		<div style="display: flex; justify-content: center">
-			<form
-				action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang"
-				class="custom-form" id="submitPage" method="GET">
-				<nav aria-label="Page navigation">
-					<ul class="pagination" id="pagination"></ul>
-				</nav>
-				<input type="hidden" id="cur_page" name="cur_page"
-					value="${curr_page}"> <input type="hidden" id="limit"
-					name="limit" value="${total_page}">
-				 
-			</form>
-		</div>
-		
-		<div class="table-wrapper" style="margin-top: 0px !important; padding-bottom: 0px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
+		<div class="table-wrapper">
 			<div class="table-title">
 				<div class="row">
 					<div class="col-md-6">
@@ -84,7 +96,7 @@
 						<th>Mã đồng hồ</th>
 						<th>Mã khách hàng</th>
 						<th>Ngày đăng kí</th>
-						<th style="width: 400px;"></th>
+						<th style="width: 400px;">Chức năng</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -112,7 +124,7 @@
 				</tbody>
 			</table>
 			
-			<form method="POST">
+			<form action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang" method="POST">
 				<input type="hidden" id="khachHangId" name="khachHangId" value="">
 				<input type="hidden" id="actionForm" name="action" value="">
 
@@ -152,11 +164,7 @@
 									<label class="form-label">Ngày đăng kí</label>
 									<!-- <input type="text"
 										class="form-control" name="newPass" id="doiNDK"> -->
-									<div class="date">
-										<i class="fa-solid fa-calendar-days calendar-icon"
-											id="icon_lich"></i> <input type="text"
-											class="form-control doi_ngayDK" name="doiNDK" id="doiNDK">
-									</div>
+									<input type="date" class="form-control" id="field4 doiNDK"  min="01-01-1990" max="31-12-2024" name="doiNDK">
 									<h6 style="color: red; padding-left: 5px; padding-top: 5px"
 										id="doiNDK">${tbDoiNDK}</h6>
 								</div>
@@ -196,7 +204,7 @@
 		</div>
 		<div style="display: flex; justify-content: center">
 			<c:choose>
-				<c:when test="${not empty search_id_khachhang || not empty search_id_dongho}">
+				<c:when test="${not empty search_id_khachhang || not empty search_id_dongho || not empty search_id_tuNgay || not empty search_id_denNgay }">
 					<form
 						action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang/tim_kiem"
 						class="custom-form" id="submitPage" method="GET">
@@ -210,6 +218,10 @@
 							name="kh_id" value="${search_id_khachhang}">
 						<input type="hidden"
 							name="dh_id" value="${search_id_dongho}">
+						<input type="hidden"
+							name="search_tungay" value="${search_id_tuNgay}">
+						<input type="hidden"
+							name="search_denngay" value="${search_id_denNgay}">
 					</form>
 				</c:when>
 				<c:otherwise>
@@ -245,25 +257,10 @@
 		}
 	}); */
 
-	var datepickerSua = flatpickr(".doi_ngayDK", {
-		dateFormat : "d-m-Y",
-		locale : "vn",
-		onClose : function(selectedDates, dateStr, instance) {
-			console.log(dateStr);
-			document.getElementById('doiNDK').value = dateStr;
-		}
+	window.addEventListener('beforeunload', function() {
+        sessionStorage.setItem("doiNDK", document.querySelector('input[name="doiNDK"]').value);
 	});
 	
-	// Lấy đối tượng icon lịch
-	var calendarIconSua = document.getElementById('icon_lich');
-	// Thêm event listener cho icon lịch
-	calendarIconSua.addEventListener('click', function() {
-		// Mở Flatpickr khi icon lịch được click
-		datepickerSua.open();
-	});
-	
-
-
 	function setSelectForm(form, khachHangId) {
 		document.getElementById("khachHangId").value = khachHangId;
 		document.getElementById("khachHangId_dang_dung").textContent = "Chỉnh sửa ngày đăng kí đồng hồ của khách hàng: "+khachHangId;
@@ -284,15 +281,14 @@
 
 	document.addEventListener("DOMContentLoaded", function() {
 		var message = "${tb}";
-		var message_rong = "${tb_rong}";
+		/* var message_rong = "${tb_rong}"; */
 		console.log(message);
 	 /*    var doiMKHValue = sessionStorage.getItem("doiMKH"); */
 	    var doiNDKValue = sessionStorage.getItem("doiNDK");
 	        
-		
+		console.log(sessionStorage.getItem("doiNDK"));
 		/* document.querySelector('input[name="doiMKH"]').value = doiMKHValue; */
-		document.querySelector('input[name="doiNDK"]').value = doiNDKValue;
-		if (message_rong && message_rong.trim() !== "") {
+		/* if (message_rong && message_rong.trim() !== "") {
 			
 			var tb = document.getElementById('thong_bao_rong');
 			tb.style.display = 'block'; // Hiển thị thông báo
@@ -303,7 +299,7 @@
 	        }, 3000);
 			
 	
-		}
+		} */
 		
 		if (message && message.trim() !== "") {
 			// Hiển thị thông báo
@@ -320,12 +316,15 @@
 		/* 	sessionStorage.removeItem("doiMKH"); */
 			sessionStorage.removeItem("doiNDK");
 		} else {
+			
 			var formTypeDH = sessionStorage.getItem("formTypeDH");
 			var khachHangId_dang_chon = sessionStorage.getItem("khachHangId");
 			console.log(sessionStorage.getItem("formTypeDH"));
 			console.log(sessionStorage.getItem("khachHangId"));
 			document.getElementById("khachHangId_dang_dung").textContent = "Chỉnh sửa ngày đăng kí của khách hàng: "+ khachHangId_dang_chon;
 			document.getElementById("renewDH").textContent = "Bạn có muốn cập nhập đồng hồ của khách hàng: "+khachHangId_dang_chon+"?";
+			document.querySelector('input[name="doiNDK"]').value = doiNDKValue;
+
 			if (formTypeDH === "editForm") {
 				document.getElementById("actionForm").value = 'edit';
 			} else if (formTypeDH === "renewForm") {
@@ -354,7 +353,7 @@
 	                header.textContent = '';
 					var inputId = header.id;
 		            // Tìm ô input tương ứng bằng id của thẻ h6
-		            var inputElement = document.getElementById(inputId); 
+		            var inputElement = document.querySelector('input[name="' + inputId + '"]');
 		            inputElement.classList.remove('error-input');
 		            inputElement.value = "";
 
@@ -372,11 +371,12 @@
 				var inputId = errorMessage.id;
 
 				// Tìm ô input tương ứng bằng id của thẻ h6
-				var inputElement = document.getElementById(inputId);
+				var inputElement = document.querySelector('input[name="' + inputId + '"]');
 
 				// Kiểm tra xem ô input có tồn tại không
 				if (inputElement) {
 					// Thêm lớp CSS 'error-input' cho ô input
+					console.log("tìm được");
 					inputElement.classList.add('error-input');
 				}
 			}
@@ -419,8 +419,6 @@
 	});
 </script>
 </body>
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
 </html>

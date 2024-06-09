@@ -61,7 +61,7 @@ public class HoaDonDAO {
 	}
 	
 	public List<Integer> get_2YearsNearest(String khachhang_id) {
-		String query = "select distinct top 2 year_bill from hoa_don2 where khachhang_id = ? and trangthai = N'Đã thanh toán'";
+		String query = "select distinct top 2 year_bill from hoa_don2 where khachhang_id = ? and trangthai = N'Đã thanh toán' order by year_bill desc";
 		
 		List<Integer> list_year = new ArrayList<>();
 		
@@ -182,6 +182,44 @@ public class HoaDonDAO {
 		}
 		
 		return true;
+	}
+	
+	public String get_doanhthutheonam() {
+		String query = "DECLARE @currentYear INT;\r\n"
+				+ "SET @currentYear = YEAR(GETDATE());\r\n"
+				+ "exec sp_GetDoanhThuNam @Nam = @currentYear";
+		
+		String result = "";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, String.class);
+		} catch (DataAccessException e) {
+			
+		}
+		
+		return result;
+	}
+	
+	public String get_doanhthutheothang() {
+		String result = "0";
+		
+		String query = "DECLARE @currentMonth INT;\r\n"
+				+ "DECLARE @currentYear INT;\r\n"
+				+ "SET @currentMonth = MONTH(GETDATE());\r\n"
+				+ "SET @currentYear = YEAR(GETDATE());\r\n"
+				+ "exec sp_GetDoanhThuThang @Month = @currentMonth, @Year = @currentYear";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, String.class);
+		} catch (DataAccessException e) {
+			System.out.println("Lay that bai");
+		}
+		
+		if (result == null) {
+			result = "0";
+		}
+		
+		return result;
 	}
 	
 	public List<HoaDon> searchHoaDonKhachHang(int cur_page, String hoadon_id, String khachhang_id, String tungay, String denngay, String month_bill, String year_bill, String search_status) {
