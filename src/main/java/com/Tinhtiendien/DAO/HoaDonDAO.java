@@ -89,6 +89,40 @@ public class HoaDonDAO {
 		return list_hoadon;
 	}
 	
+	
+	
+	public List<Integer> get2ThangHoaDonGanNhat(String khachhang_id) {
+		
+		List<Integer> list_2thang = new ArrayList<>();
+		
+		String query = "select top 2 month_bill from hoa_don2 where khachhang_id = ? and trangthai = N'Đã thanh toán' order by ngay_thanhtoan desc";
+		
+		try {
+			list_2thang = jdbcTemplate.queryForList(query, Integer.class, khachhang_id);
+		} catch (DataAccessException e) {
+			System.out.println("Test");
+		}
+		
+		return list_2thang;
+	}
+	
+	
+	public List<Integer> getYear_billGanNhat(String khachhang_id) {
+		
+		List<Integer> list_year = new ArrayList<>();
+		
+		String query = "select top 2 year_bill from hoa_don2 where khachhang_id = ? and trangthai = N'Đã thanh toán' order by ngay_thanhtoan desc";
+		
+		try {
+			list_year = jdbcTemplate.queryForList(query, Integer.class, khachhang_id);
+		} catch (DataAccessException e) {
+			System.out.println("Test");
+		}
+		
+		return list_year;
+	}
+	
+		
 	public List<Integer> get_doanhthu_by_year(int year) {
         String query = "exec sp_GetChiTietHoaDonByYear @year = ?";
 

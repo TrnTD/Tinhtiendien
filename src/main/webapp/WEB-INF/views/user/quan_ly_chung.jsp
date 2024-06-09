@@ -22,12 +22,20 @@
 		ArrayList<Integer> list_tien_currentyear = (ArrayList) request.getAttribute("list_tien_currentyear");
 %>
 <div class="content">
-	<div class="container" style="width: 1200px">	
-		<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
-		<br>
-		<br>
-		<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+
+	<div style="display: flex;">
+		<div class="container" style="width: 650px;">		
+			<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 700px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>
+			<br>
+			<br>
+		<div class="container" style="width: 650px;">
+			<canvas id="myChart_tien_2thang" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>	
 	</div>
+		<div class="container" style="width: 650px;">
+			<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>	
 </div>
 
 	<script>
@@ -147,7 +155,7 @@
 		                plugins: {
 		                    title: {
 		                      display: true,
-		                      text: 'Tiền điện tiêu thụ',
+		                      text: 'Tiền điện',
 		                    }
 		                }
 		            }
@@ -164,14 +172,28 @@
 		ArrayList<Integer> list_chiso_currentyear = (ArrayList) request.getAttribute("list_chiso_currentyear");
 		ArrayList<Integer> list_tien_currentyear = (ArrayList) request.getAttribute("list_tien_currentyear");
 		
+		ArrayList<Integer> list_2thang = (ArrayList) request.getAttribute("list_2thang");
+		ArrayList<Integer> list_2year = (ArrayList) request.getAttribute("list_2year");
+		ArrayList<Integer> list_tien_2thang = (ArrayList) request.getAttribute("list_tien_2thang");
+		
 %>
 <div class="content">
-	<div class="container" style="width: 1200px">	
-		<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
-		<br>
-		<br>
-		<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+
+	<div style="display: flex;">
+	
+		<div class="container" style="width: 650px;">
+			<canvas id="myChart_tien" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>	
+			<br>
+			<br>
+		<div class="container" style="width: 650px;">
+			<canvas id="myChart_tien_2thang" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>	
 	</div>
+		<div class="container" style="width: 650px; margin-top: 40px;">		
+			<canvas id="myChart_dien" style="background-color: white; max-width: 1200px; max-height: 700px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>
+		
 </div>
 
 	<script>
@@ -307,11 +329,89 @@
 			                plugins: {
 			                    title: {
 			                      display: true,
-			                      text: 'Tiền điện tiêu thụ',
+			                      text: 'Tiền điện',
 			                    }
 			                }
 			            }
 			        });
+			        
+			        
+			        
+			       	var list_2thang = <%= list_2thang %>;
+			       	var list_2year = <%= list_2year %>;
+			       	var list_tien_2thang = <%= list_tien_2thang %>
+			       	
+			       	list_2thang = list_2thang.reverse();
+			       	list_2year = list_2year.reverse();
+			       	list_tien_2thang = list_tien_2thang.reverse();
+			       	
+			       	
+			       	var resultArray = list_2thang.map(function(monthNumber) {
+			       	    return monthArray[monthNumber - 1];
+			       	});
+			       	
+			       	var ctx_tien_2thang = document.getElementById('myChart_tien_2thang').getContext('2d');
+			        
+			       	if (list_2year[0] == list_2year[1]) {
+			       		
+				        var chartData_tien_2thang = {
+				            labels: resultArray,
+				            datasets: [{
+				            	label: list_2year[0],
+				                backgroundColor: "rgba(255, 231, 115, 0.7)",
+				                borderColor: "rgba(153, 107, 0, 1)",
+				                borderWidth: 1,
+				                data: list_tien_2thang, // Dữ liệu từ cơ sở dữ liệu
+				                barPercentage: 0.5, // Tỷ lệ phần trăm của thanh trong mỗi thể loại
+				                categoryPercentage: 0.5,
+				            }]
+				        };
+				        
+				        var myChart_tien_2thang = new Chart(ctx_tien_2thang, {
+				            type: 'bar',
+				            data: chartData_tien_2thang,
+				            options: {
+				            	animation: {
+			            	      onComplete: () => {
+			            	        delayed = true;
+			            	      },
+			            	      delay: (context) => {
+			            	        let delay = 0;
+			            	        if (context.type === 'data' && context.mode === 'default' && !delayed) {
+			            	          delay = context.dataIndex * 200 + context.datasetIndex * 50;
+			            	        }
+			            	        return delay;
+			            	      },
+			            	    },
+				                scales: {
+				                    y: {
+				                        beginAtZero: true,
+				                        title: {
+				                            display: true,
+				                            text: 'VND' // Tên trục dọc
+				                        }
+				                    },
+				                    x: {
+				                        title: {
+				                            display: true,
+				                            text: 'Tháng' // Tên trục ngang
+				                        }
+				                    }
+				                },
+				                plugins: {
+				                    title: {
+				                      display: true,
+				                      text: 'Tiền điện 2 tháng gần nhất',
+				                    }
+				                }
+				            }
+				        });
+				        
+				        
+			       	}
+			       	
+			        
+			        
 		})
 	</script>
 <%

@@ -188,9 +188,9 @@
                         <h2>Quản lý <b>Lịch sử thanh toán</b></h2>
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <button type="button" class="btn btn-success btn-add" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" onclick="setSelectForm('addForm')">
-                            <i class="material-icons">&#xE147;</i> <span>Thêm lịch sử thanh toán mới</span>
-                        </button>
+<!--                         <button type="button" class="btn btn-success btn-add" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" onclick="setSelectForm('addForm')"> -->
+<!--                             <i class="material-icons">&#xE147;</i> <span>Thêm lịch sử thanh toán mới</span> -->
+<!--                         </button> -->
                         <!-- <a href="#deleteEmployeeModal" class="btn btn-danger" data-bs-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a> -->
                     </div>
                 </div>            
@@ -219,7 +219,6 @@
                         <th>TỔNG TIỀN (VNĐ)</th>
                         <th>NGÀY THANH TOÁN</th>
                         <th>PHƯƠNG THỨC</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,12 +232,12 @@
 			        <td><fmt:formatNumber value="${hoadon.tong_tien}" pattern="#,###"/></td>
 				    <td>${hoadon.ngay_thanhtoan}</td>
 				    <td>${hoadon.ten_phuongthuc}</td>
-			        <td>
-			        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button>
+<!-- 			        <td> -->
+<!-- 			        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button> -->
 
-                       	<input type="hidden" class="hoadon_id" name="hoadon_id" value="${hoadon.hoadon_id}">
-                       	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
-			        </td>
+<%--                        	<input type="hidden" class="hoadon_id" name="hoadon_id" value="${hoadon.hoadon_id}"> --%>
+<!--                        	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button> -->
+<!-- 			        </td> -->
 			      </tr>
 			      </c:forEach>      
                 </tbody>
@@ -324,7 +323,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editEmployeeModalLabel">Chỉnh sửa hóa đơn</h5>
+                        <h5 class="modal-title" id="editEmployeeModalLabel">Chỉnh sửa lịch sử thanh toán</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

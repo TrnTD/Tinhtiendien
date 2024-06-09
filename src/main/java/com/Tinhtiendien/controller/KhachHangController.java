@@ -125,6 +125,25 @@ public class KhachHangController {
 		}
 		
 		request.setAttribute("list_2YearNearest", list_2YearNearest);
+		
+		
+		List<Integer> list_2thang = hoadonDAO.get2ThangHoaDonGanNhat(makh);
+		List<Integer> list_2year = hoadonDAO.getYear_billGanNhat(makh);
+		List<Integer> list_tien_2thang = new ArrayList<>();
+		
+		HoaDon hoadon1 = null;
+		HoaDon hoadon2 = null;
+		if (list_2thang.size() == 2) {
+			hoadon1 = hoadonDAO.getAllInfoHoaDonByDate(makh, list_2thang.get(0), list_2year.get(0));
+			hoadon2 = hoadonDAO.getAllInfoHoaDonByDate(makh, list_2thang.get(1), list_2year.get(1));
+			
+			list_tien_2thang.add(hoadon1.getTong_tien());
+			list_tien_2thang.add(hoadon2.getTong_tien());
+		}
+		
+		request.setAttribute("list_2thang", list_2thang);
+		request.setAttribute("list_2year", list_2year);
+		request.setAttribute("list_tien_2thang", list_tien_2thang);
 
 		return "user/quan_ly_chung";
 	}

@@ -898,16 +898,41 @@ public class NhanVienController {
 			return "redirect:/login";
 		}
 		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		
 		String url = request.getHeader("Referer");
 		
 		if (action.equals("search")) {
 			List<MeasurementHistory> list_lsd = mdDAO.searchLsdKhachhang(cur_page, lsd_id, khachhang_id, dhd_id, tungay, denngay);
 			
+			List<Date> enableDelete = new ArrayList<Date>();
+			
+			for (MeasurementHistory lsd : list_lsd) {
+				if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+					
+					enableDelete.add(lsd.getNgay_do());	
+					
+					
+					calendar.setTime(lsd.getNgay_do());
+					calendar.add(Calendar.MONTH, 1);
+					
+					Date newDate = calendar.getTime();
+//					String add_ngaydo = formatter.format(newDate);
+					
+					if (!enableDelete.contains(newDate)) {
+						enableDelete.add(newDate);
+					}
+					
+				}
+			}
+			
 			int total_page = mdDAO.tong_trang_search(lsd_id, khachhang_id, dhd_id, tungay, denngay);
 			
 			model.addAttribute("curr_page", cur_page);
 			model.addAttribute("total_page", total_page);
-			model.addAttribute("list_lsd", list_lsd);			
+			model.addAttribute("list_lsd", list_lsd);	
+			model.addAttribute("enableDelete", enableDelete);
 		} else {
 			return "redirect:/nhan_vien/quan_ly_lich_su_do_khach_hang";
 		}
