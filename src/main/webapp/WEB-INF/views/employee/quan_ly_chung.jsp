@@ -33,6 +33,7 @@
         width: 400px;
         margin-right: 25px;
         background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;
     }
 
     .doanh-thu-thang {
@@ -71,136 +72,130 @@
             <h4>${tongKhachHang}</h4>
         </div>
         <div class="so-lieu doanh-thu-nam">
-            <p>Tiền hóa đơn năm nay (<%= year %>)</p>
+            <p>Doanh thu năm nay (<%= year %>)</p>
             <h4>${doanhthu_nam}</h4>
         </div>
     </div>
-
+    
+    
+    <div class="bieu-do" style="float: left; margin-top: 40px;">
+    	<div class="container" style="width: 800px;">
+			<canvas id="myChart_doanhthu3nam" style="background-color: white; max-width: 1200px; max-height: 400px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;"></canvas>
+		</div>	
+	</div>
 </div>
 	<%
-		List<Integer> list_dientieuthu = (List) request.getAttribute("list_dientieuthu");
-		List<Integer> list_sotien = (List) request.getAttribute("list_sotien");
+		List<Integer> list_3YearsNearest = (List) request.getAttribute("list_3YearsNearest");
+		List<Long> list_doanhthu = (List) request.getAttribute("list_doanhthu");
 	%>
 	<script type="text/javascript">
-		var list_dientieuthu = <%= list_dientieuthu %>;
-		var list_sotien = <%= list_sotien %>;
+		var list_3YearsNearest = <%= list_3YearsNearest %>;
+		var list_doanhthu = <%= list_doanhthu %>;
 		var monthArray = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-		
-		console.log(list_dientieuthu)
-		console.log(list_sotien)
 		
 		let delayed;
 			
 			//Lấy thẻ canvas
-	        var ctx_dien = document.getElementById('myChart_dien').getContext('2d');
+	        var ctx_doanhthu3nam = document.getElementById('myChart_doanhthu3nam').getContext('2d');
 			
 			var chartData_dien = {
-		            labels: monthArray,
+		            labels: list_3YearsNearest,
 		            datasets: [{
-		                label: 2010,
+		                label: list_3YearsNearest[0],
 		                backgroundColor: "rgba(73, 159, 250, 0.7)",
 		                borderColor: "rgba(0, 67, 139, 1)",
 		                borderWidth: 1,
-		                data: list_dientieuthu, // Dữ liệu từ cơ sở dữ liệu
+		                data: [list_doanhthu[0]], // Dữ liệu từ cơ sở dữ liệu
+		            },
+		            {
+		                label: list_3YearsNearest[1],
+		                backgroundColor: "rgba(73, 159, 250, 0.7)",
+		                borderColor: "rgba(0, 67, 139, 1)",
+		                borderWidth: 1,
+		                data: [list_doanhthu[1]], // Dữ liệu từ cơ sở dữ liệu
+		            },
+		            {
+		                label: list_3YearsNearest[2],
+		                backgroundColor: "rgba(73, 159, 250, 0.7)",
+		                borderColor: "rgba(0, 67, 139, 1)",
+		                borderWidth: 1,
+		                data: [list_doanhthu[2]], // Dữ liệu từ cơ sở dữ liệu
 		            }]
 		        };
 	
 		        // Tạo biểu đồ dạng cột
-		        var myChart_dien = new Chart(ctx_dien, {
-		            type: 'line',
-		            data: chartData_dien,
-		            options: {
-	            		animation: {
-	            	      onComplete: () => {
-	            	        delayed = true;
-	            	      },
-	            	      delay: (context) => {
-	            	        let delay = 0;
-	            	        if (context.type === 'data' && context.mode === 'default' && !delayed) {
-	            	          delay = context.dataIndex * 200 + context.datasetIndex * 50;
-	            	        }
-	            	        return delay;
-	            	      },
-	            	    },
-		                scales: {
-		                    y: {
-		                        beginAtZero: true,
-		                        title: {
-		                            display: true,
-		                            text: 'Điện tiêu thụ (Kwh)' // Tên trục dọc
-		                        }
-		                    },
-		                    x: {
-		                        title: {
-		                            display: true,
-		                            text: 'Tháng' // Tên trục ngang
-		                        }
-		                    }
-		                },
-		                plugins: {
-		                    title: {
-		                      display: true,
-		                      text: 'Điện tiêu thụ',
-		                    }
-		                }
-		            }
-		        });
-		        
-		        
-		        
-		        var ctx_tien = document.getElementById('myChart_tien').getContext('2d');
-		        
-		        var chartData_tien = {
-		            labels: monthArray,
-		            datasets: [{
-		                label: 2010,
-		                backgroundColor: "rgba(254, 109, 109, 0.7)",
-		                borderColor: "rgba(159, 10, 10, 1)",
-		                borderWidth: 1,
-		                data: list_sotien, // Dữ liệu từ cơ sở dữ liệu
-		            }]
-		        };
-		
-			        // Tạo biểu đồ dạng cột
-		        var myChart_tien = new Chart(ctx_tien, {
-		            type: 'line',
-		            data: chartData_tien,
-		            options: {
-	            		animation: {
-	            	      onComplete: () => {
-	            	        delayed = true;
-	            	      },
-	            	      delay: (context) => {
-	            	        let delay = 0;
-	            	        if (context.type === 'data' && context.mode === 'default' && !delayed) {
-	            	          delay = context.dataIndex * 200 + context.datasetIndex * 50;
-	            	        }
-	            	        return delay;
-	            	      },
-	            	    },
-		                scales: {
-		                    y: {
-		                        beginAtZero: true,
-		                        title: {
-		                            display: true,
-		                            text: 'Tiền điện (VND)' // Tên trục dọc
-		                        }
-		                    },
-		                    x: {
-		                        title: {
-		                            display: true,
-		                            text: 'Tháng' // Tên trục ngang
-		                        }
-		                    }
-		                },
-		                plugins: {
-		                    title: {
-		                      display: true,
-		                      text: 'Tiền điện',
-		                    }
-		                }
-		            }
-		        });
+		        var myChart_tiendientrongnam = new Chart(ctx_doanhthu3nam, {
+				    type: 'bar',
+				    data: {
+				        labels: ['Tiền điện'], // Nhãn chung cho cả hai cột
+				        datasets: [
+				            {
+				                label: list_3YearsNearest[0],
+				                backgroundColor: "rgba(254, 109, 109, 0.7)",
+				                borderColor: "rgba(159, 10, 10, 1)",
+				                borderWidth: 1,
+				                data: [list_doanhthu[0]], // Dữ liệu cho năm đầu tiên
+				                barPercentage: 0.5,
+				                categoryPercentage: 0.5,
+				            },
+				            {
+				                label: list_3YearsNearest[1],
+				                backgroundColor: "rgba(255, 231, 115, 0.7)",
+				                borderColor: "rgba(153, 107, 0, 1)",
+				                borderWidth: 1,
+				                data: [list_doanhthu[1]], // Dữ liệu cho năm thứ hai
+				                barPercentage: 0.5,
+				                categoryPercentage: 0.5,
+				            },
+				            {
+				                label: list_3YearsNearest[2],
+				                backgroundColor: "rgba(252, 179, 107, 0.7)",
+				                borderColor: "rgba(255, 160, 51, 1)",
+				                borderWidth: 1,
+				                data: [list_doanhthu[2]], // Dữ liệu cho năm thứ hai
+				                barPercentage: 0.5,
+				                categoryPercentage: 0.5,
+				            }
+				        ]
+				    },
+				    options: {
+				        animation: {
+				            onComplete: () => {
+				                delayed = true;
+				            },
+				            delay: (context) => {
+				                let delay = 0;
+				                if (context.type === 'data' && context.mode === 'default' && !delayed) {
+				                    delay = context.dataIndex * 200 + context.datasetIndex * 50;
+				                }
+				                return delay;
+				            },
+				        },
+					        scales: {
+				            y: {
+				                beginAtZero: true,
+				                title: {
+				                    display: true,
+				                    text: 'VND' // Tên trục dọc
+				                }
+				            },
+				            x: {
+				                title: {
+		                    	display: true,
+// 							    text: 'Năm' // Tên trục ngang
+				                }
+				            }
+				        },
+				        plugins: {
+				            title: {
+				                display: true,
+				                text: 'Tiền điện thu trong 3 năm gần nhất',
+				            }
+				        }
+				    }
+				});  
+	        
+		     
 		
 	</script>
 </body>

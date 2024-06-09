@@ -74,6 +74,20 @@ public class HoaDonDAO {
 		return list_year;
 	}
 	
+	public List<Integer> get_3YearsNearest() {
+		String query = "select distinct top 3 year_bill from hoa_don2 where trangthai = N'Đã thanh toán' order by year_bill asc";
+		
+		List<Integer> list_year = new ArrayList<>();
+		
+		try {
+			list_year = jdbcTemplate.queryForList(query, Integer.class);
+		} catch (DataAccessException e) {
+			System.out.println("Test");
+		}
+		
+		return list_year;
+	}
+	
 	public List<HoaDon> getAllInfoHoaDonByYear(String khachhang_id, int year) {
 		String query = "exec sp_GetChiTietHoaDonByKhachHangIDAndYear @KhachHangID = ?, @year = ?";
 		
@@ -144,6 +158,20 @@ public class HoaDonDAO {
         return list_doanhthu;
     }
 	
+	public Long get_doanhthu_by_year2(int year) {
+		String query = "exec sp_GetDoanhThuNam @Nam = ?";
+
+        long doanhthu = 0;
+
+        try {
+            doanhthu = jdbcTemplate.queryForObject(query, Long.class, year);
+        } catch (DataAccessException e) {
+           
+        }
+
+        return doanhthu;
+	}
+	
 	public List<Integer> get_dientieuthu_by_year(int year) {
         String query = "exec sp_GetChiTietHoaDonByYear @year = ?";
 
@@ -212,7 +240,7 @@ public class HoaDonDAO {
 		try {
 			result = jdbcTemplate.queryForObject(query, String.class);
 		} catch (DataAccessException e) {
-			System.out.println("Lay that bai");
+			
 		}
 		
 		if (result == null) {

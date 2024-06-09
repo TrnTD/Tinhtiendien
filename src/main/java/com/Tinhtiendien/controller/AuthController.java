@@ -1,7 +1,10 @@
 package com.Tinhtiendien.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
@@ -171,13 +174,66 @@ public class AuthController {
 	QuanLyAccountDAO qlaccountDAO = new QuanLyAccountDAO();
 	
 	
+	public String randomPass() {
+		int length = 10;
+		
+		String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+		String digits = "0123456789";
+		String specialCharacters = "#?.!@$%^&*-";
+		
+		Random random = new Random();
+		
+		List<Character> randomString = new ArrayList<>();
+	    randomString.add(upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length())));
+	    randomString.add(lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length())));
+	    randomString.add(digits.charAt(random.nextInt(digits.length())));
+	    randomString.add(specialCharacters.charAt(random.nextInt(specialCharacters.length())));
+	    
+	    String allCharacters = upperCaseLetters + lowerCaseLetters + digits + specialCharacters;
+	    for (int i = 4; i < length; i++) {
+	        randomString.add(allCharacters.charAt(random.nextInt(allCharacters.length())));
+	    }
+
+	      // Trộn ngẫu nhiên các ký tự để đảm bảo sự phân bố đều
+	    Collections.shuffle(randomString);
+
+	      // Chuyển đổi List<Character> thành chuỗi
+	    StringBuilder result = new StringBuilder();
+	    for (char c : randomString) {
+	        result.append(c);
+	    }
+	    
+	    return result.toString();
+		
+	}
+	
 	@RequestMapping(value = "/forgotpass", method = RequestMethod.POST)
-	public String xu_li(@RequestParam("email") String email) {
-		QuanLyAccount acc = new QuanLyAccount();
-		acc = qlaccountDAO.getAccByEmail(email);
-		System.out.println(acc.getUsername());
-		System.out.println(acc.getPassword());
-		Email.gui_matkhau(email, acc.getUsername(),acc.getPassword());
+	public String xu_li(@RequestParam("email") String email, Model model) {
+		QuanLyAccount acc = new QuanLyAccount(); 
+		
+		if (KtraDuLieu.ktraGmail(email)) {
+			acc = qlaccountDAO.getAccByEmail(email);
+			
+			if (acc == null) {
+				model.addAttribute("tbloi", "Email không tồn tại hoặc chưa được đăng ký");
+				System.out.println("Email không tồn tại hoặc chưa được đăng ký");
+			} else {
+				String newPass =  randomPass();
+				if (qlaccountDAO.changePass(acc.getUsername(), MaHoa.getMD5Hash(newPass))) {
+					System.out.println(acc.getUsername());
+					
+					Email.gui_matkhau(email, acc.getUsername(), newPass);
+					model.addAttribute("tbthanhcong", "Tài khoản và mật khẩu đã gửi về email, vui lòng kiểm tra!!");
+					
+				}
+				
+			}
+			
+		} else {
+			model.addAttribute("tbloi", "Email không đúng định dạng");
+		}
+		
 		
 		return "forgotPass";
 	}

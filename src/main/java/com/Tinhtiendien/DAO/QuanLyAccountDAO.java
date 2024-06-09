@@ -94,6 +94,24 @@ public class QuanLyAccountDAO {
 	}
 	
 	
+	public boolean changePass(String username, String newpass) {
+		String query = "update taikhoan set password = ? where username = ?";
+		int result = 0;
+		
+		try {
+			result = jdbcTemplate.update(query, new Object[] {newpass, username});
+		} catch (DataAccessException e) {
+			
+		}
+		
+		if (result != 0) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
 	public String deleteAcc (String username,String thong_bao) {
 		String sql = "exec sp_DeleteTaikhoan @username = ?"; 
 		int result = 0;
@@ -284,7 +302,7 @@ public class QuanLyAccountDAO {
 //	========================================= Quên Pass ========================== 
 	public QuanLyAccount getAccByEmail(String email)
 	{
-		QuanLyAccount acc = new QuanLyAccount();
+		QuanLyAccount acc = null;
 		String sql = "SELECT k.khachhang_id, t.*\r\n"
 				+ "FROM khachhang AS k\r\n"
 				+ "LEFT JOIN taikhoan AS t ON k.username = t.username \r\n"
@@ -295,6 +313,7 @@ public class QuanLyAccountDAO {
 		} catch (DataAccessException e) {
 			System.out.println("111");
 		}
+		
 		if (acc == null) {
 	        System.out.println("Truy van tai khoan nguoi dung thất bại!!");
 

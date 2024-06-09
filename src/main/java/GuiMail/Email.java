@@ -44,7 +44,7 @@ public class Email {
 					msg.setFrom(new InternetAddress(from,"CTY DIEN LUC"));
 					msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false));
 					// Tiêu đề
-					msg.setSubject("Công Ty Điện Lực - NHÓM 4 - N21CQAT01-N");
+					msg.setSubject("Công Ty Điện Lực - NHÓM 4 - D21CQAT01-N");
 					//Nội dung
 					msg.setText("Đây là tài khoản của bạn:" + "\nUsername: "+ username+ "\nPassword: "+ pass,"UTF-8");
 					//Gửi

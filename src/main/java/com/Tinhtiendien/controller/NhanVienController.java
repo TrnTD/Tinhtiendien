@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.Date;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -87,15 +88,31 @@ public class NhanVienController {
 			return "redirect:/login";
 		}
 
-		List<Integer> list_dientieuthu = hoadonDAO.get_dientieuthu_by_year(2010);
+		List<Integer> list_3YearsNearest = hoadonDAO.get_3YearsNearest();
+		List<Long> list_doanhthu = new ArrayList<>();
+		
+		for (int year : list_3YearsNearest) {
+			list_doanhthu.add(hoadonDAO.get_doanhthu_by_year2(year));
+		}
+		
 		List<Integer> list_sotien = hoadonDAO.get_doanhthu_by_year(2010);
 		
-		request.setAttribute("list_dientieuthu", list_dientieuthu);
-		request.setAttribute("list_sotien", list_sotien);
+		request.setAttribute("list_3YearsNearest", list_3YearsNearest);
+		request.setAttribute("list_doanhthu", list_doanhthu);
+		
+		
+		
 		
 		String doanhthu_nam = hoadonDAO.get_doanhthutheonam();
+		long so_doanhthunam = Long.parseLong(doanhthu_nam);
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0");
+		doanhthu_nam = decimalFormat.format(so_doanhthunam);
+		
 		int tongKhachHang = infoDAO.getTotalKhachHang();
+		
 		String doanhthu_thang = hoadonDAO.get_doanhthutheothang();
+		long so_doanhthuthang = Long.parseLong(doanhthu_thang);
+		doanhthu_thang = decimalFormat.format(so_doanhthuthang);
 		
 		
 		model.addAttribute("doanhthu_nam", doanhthu_nam);
