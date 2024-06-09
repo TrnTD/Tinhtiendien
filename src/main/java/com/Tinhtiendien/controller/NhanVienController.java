@@ -100,7 +100,14 @@ public class NhanVienController {
 		request.setAttribute("list_3YearsNearest", list_3YearsNearest);
 		request.setAttribute("list_doanhthu", list_doanhthu);
 		
+		List<Long> list_doanhthunam = new ArrayList<>();
+		for (int i = 1; i <= 12; i++) {
+			if (hoadonDAO.get_doanhthuthangnam(i, list_3YearsNearest.get(list_3YearsNearest.size() - 1)) > 0) {
+				list_doanhthunam.add(hoadonDAO.get_doanhthuthangnam(i, list_3YearsNearest.get(list_3YearsNearest.size() - 1)));				
+			}
+		}
 		
+		request.setAttribute("list_doanhthunam", list_doanhthunam);
 		
 		
 		String doanhthu_nam = hoadonDAO.get_doanhthutheonam();
@@ -118,6 +125,20 @@ public class NhanVienController {
 		model.addAttribute("doanhthu_nam", doanhthu_nam);
 		model.addAttribute("doanhthu_thang", doanhthu_thang);
 		model.addAttribute("tongKhachHang", tongKhachHang);
+		
+		
+		
+		long hoadon_dathanhtoan = hoadonDAO.get_tonghoadon_dathanhtoan();
+		long hoadon_chuathanhtoan = hoadonDAO.get_tonghoadon_chuathanhtoan();
+		
+		long doanhthu_hoadondathanhtoan = hoadonDAO.get_tongdoanhthu();
+		long doanhthu_hoadonchuathanhtoan = hoadonDAO.get_doanhthu_hoadonchuathanhtoan();
+		
+		model.addAttribute("hoadon_dathanhtoan", hoadon_dathanhtoan);
+		model.addAttribute("hoadon_chuathanhtoan", hoadon_chuathanhtoan);
+		model.addAttribute("doanhthu_hoadondathanhtoan", doanhthu_hoadondathanhtoan);
+		model.addAttribute("doanhthu_hoadonchuathanhtoan", doanhthu_hoadonchuathanhtoan);
+		
 		
 		
 		return "employee/quan_ly_chung";
@@ -1445,7 +1466,6 @@ public class NhanVienController {
 	    redirectAttributes.addFlashAttribute("mess", isSuccess.isComplete("Đổi Mật Khẩu"));
 	    return "redirect:/nhan_vien/quan_ly_tai_khoan";
 	}
-	
 	
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

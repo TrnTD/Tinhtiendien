@@ -637,7 +637,7 @@ public class InfoDAO {
 	public int getToTalPageDongHoKhachHang(String khid, String dhid,String tuNgay, String denNgay)
 	{
 		int temp = -1;
-		String sql = "exec sp_GetTotalPagesAllDongHoKhachHangSearch @PageSize = 3, @KhachHangId = ?, @DongHoId = ?,@TuNgay = ?, @DenNgay = ? ";
+		String sql = "exec sp_GetTotalPagesAllDongHoKhachHangSearch @PageSize = 10, @KhachHangId = ?, @DongHoId = ?,@TuNgay = ?, @DenNgay = ? ";
 		try {
 			  temp = jdbcTemplate.queryForObject(sql,new Object[]{khid,dhid,tuNgay,denNgay}, Integer.class);	
 			return temp;
@@ -653,7 +653,7 @@ public class InfoDAO {
 	public List<Info> getPageDongHoKhachHangBySearch(int page ,String khid, String dhid,String tuNgay, String denNgay)
 	{
 		List<Info> listdh = new ArrayList<Info>();
-		String sql = "exec sp_GetPagedAllDongHoKhachHangSearch  @PageNumber = ?, @PageSize = 3, @KhachHangId = ?, @DongHoId = ?,@TuNgay = ?, @DenNgay = ? ";
+		String sql = "exec sp_GetPagedAllDongHoKhachHangSearch  @PageNumber = ?, @PageSize = 10, @KhachHangId = ?, @DongHoId = ?,@TuNgay = ?, @DenNgay = ? ";
 		try {
 			  listdh = jdbcTemplate.query(sql,new Object[]{page, khid,dhid,tuNgay,denNgay},new MapperInfo());	
 			  System.out.println("Truy van dong ho dien nguoi dung thanh cong!!");

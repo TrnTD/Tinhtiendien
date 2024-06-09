@@ -191,7 +191,80 @@ public class HoaDonDAO {
         }
 
         return list_doanhthu;
-    } 
+    }
+	
+	public long get_tonghoadon_dathanhtoan() {
+		String query = "select count(*) from hoa_don2 where trangthai = N'Đã thanh toán'";
+		
+		String result = "";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, String.class);
+		} catch (DataAccessException e) {
+			
+		}
+		
+		if (result == null) {
+			return 0;
+		}
+		
+		return Long.parseLong(result);
+		
+	}
+	
+	public long get_tonghoadon_chuathanhtoan() {
+		String query = "select count(*) from hoa_don2 where trangthai = N'Chưa thanh toán'";
+		
+		String result = "";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, String.class);
+		} catch (DataAccessException e) {
+			
+		}
+		
+		if (result == null) {
+			return 0;
+		}
+		
+		return Long.parseLong(result);
+	}
+	
+	public long get_tongdoanhthu() {
+		String query = "exec sp_GetTongDoanhThu_HoaDonDaThanhToan";
+		
+		String result = "";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, String.class);
+		} catch (DataAccessException e) {
+			
+		}
+		
+		if (result == null) {
+			return 0;
+		}
+		
+		return Long.parseLong(result);
+	}
+	
+	public long get_doanhthu_hoadonchuathanhtoan() {
+		String query = "exec sp_GetTongDoanhThu_HoaDonChuaThanhToan";
+		
+		String result = "";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, String.class);
+		} catch (DataAccessException e) {
+			
+		}
+		
+		if (result == null) {
+			return 0;
+		}
+		
+		return Long.parseLong(result);
+	}
 	
 	public boolean checkExistHoaDonByHoaDonIdAndTime(String hoadon_id, String thang, String nam) {
 		int count = 0;
@@ -248,6 +321,25 @@ public class HoaDonDAO {
 		}
 		
 		return result;
+	}
+	
+	public long get_doanhthuthangnam(int thang, int nam) {
+		String result = "";
+		
+		String query = "exec sp_GetDoanhThuThang @Month = ?, @Year = ?";
+		
+		try {
+			result = jdbcTemplate.queryForObject(query, new Object[] {thang, nam}, String.class);
+		} catch (DataAccessException e) {
+			
+		}
+		
+		if (result == null) {
+			return 0;
+		}
+
+		
+		return Long.parseLong(result);
 	}
 	
 	public List<HoaDon> searchHoaDonKhachHang(int cur_page, String hoadon_id, String khachhang_id, String tungay, String denngay, String month_bill, String year_bill, String search_status) {

@@ -41,7 +41,7 @@
 	<div class="content">
   		<div class="container" style="width: 1200px;">
 	        <h2 style="color:#f6621c;margin-bottom: 20px;">Thông tin khách hàng</h3>
-	       	<div style="background-color: white;">
+	       	<div style="background-color: white; padding: 20px; box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
 	       		<div class="row">
 <!-- 		            Cột 1 -->
 		            <div class="col-2">
@@ -63,25 +63,43 @@
 		        <div class="row">
 <!-- 		            Cột 5 -->
 		            <div class="col-2">
-		                <p><strong>Địa chỉ:</strong></p>
+		                <p><strong>Số điện thoại:</strong></p>
 		            </div>
 <!-- 		            Cột 6 -->
 		            <div class="col-md-3">
-		                <p><span class="left-align" id="makh">${info_khachhang.diachi}</span></p>
+		                <p><span class="left-align" id="makh">${info_khachhang.sdt}</span></p>
 		            </div>
 <!-- 		            Cột 7 -->
 		            <div class="col-2">
-		                <p><strong>Số điện thoại:</strong></p>
+		                <p><strong>Mã đồng hồ:</strong></p>
 		            </div>
 <!-- 		            Cột 8 -->
 		            <div class="col-md-3">
-		                <p><span class="left-align" id="mahoadon">${info_khachhang.sdt}</span></p>
+		                <p><span class="left-align" id="mahoadon">${info_khachhang.dongho_id}</span></p>
+		            </div>
+		        </div>
+		        <div class="row">
+<!-- 		            Cột 5 -->
+		            <div class="col-2">
+		                <p><strong>Căn cước công dân::</strong></p>
+		            </div>
+<!-- 		            Cột 6 -->
+		            <div class="col-md-3">
+		                <p><span class="left-align" id="makh">${info_khachhang.cccd}</span></p>
+		            </div>
+<!-- 		            Cột 7 -->
+		            <div class="col-2">
+		                <p><strong>Địa chỉ:</strong></p>
+		            </div>
+<!-- 		            Cột 8 -->
+		            <div class="col-md-3">
+		                <p><span class="left-align" id="mahoadon">${info_khachhang.diachi}</span></p>
 		            </div>
 		        </div>
 	       	</div>
   		</div>
   		
-			<h2 style="color:#f6621c; margin-bottom: 20px;">Tra cứu hóa đơn</h3>
+			<h2 style="color:#f6621c; margin: 20px 0;">Tra cứu hóa đơn</h3>
 			
 		    <form method="POST">
 		        <div class="row d-flex align-items-end">
@@ -138,11 +156,20 @@
 					        <td><fmt:formatNumber value="${hoadon.tien_thue}" pattern="#,###"/></td>
 					        <td><fmt:formatNumber value="${hoadon.tong_tien}" pattern="#,###"/></td>
 					    </tr>
+					    
 					</div>
 <%-- 				</c:forEach> --%>
 
 	          </tbody>
 	        </table>
+	    	<c:if test="${empty hoadon.hoadon_id}">
+		        <div style="display: flex; justify-content: center; align-items: center;">
+			     	<%@include file="/WEB-INF/resource/assets/imgs/nodata.svg"%>
+		     	</div>
+		     	<div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+					<p>Không có dữ liệu</p>				     	
+		     	</div>
+		     </c:if>
 		</div>
   	</div>
 </body>

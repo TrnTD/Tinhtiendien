@@ -100,7 +100,7 @@
   		<div class="container" style="width:1000px">
 			<h2 style="color:#f6621c; margin-bottom: 20px;">Thông tin hóa đơn chưa thanh toán</h2>
 	        
-	        <table class="table table-hover" style="background-color: white;">
+	        <table class="table table-hover" style="background-color: white;" box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;>
 	          <thead>
 	            <tr>
 	              <th>Mã hóa đơn</th>
@@ -130,6 +130,14 @@
 				</c:forEach>
 	          </tbody>
 	        </table>
+	        <c:if test="${empty list_hoadon}">
+		     	<div style="display: flex; justify-content: center; align-items: center;">
+			     	<%@include file="/WEB-INF/resource/assets/imgs/nodata.svg"%>
+		     	</div>
+		     	<div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+					<p>Không có dữ liệu</p>				     	
+		     	</div>
+			</c:if>     
 		</div>
 	</div>
 	

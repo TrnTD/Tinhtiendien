@@ -105,9 +105,9 @@
       <li class="nav-item">
           <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_yeu_cau_khach_hang"><i class="fa-regular fa-comment-dots"></i> Quản lý yêu cầu</a>
-      </li>
+<!--       <li class="nav-item"> -->
+<!--         <a class="nav-link menu-item" href="/Tinhtiendien/nhan_vien/quan_ly_yeu_cau_khach_hang"><i class="fa-regular fa-comment-dots"></i> Quản lý yêu cầu</a> -->
+<!--       </li> -->
       
       <li class="nav-item">
         <a class="nav-link" href="/Tinhtiendien/nhan_vien/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>

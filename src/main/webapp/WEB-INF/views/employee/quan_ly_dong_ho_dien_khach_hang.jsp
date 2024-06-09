@@ -96,7 +96,7 @@
 						<th>Mã đồng hồ</th>
 						<th>Mã khách hàng</th>
 						<th>Ngày đăng kí</th>
-						<th style="width: 400px;">Chức năng</th>
+						<th style="width: 400px;"></th>
 					</tr>
 				</thead>
 				<tbody>
