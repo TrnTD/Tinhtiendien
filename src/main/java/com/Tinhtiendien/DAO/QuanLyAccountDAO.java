@@ -141,6 +141,10 @@ public class QuanLyAccountDAO {
 	
 	
 	public String addAcc (String khachhang_id,String username,String password,String thong_bao) {
+		System.out.println(username);
+		System.out.println(password);
+		System.out.println(thong_bao);
+		
 		String sql = "exec sp_UpdateUsernameAndInsertIntoTaikhoan @khachhang_id = ? , @username =  ?, @password = ?, @role = null;";
 		int result = 0;
 		try {

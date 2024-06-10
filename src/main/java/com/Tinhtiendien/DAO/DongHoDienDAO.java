@@ -112,6 +112,9 @@ public class DongHoDienDAO {
 	public List<DongHoDien> getPageAllDongHoKhachHang(int page)
 	{
 		List<DongHoDien> listdh = new ArrayList<DongHoDien>();
+		
+		System.out.println("page: " + page);
+		
 		String sql = "exec sp_GetPagedAllDongHoKhachHang @PageNumber = ? , @PageSize = 10";
 		try {
 			  listdh = jdbcTemplate.query(sql,new Object[]{page},new MapperDongHoDien());	
@@ -147,7 +150,7 @@ public class DongHoDienDAO {
 			  listdh = jdbcTemplate.query(sql,new Object[]{page, khid,dhid,tuNgay,denNgay},new MapperDongHoDien());	
 			  System.out.println("Truy van dong ho dien nguoi dung thanh cong!!");
 		} catch (DataAccessException e) {
-			System.out.println("111");
+			System.out.println("123");
 		}
 		if (listdh.isEmpty()) {
 	        System.out.println("Truy van dong ho dien nguoi dung thất bại!!");

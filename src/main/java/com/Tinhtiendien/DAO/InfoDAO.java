@@ -658,7 +658,7 @@ public class InfoDAO {
 			  listdh = jdbcTemplate.query(sql,new Object[]{page, khid,dhid,tuNgay,denNgay},new MapperInfo());	
 			  System.out.println("Truy van dong ho dien nguoi dung thanh cong!!");
 		} catch (DataAccessException e) {
-			System.out.println("111");
+			System.out.println("1123");
 		}
 		if (listdh.isEmpty()) {
 	        System.out.println("Truy van dong ho dien nguoi dung thất bại!!");
@@ -676,7 +676,7 @@ public class InfoDAO {
 			  listdh = jdbcTemplate.query(sql,new Object[]{page},new MapperInfo());	
 			  System.out.println("Truy van dong ho dien nguoi dung thanh cong!!");
 		} catch (DataAccessException e) {
-			System.out.println("111");
+			System.out.println("122311");
 		}
 		if (listdh.isEmpty()) {
 	        System.out.println("Truy van dong ho dien nguoi dung thất bại!!");
@@ -691,6 +691,7 @@ public class InfoDAO {
 	{
 		String ntns = null;
 		String sql = "select  ngaythangnam_sinh from khachhang where khachhang_id = ?";
+		
 		try {
 			ntns = jdbcTemplate.queryForObject(sql,new Object[]{khid}, String.class);	
 			return ntns;

@@ -617,7 +617,7 @@ public class QuanLyController {
 		session.setAttribute("message", message);
 		session.setAttribute("isError", isError);
 		
-		return "redirect:/nhan_vien/quan_ly_thong_tin_khach_hang";
+		return "redirect:/quan_ly/quan_ly_thong_tin_khach_hang";
 	}
 	
 	@RequestMapping(value = "/quan_ly/quan_ly_thong_tin_khach_hang/tim_kiem", method = RequestMethod.GET)
@@ -858,11 +858,11 @@ public class QuanLyController {
 			return "redirect:/quan_ly/quan_ly_tai_khoan_khach_hang";
 		}
 		if (kh_id == "")
-		{
-			String url = request.getHeader("Referer");
-			redirectAttributes.addFlashAttribute("tb_rong", "Vui lòng nhập thông tin tìm kiếm");
-			return "redirect:" + url;
-		}
+//		{
+//			String url = request.getHeader("Referer");
+//			redirectAttributes.addFlashAttribute("tb_rong", "Vui lòng nhập thông tin tìm kiếm");
+//			return "redirect:" + url;
+//		}
 		kh_id = kh_id.trim();
 		List<QuanLyAccount> account = qlaccountDAO.getAllAccountsUserInPageBySearch(cur_page,kh_id);
 		int ttp = qlaccountDAO.getToTalPageAllAccKhachHangBySearch(kh_id);
@@ -893,12 +893,13 @@ public class QuanLyController {
 				redirectAttributes.addFlashAttribute("tb_err", "Khách hàng chưa có tài khoản để chỉnh sửa!");
 				return "redirect:" + url;
 			}
+			
 			if (newPass != "") {
 				if (!KtraDuLieu.ktraMatKhau(newPass)) {
 					redirectAttributes.addFlashAttribute("tbDoiMK", "Mật khẩu không đúng yêu cầu!");
 				} else {
 
-					thong_bao = qlaccountDAO.changePassword(username, newPass, thong_bao);
+					thong_bao = qlaccountDAO.changePassword(username, MaHoa.getMD5Hash(newPass), thong_bao);
 					redirectAttributes.addFlashAttribute("tb", thong_bao);
 				}
 			} else {
@@ -967,7 +968,7 @@ public class QuanLyController {
 				return "redirect:" + url;
 			}
 
-			thong_bao = qlaccountDAO.addAccNV(addUsernameId, addUsername, MaHoa.getMD5Hash(addPassWord), thong_bao);
+			thong_bao = qlaccountDAO.addAcc(addUsernameId, addUsername, MaHoa.getMD5Hash(addPassWord), thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 
 		} else if (action.equals("delete")) {
@@ -979,7 +980,7 @@ public class QuanLyController {
 			thong_bao = qlaccountDAO.deleteAcc(username, thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 		}
-
+		
 		return "redirect:" + url;
 	}
 	
@@ -991,12 +992,17 @@ public class QuanLyController {
 	
 	@RequestMapping("/quan_ly/quan_ly_dong_ho_dien_khach_hang")
 	public String layDongHo(Model model, @RequestParam(value = "cur_page", defaultValue = "1") int cur_page,
-			@RequestParam(value = "limit", defaultValue = "10") int limit) {
-		List<Info> listInf = infoDAO.getPageDongHoKhachHang(cur_page);
-		model.addAttribute("list_dh", listInf);
-		int ttp = infoDAO.getToTalPageAllKhachHang();
+			@RequestParam(value = "limit", defaultValue = "10") int limit, HttpSession session) {
+		
+		if (session.getAttribute("info_quanly") == null) {
+			return "redirect:/login";
+		}
+		
+		List<DongHoDien> listDh = donghodienDAO.getPageAllDongHoKhachHang(cur_page);
+		model.addAttribute("list_dh", listDh);
+		int ttp = donghodienDAO.getToTalPageAllDongHoKhachHang();
 		model.addAttribute("curr_page", cur_page);
-		model.addAttribute("total_page", ttp);
+		model.addAttribute("total_page", ttp); 
 		return "manager/quan_ly_dong_ho_dien_khach_hang";
 	}
 
@@ -1010,13 +1016,13 @@ public class QuanLyController {
 			@RequestParam(value = "limit",defaultValue = "10") int limit,
 			@RequestParam(value = "all", required = false) String all) 
 	{
-		if (session.getAttribute("info_nhanvien") == null) {
+		if (session.getAttribute("info_quanly") == null) {
 			return "redirect:/login";
 		}
 		
 		if ("search_all".equals(all))
 		{
-			int ttp = infoDAO.getToTalPageAllKhachHang();
+			int ttp = donghodienDAO.getToTalPageAllDongHoKhachHang();
 			redirectAttributes.addAttribute("curr_page", 1);
 			redirectAttributes.addAttribute("limit", ttp);
 			return "redirect:/quan_ly/quan_ly_dong_ho_dien_khach_hang";
@@ -1036,10 +1042,10 @@ public class QuanLyController {
 			model.addAttribute("search_id_denNgay",denNgay);
 			if (tuNgay == "") tuNgay = null;
 			if (denNgay == "") denNgay = null;
-			List<Info> listInf = infoDAO.getPageDongHoKhachHangBySearch(cur_page,kh_id, dh_id,tuNgay,denNgay);
-			int ttp = infoDAO.getToTalPageDongHoKhachHang(kh_id,dh_id,tuNgay,denNgay);
+			List<DongHoDien> listDh = donghodienDAO.getPageDongHoKhachHangBySearch(cur_page,kh_id, dh_id,tuNgay,denNgay);
+			int ttp = donghodienDAO.getToTalPageDongHoKhachHang(kh_id,dh_id,tuNgay,denNgay);
 			model.addAttribute("total_page", ttp); 
-			model.addAttribute("list_dh", listInf);
+			model.addAttribute("list_dh", listDh);
 			model.addAttribute("curr_page", cur_page);
 			model.addAttribute("search_id_khachhang",kh_id);
 			model.addAttribute("search_id_dongho",dh_id);
@@ -1056,7 +1062,7 @@ public class QuanLyController {
 		String url = request.getHeader("Referer");
 		String thong_bao = null;
 		if (action.equals("renew")) {
-			thong_bao = infoDAO.updateDongHoId(khachHangId, thong_bao);
+			thong_bao = donghodienDAO.updateDongHoId(khachHangId, thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 		}
 		else if (action.equals("edit"))
@@ -1069,7 +1075,7 @@ public class QuanLyController {
 			}
 			else
 			{
-				thong_bao = infoDAO.updateNgayDangKy(khachHangId, doiNDK, thong_bao);
+				thong_bao = donghodienDAO.updateNgayDangKy(khachHangId, doiNDK, thong_bao);
 				redirectAttributes.addFlashAttribute("tb", thong_bao);	
 			}
 		}
@@ -1127,7 +1133,7 @@ public class QuanLyController {
 		model.addAttribute("curr_page", cur_page);
 		model.addAttribute("total_page", total_page);
 
-		return "employee/quan_ly_lich_su_do_khach_hang";
+		return "manager/quan_ly_lich_su_do_khach_hang";
 	}
 	
 	
@@ -1198,10 +1204,7 @@ public class QuanLyController {
 		
 		// http://localhost:8080/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem?search_lsdid=&search_khachhangid=kh002&search_dhdid=&search_ngaydo=
 		String url = request.getHeader("Referer");
-		int index = url.indexOf("/nhan_vien");
-		// url = /nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem?search_lsdid=&search_khachhangid=kh002&search_dhdid=&search_ngaydo=
-		url = url.substring(index);
-		
+
 		if (canAdd) {
 			if (mdDAO.addNewLsd(dongho_id, thang, nam, chiso)) {
 				message = "Bạn đã thêm chỉ số khách hàng thành công";
@@ -1210,6 +1213,85 @@ public class QuanLyController {
 				
 				return "redirect:" + url;
 			}
+		}
+		
+		
+		return "redirect:" + url;
+	}
+	
+	@RequestMapping(value = "/quan_ly/quan_ly_lich_su_do_khach_hang/sua", method = RequestMethod.POST)
+	public String sua_lsd_khachhang(@RequestParam("dongho_id") String dongho_id, @RequestParam("chiso") String chiso_jsp, 
+			@RequestParam("lsd_id") int lsd_id, /*@RequestParam("ngay") int ngay, @RequestParam("thang") int thang, 
+			@RequestParam("nam") int nam,*/ RedirectAttributes redirectAttributes, HttpSession session, HttpServletRequest request) {
+		
+		int chiso = Integer.parseInt(chiso_jsp);
+		
+		System.out.println("Chi so:  " + chiso);
+		System.out.println("lsd id: " + lsd_id);
+		System.out.println("dong ho id: " + dongho_id);
+		
+//		String ngay_do = String.format("%04d-%02d-%02d", nam, thang, ngay);
+
+		String message = "";
+		boolean isError = false;
+		
+		MeasurementHistory prelsd = mdDAO.getPreviousLDSByLsdIdAndKhId(lsd_id, dongho_id);
+		MeasurementHistory nextlsd = mdDAO.getNextLDSByLsdIdAndKhId(lsd_id, dongho_id);
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		formatter.setLenient(false);
+		
+		boolean canUpdate = true;
+		
+//		try {
+//			Date date = formatter.parse(ngay_do);
+//		} catch (ParseException e) {
+//			redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không hợp lệ!!");
+//			canUpdate = false;
+//		}
+		
+		
+		if (prelsd != null) {
+			if (chiso < prelsd.getChiso()) {
+				redirectAttributes.addFlashAttribute("err_mess_editChiso", "Chỉ số phải lớn hơn hoặc bằng chỉ số tháng trước!!");
+				canUpdate = false;
+			}
+			
+//			String date = formatter.format(prelsd.getNgay_do());
+//			
+//			if (ngay_do.compareTo(date) <= 0) {
+//				redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không được nhỏ hơn hoặc bằng ngày đo của tháng trước!!");
+//				canUpdate = false;
+//			}
+		}
+		
+		if (nextlsd != null) {
+			if (chiso > nextlsd.getChiso()) {
+				redirectAttributes.addFlashAttribute("err_mess_editChiso", "Chỉ số phải bé hơn hoặc bằng chỉ số tháng sau!!");
+				canUpdate = false;
+			}
+			
+//			String date = formatter.format(nextlsd.getNgay_do());
+//					
+//			if (ngay_do.compareTo(date) >= 0) {
+//				redirectAttributes.addFlashAttribute("err_mess_editNgaydo", "Ngày đo không được lớn hơn hoặc bằng ngày đo của tháng sau!!");
+//				canUpdate = false;
+//			}
+		}
+		
+		// http://localhost:8080/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang/tim_kiem?search_lsdid=&search_khachhangid=kh002&search_dhdid=&search_ngaydo=
+		String url = request.getHeader("Referer");
+		
+		
+		if (canUpdate) {
+			if(mdDAO.updateLsdFromLSDId(chiso, lsd_id)) {
+				message = "Bạn đã cập nhật lịch sử đo của khách hàng thành công";
+				redirectAttributes.addFlashAttribute("testahihi", "just test value");
+				session.setAttribute("message", message);
+				session.setAttribute("isError", isError);
+				
+				return "redirect:" + url;
+			};			
 		}
 		
 		
@@ -1252,17 +1334,41 @@ public class QuanLyController {
 			return "redirect:/login";
 		}
 
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		
 		String url = request.getHeader("Referer");
-
+		
 		if (action.equals("search")) {
-			List<MeasurementHistory> list_lsd = mdDAO.searchLsdKhachhang(cur_page, lsd_id, khachhang_id, dhd_id, tungay,
-					denngay);
-
+			List<MeasurementHistory> list_lsd = mdDAO.searchLsdKhachhang(cur_page, lsd_id, khachhang_id, dhd_id, tungay, denngay);
+			
+			List<Date> enableDelete = new ArrayList<Date>();
+			
+			for (MeasurementHistory lsd : list_lsd) {
+				if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+					
+					enableDelete.add(lsd.getNgay_do());	
+					
+					
+					calendar.setTime(lsd.getNgay_do());
+					calendar.add(Calendar.MONTH, 1);
+					
+					Date newDate = calendar.getTime();
+//					String add_ngaydo = formatter.format(newDate);
+					
+					if (!enableDelete.contains(newDate)) {
+						enableDelete.add(newDate);
+					}
+					
+				}
+			}
+			
 			int total_page = mdDAO.tong_trang_search(lsd_id, khachhang_id, dhd_id, tungay, denngay);
-
+			
 			model.addAttribute("curr_page", cur_page);
 			model.addAttribute("total_page", total_page);
-			model.addAttribute("list_lsd", list_lsd);
+			model.addAttribute("list_lsd", list_lsd);	
+			model.addAttribute("enableDelete", enableDelete);
 		} else {
 			return "redirect:/quan_ly/quan_ly_lich_su_do_khach_hang";
 		}
@@ -1510,7 +1616,7 @@ public class QuanLyController {
 		model.addAttribute("list_pttt", list_pttt);
 		
 		
-		return "employee/quan_ly_lich_su_thanh_toan_khach_hang";
+		return "manager/quan_ly_lich_su_thanh_toan_khach_hang";
 	}
 	
 	
@@ -1586,117 +1692,120 @@ public class QuanLyController {
 
 		boolean isAction = true;
 
-		if (action.equals("add")) {
-			System.out.println("action: " + action);
-			System.out.println("add_bacDien: " + add_bacDienstr);
-			System.out.println("add_giaDien: " + add_giaDienstr);
+        if (action.equals("add")) {
+        	System.out.println("action: " + action);
+        	System.out.println("add_bacDien: " + add_bacDienstr);
+        	System.out.println("add_giaDien: " + add_giaDienstr);
+        	
+        	// Kiểm tra null và định dạng cho bậc điện
+            if (add_bacDienstr == null || add_bacDienstr.isEmpty()) {
+                redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isNull("Bậc Điện"));
+                return "redirect:/quan_ly/quan_ly_gia_dien";
 
-// Kiểm tra null và định dạng cho bậc điện
-			if (add_bacDienstr == null || add_bacDienstr.isEmpty()) {
-				redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isNull("Bậc Điện"));
-				return "redirect:/quan_ly/quan_ly_gia_dien";
-			} else if (!KtraDuLieu.ktraDuLieu_Dien(add_bacDienstr)) {
-				redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isType("Bậc Điện"));
-				isAction = false;
-			}
-// kiểm tra null và định dạng cho giá điện
-			if (add_giaDienstr == null || add_giaDienstr.isEmpty()) {
-				redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isNull("Giá Điện"));
-				isAction = false;
-			} else if (!KtraDuLieu.ktraDuLieu_Dien(add_giaDienstr)) {
-				redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isType("Giá Điện"));
-				isAction = false;
-			}
+            
+            } else if (!KtraDuLieu.ktraDuLieu_Dien(add_bacDienstr)) {
+                redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isType("Bậc Điện"));
+                isAction = false;
+            }
+            // kiểm tra null và định dạng cho giá điện 
+            if (add_giaDienstr == null || add_giaDienstr.isEmpty()) {
+                redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isNull("Giá Điện"));
+                isAction = false;
+            } else if (!KtraDuLieu.ktraDuLieu_Dien(add_giaDienstr)) {
+                redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isType("Giá Điện"));
+                isAction = false;
+            }
+            
+            if (isAction) {
+                try {
+                	int add_bacDien = Integer.parseInt(add_bacDienstr);
+                	int add_giaDien = Integer.parseInt(add_giaDienstr);
+                	// Kiểm tra trùng lặp bậc điện
+                	if (giaDien_DAO.checkExist(add_bacDien)) {
+                		redirectAttributes.addFlashAttribute("add_bacDien_id", isError.is_Exist("Bậc Điện"));
+	                    return "redirect:/quan_ly/quan_ly_gia_dien";
 
-			if (isAction) {
-				try {
-					int add_bacDien = Integer.parseInt(add_bacDienstr);
-					int add_giaDien = Integer.parseInt(add_giaDienstr);
-// Kiểm tra trùng lặp bậc điện
-					if (giaDien_DAO.checkExist(add_bacDien)) {
-						redirectAttributes.addFlashAttribute("add_bacDien_id", isError.is_Exist("Bậc Điện"));
-						return "redirect:/quan_ly/quan_ly_gia_dien";
-					}
-// Kiểm tra bậc điện và giá điện trước đó
-					GiaDien Previous = giaDien_DAO.getPreviousPrice(add_bacDien);
-					GiaDien Next = giaDien_DAO.getNextPrice(add_bacDien);
-					if (Previous != null) {
-						if (add_bacDien - Previous.getBacDien() > 1) {
-							redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isNotValid("Bậc Điện"));
-							return "redirect:/quan_ly/quan_ly_gia_dien";
-						}
-						if (add_giaDien <= Previous.getGiaDien()) {
-							redirectAttributes.addFlashAttribute("add_giaDien_id",
-									isError.isPrevious("Giá Điện Phải Lớn Hơn"));
-							return "redirect:/quan_ly/quan_ly_gia_dien";
-						}
-					}
+                	} 
+                	// Kiểm tra bậc điện và giá điện trước đó
+                	GiaDien Previous = giaDien_DAO.getPreviousPrice(add_bacDien);
+                	GiaDien Next = giaDien_DAO.getNextPrice(add_bacDien);
+                	if (Previous != null) {
+                		if (add_bacDien - Previous.getBacDien() > 1) {
+                			redirectAttributes.addFlashAttribute("add_bacDien_id", isError.isNotValid("Bậc Điện"));
+    	                    return "redirect:/quan_ly/quan_ly_gia_dien";
+                			
+                		}
+                		if (add_giaDien <= Previous.getGiaDien()) {
+                			redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isPrevious("Giá Điện Phải Lớn Hơn"));
+    	                    return "redirect:/quan_ly/quan_ly_gia_dien";
+                		}
+                	}
+                	
+                	if (Next != null) {
+                		if (add_giaDien >= Next.getGiaDien()) {
+                			redirectAttributes.addFlashAttribute("add_giaDien_id", isError.isNext("Giá Điện Phải Nhỏ Hơn"));
+    	                    return "redirect:/quan_ly/quan_ly_gia_dien";
+                			
+                		}
+                	}
+                    giaDien_DAO.Them(add_bacDien, add_giaDien);
+                    redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Thêm"));
+                } catch (NumberFormatException e) {
+                    redirectAttributes.addFlashAttribute("message", isError.isFailed("Thêm"));
+                    return "redirect:/quan_ly/quan_ly_gia_dien";
+                }
+            }
 
-					if (Next != null) {
-						if (add_giaDien >= Next.getGiaDien()) {
-							redirectAttributes.addFlashAttribute("add_giaDien_id",
-									isError.isNext("Giá Điện Phải Nhỏ Hơn"));
-							return "redirect:/quan_ly/quan_ly_gia_dien";
-						}
-					}
-					giaDien_DAO.Them(add_bacDien, add_giaDien);
-					redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Thêm"));
-				} catch (NumberFormatException e) {
-					redirectAttributes.addFlashAttribute("message", isError.isFailed("Thêm"));
-					return "redirect:/quan_ly/quan_ly_gia_dien";
-				}
-			}
+        } else if (action.equals("edit")) {
+        	GiaDien Previous = giaDien_DAO.getPreviousPrice(Integer.parseInt(bacDienstr));
+       	    GiaDien Next = giaDien_DAO.getNextPrice(Integer.parseInt(bacDienstr));
+    
+        	// kiểm tra null
+            if (edit_giaDienstr == null || edit_giaDienstr.isEmpty()) {
+                redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isNull("Giá Điện"));
+                isAction = false;
+            // kiểm tra định dạng 
+            } else if (!KtraDuLieu.ktraDuLieu_Dien(edit_giaDienstr)) {
+                redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isType("Giá Điện"));
+                isAction = false;
+            } 
 
-		} else if (action.equals("edit")) {
-			GiaDien Previous = giaDien_DAO.getPreviousPrice(Integer.parseInt(bacDienstr));
-			GiaDien Next = giaDien_DAO.getNextPrice(Integer.parseInt(bacDienstr));
+            if (isAction) {
+                try {
+                	int bacDien = Integer.parseInt(bacDienstr);
+                	int edit_giaDien = Integer.parseInt(edit_giaDienstr);
+                	if (Previous != null) {
+                		if (edit_giaDien < Previous.getGiaDien()) {
+                			redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isPrevious("Giá Tiền Phải Lớn Hơn Giá Tiền Bậc Điện"));
+        	                return "redirect:/quan_ly/quan_ly_gia_dien";
 
-// kiểm tra null
-			if (edit_giaDienstr == null || edit_giaDienstr.isEmpty()) {
-				redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isNull("Giá Điện"));
-				isAction = false;
-// kiểm tra định dạng
-			} else if (!KtraDuLieu.ktraDuLieu_Dien(edit_giaDienstr)) {
-				redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isType("Giá Điện"));
-				isAction = false;
-			}
+                		}
+                	}
+                	if (Next != null) {
+                		if (edit_giaDien > Next.getGiaDien()) {
+                			redirectAttributes.addFlashAttribute("edit_giaDien_id", isError.isNext("Giá Tiền Phải Nhỏ Hơn Giá Tiền Bậc Điện"));
+        	                return "redirect:/quan_ly/quan_ly_gia_dien";
 
-			if (isAction) {
-				try {
-					int bacDien = Integer.parseInt(bacDienstr);
-					int edit_giaDien = Integer.parseInt(edit_giaDienstr);
-					if (Previous != null) {
-						if (edit_giaDien < Previous.getGiaDien()) {
-							redirectAttributes.addFlashAttribute("edit_giaDien_id",
-									isError.isPrevious("Giá Tiền Phải Lớn Hơn Giá Tiền Bậc Điện"));
-							return "redirect:/quan_ly/quan_ly_gia_dien";
-						}
-					}
-					if (Next != null) {
-						if (edit_giaDien > Next.getGiaDien()) {
-							redirectAttributes.addFlashAttribute("edit_giaDien_id",
-									isError.isNext("Giá Tiền Phải Nhỏ Hơn Giá Tiền Bậc Điện"));
-							return "redirect:/quan_ly/quan_ly_gia_dien";
-						}
-					}
-					giaDien_DAO.CapNhat(bacDien, edit_giaDien);
-					redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Cập Nhật"));
-				} catch (NumberFormatException e) {
-					redirectAttributes.addFlashAttribute("message", isError.isFormat(isError.isFailed("Cập Nhật")));
-					return "redirect:/quan_ly/quan_ly_gia_dien";
-				}
-			}
-		} else if (action.equals("delete")) {
-			try {
-				int bacDien = Integer.parseInt(bacDienstr);
-				giaDien_DAO.Xoa(bacDien);
-				redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Xóa"));
-			} catch (NumberFormatException e) {
-				redirectAttributes.addFlashAttribute("message", isError.isFailed("Xóa"));
-				return "redirect:/quan_ly/quan_ly_gia_dien";
-			}
-		}
-		return "redirect:/quan_ly/quan_ly_gia_dien";
+                		}
+                	}
+                    giaDien_DAO.CapNhat(bacDien, edit_giaDien);
+                    redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Cập Nhật"));
+                } catch (NumberFormatException e) {
+                    redirectAttributes.addFlashAttribute("message", isError.isFormat(isError.isFailed("Cập Nhật")));
+                    return "redirect:/quan_ly/quan_ly_gia_dien";
+                }
+            }
+        } else if (action.equals("delete")) {
+            try {
+                int bacDien = Integer.parseInt(bacDienstr);
+                giaDien_DAO.Xoa(bacDien);
+                redirectAttributes.addFlashAttribute("message", isSuccess.isComplete("Xóa"));
+            } catch (NumberFormatException e) {
+                redirectAttributes.addFlashAttribute("message", isError.isFailed("Xóa"));
+                return "redirect:/quan_ly/quan_ly_gia_dien";
+            }
+        }
+    return "redirect:/quan_ly/quan_ly_gia_dien";
 	}
 	
 	
@@ -1726,6 +1835,21 @@ public class QuanLyController {
 			message = "Sửa trạng thái yêu cầu thành công";
 		} else {
 			message = "Sửa yêu cầu không thành công";
+			isError = true;
+		}
+		session.setAttribute("message", message);
+		session.setAttribute("isError", isError);
+		return "redirect:/quan_ly/quan_ly_yeu_cau_khach_hang";
+	}
+	
+	@RequestMapping(value = "/quan_ly/quan_ly_yeu_cau_khach_hang/xoa", method = RequestMethod.POST)
+	public String xoaYeuCau(HttpSession session, Model model, @RequestParam("yeucau_id") String yeucau_id) {
+		boolean isError = false;
+		String message = "";
+		if (yeucauDAO.xoaYeuCau(yeucau_id)) {
+			message = "Xóa yêu cầu thành công";
+		} else {
+			message = "Xóa yêu cầu không thành công";
 			isError = true;
 		}
 		session.setAttribute("message", message);

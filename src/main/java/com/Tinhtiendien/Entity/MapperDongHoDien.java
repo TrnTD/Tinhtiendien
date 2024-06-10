@@ -15,6 +15,7 @@ public class MapperDongHoDien implements RowMapper<DongHoDien>{
 		donghodien.setDongho_id(rs.getString("dongho_id"));
 		donghodien.setKhachhang_id(rs.getString("khachhang_id"));
 		donghodien.setNgay_dangky(rs.getDate("ngay_dangky"));
+		
 		return donghodien;
 	} 
 }

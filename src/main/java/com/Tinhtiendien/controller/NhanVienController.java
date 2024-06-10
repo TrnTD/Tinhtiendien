@@ -407,7 +407,11 @@ public class NhanVienController {
 	@RequestMapping(value="/nhan_vien/quan_ly_tai_khoan_khach_hang", method= RequestMethod.GET)
 	public String layTaiKhoan(Model model, RedirectAttributes redirectAttributes,
 			@RequestParam(value ="cur_page",defaultValue = "1") int cur_page,
-			@RequestParam(value = "limit",defaultValue = "10") int limit ) {
+			@RequestParam(value = "limit",defaultValue = "10") int limit, HttpSession session) {
+		
+		if (session.getAttribute("info_nhanvien") == null) {
+			return "redirect:/login";
+		}
 		
 		List<QuanLyAccount> listAcc = qlaccountDAO.getAllAccountsUserInPage(cur_page);
 		int ttp = qlaccountDAO.getToTalPageAllAccKhachHang();
@@ -573,14 +577,14 @@ public class NhanVienController {
 	public String layDongHo(Model model,
 			@RequestParam(value ="cur_page",defaultValue = "1") int cur_page,
 			@RequestParam(value = "limit",defaultValue = "10") int limit) {
-		List<Info> listInf = infoDAO.getPageDongHoKhachHang(cur_page);
-		model.addAttribute("list_dh", listInf);
-		int ttp = infoDAO.getToTalPageAllKhachHang();
+		List<DongHoDien> listDh = donghodienDAO.getPageAllDongHoKhachHang(cur_page);
+		model.addAttribute("list_dh", listDh);
+		int ttp = donghodienDAO.getToTalPageAllDongHoKhachHang();
 		model.addAttribute("curr_page", cur_page);
-		model.addAttribute("total_page", ttp);
+		model.addAttribute("total_page", ttp); 
 		return "employee/quan_ly_dong_ho_dien_khach_hang";
-
 	}
+
 
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_dong_ho_dien_khach_hang/tim_kiem", method= RequestMethod.GET)
@@ -619,10 +623,10 @@ public class NhanVienController {
 			model.addAttribute("search_id_denNgay",denNgay);
 			if (tuNgay == "") tuNgay = null;
 			if (denNgay == "") denNgay = null;
-			List<Info> listInf = infoDAO.getPageDongHoKhachHangBySearch(cur_page,kh_id, dh_id,tuNgay,denNgay);
-			int ttp = infoDAO.getToTalPageDongHoKhachHang(kh_id,dh_id,tuNgay,denNgay);
+			List<DongHoDien> listDh = donghodienDAO.getPageDongHoKhachHangBySearch(cur_page,kh_id, dh_id,tuNgay,denNgay);
+			int ttp = donghodienDAO.getToTalPageDongHoKhachHang(kh_id,dh_id,tuNgay,denNgay);
 			model.addAttribute("total_page", ttp); 
-			model.addAttribute("list_dh", listInf);
+			model.addAttribute("list_dh", listDh);
 			model.addAttribute("curr_page", cur_page);
 			model.addAttribute("search_id_khachhang",kh_id);
 			model.addAttribute("search_id_dongho",dh_id);
@@ -630,8 +634,8 @@ public class NhanVienController {
 		}
 		
 		return "employee/quan_ly_dong_ho_dien_khach_hang";
-
 	}
+
 	
 	@RequestMapping(value="/nhan_vien/quan_ly_dong_ho_dien_khach_hang", method = RequestMethod.POST)
 	public String xu_li_quan_ly_dong_ho(RedirectAttributes redirectAttributes, HttpServletRequest request,
@@ -658,7 +662,6 @@ public class NhanVienController {
 			}
 		}
 		return "redirect:" + url;
-
 	}
 
 	

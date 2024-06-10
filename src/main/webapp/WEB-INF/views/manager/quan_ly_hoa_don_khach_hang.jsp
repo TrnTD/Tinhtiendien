@@ -246,7 +246,12 @@
 
                        	<input type="hidden" class="hoadon_id" name="hoadon_id" value="${hoadon.hoadon_id}">
                        	<input type="hidden" class="ten_pttt" name="hoadon_id" value="${hoadon.ten_phuongthuc}">
-                       	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
+                       	<c:if test="${hoadon.trangthai eq 'Chưa thanh toán'}">
+                       		<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
+			        	</c:if>
+			        	<c:if test="${hoadon.trangthai ne 'Chưa thanh toán'}">
+                       		<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal" disabled><i class="bi bi-trash-fill"></i> Xóa</button>
+			        	</c:if>
 			        </td>
 			      </tr>
 			      </c:forEach>      
@@ -427,11 +432,11 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="deleteEmployeeModalLabel">Xóa khách hàng</h5>
+                        <h5 class="modal-title" id="deleteEmployeeModalLabel">Xóa hóa đơn</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Bạn có chắc muốn xóa lịch sử đo này không?</p>
+                        <p>Bạn có chắc muốn xóa hóa đơn này không?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
