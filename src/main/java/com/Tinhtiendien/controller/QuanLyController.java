@@ -1,10 +1,13 @@
 package com.Tinhtiendien.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,17 +82,62 @@ public class QuanLyController {
 	}
 	
 	@RequestMapping(value = "/quan_ly/quan_ly_chung", method = RequestMethod.GET)
-	public String quan_ly_chung(HttpSession session, HttpServletRequest request) {
+	public String quan_ly_chung(HttpSession session, HttpServletRequest request, Model model) {
 		
 		if (session.getAttribute("info_quanly") == null) {
 			return "redirect:/login";
 		}
 
-		List<Integer> list_dientieuthu = hoadonDAO.get_dientieuthu_by_year(2010);
+		List<Integer> list_3YearsNearest = hoadonDAO.get_3YearsNearest();
+		List<Long> list_doanhthu = new ArrayList<>();
+		
+		for (int year : list_3YearsNearest) {
+			list_doanhthu.add(hoadonDAO.get_doanhthu_by_year2(year));
+		}
+		
 		List<Integer> list_sotien = hoadonDAO.get_doanhthu_by_year(2010);
 		
-		request.setAttribute("list_dientieuthu", list_dientieuthu);
-		request.setAttribute("list_sotien", list_sotien);
+		request.setAttribute("list_3YearsNearest", list_3YearsNearest);
+		request.setAttribute("list_doanhthu", list_doanhthu);
+		
+		List<Long> list_doanhthunam = new ArrayList<>();
+		for (int i = 1; i <= 12; i++) {
+			if (hoadonDAO.get_doanhthuthangnam(i, list_3YearsNearest.get(list_3YearsNearest.size() - 1)) > 0) {
+				list_doanhthunam.add(hoadonDAO.get_doanhthuthangnam(i, list_3YearsNearest.get(list_3YearsNearest.size() - 1)));				
+			}
+		}
+		
+		request.setAttribute("list_doanhthunam", list_doanhthunam);
+		
+		
+		String doanhthu_nam = hoadonDAO.get_doanhthutheonam();
+		long so_doanhthunam = Long.parseLong(doanhthu_nam);
+		DecimalFormat decimalFormat = new DecimalFormat("#,##0");
+		doanhthu_nam = decimalFormat.format(so_doanhthunam);
+		
+		int tongKhachHang = infoDAO.getTotalKhachHang();
+		
+		String doanhthu_thang = hoadonDAO.get_doanhthutheothang();
+		long so_doanhthuthang = Long.parseLong(doanhthu_thang);
+		doanhthu_thang = decimalFormat.format(so_doanhthuthang);
+		
+		
+		model.addAttribute("doanhthu_nam", doanhthu_nam);
+		model.addAttribute("doanhthu_thang", doanhthu_thang);
+		model.addAttribute("tongKhachHang", tongKhachHang);
+		
+		
+		
+		long hoadon_dathanhtoan = hoadonDAO.get_tonghoadon_dathanhtoan();
+		long hoadon_chuathanhtoan = hoadonDAO.get_tonghoadon_chuathanhtoan();
+		
+		long doanhthu_hoadondathanhtoan = hoadonDAO.get_tongdoanhthu();
+		long doanhthu_hoadonchuathanhtoan = hoadonDAO.get_doanhthu_hoadonchuathanhtoan();
+		
+		model.addAttribute("hoadon_dathanhtoan", hoadon_dathanhtoan);
+		model.addAttribute("hoadon_chuathanhtoan", hoadon_chuathanhtoan);
+		model.addAttribute("doanhthu_hoadondathanhtoan", doanhthu_hoadondathanhtoan);
+		model.addAttribute("doanhthu_hoadonchuathanhtoan", doanhthu_hoadonchuathanhtoan);
 		
 		
 		return "manager/quan_ly_chung";
@@ -717,6 +765,9 @@ public class QuanLyController {
 				return "redirect:" + url;
 			}
 			
+			addUsernameId = KtraDuLieu.chuanHoaMaKhachHang(addUsernameId);
+			addUsername = KtraDuLieu.chuanHoaUsername(addUsername);
+			
 			if (infoDAO.checkNhanVienIDandUsername(addUsernameId) == false) {
 				redirectAttributes.addFlashAttribute("tbThemMNV", "Mã nhân viên đã có tài khoản hoặc không tồn tại!");
 				if (!KtraDuLieu.ktraTenDN(addUsername)) {
@@ -878,6 +929,9 @@ public class QuanLyController {
 				return "redirect:" + url;
 			}
 			
+			addUsernameId = KtraDuLieu.chuanHoaMaKhachHang(addUsernameId);
+			addUsername = KtraDuLieu.chuanHoaUsername(addUsername);
+			
 			if (infoDAO.checkKhachHangIDandUsername(addUsernameId) == false) {
 				redirectAttributes.addFlashAttribute("tbThemMKH", "Mã khách hàng đã có tài khoản hoặc không tồn tại!");
 				if (!KtraDuLieu.ktraTenDN(addUsername)) {
@@ -915,7 +969,7 @@ public class QuanLyController {
 				return "redirect:" + url;
 			}
 
-			thong_bao = qlaccountDAO.addAcc(addUsernameId, addUsername, addPassWord, thong_bao);
+			thong_bao = qlaccountDAO.addAccNV(addUsernameId, addUsername, MaHoa.getMD5Hash(addPassWord), thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 
 		} else if (action.equals("delete")) {
@@ -1040,16 +1094,42 @@ public class QuanLyController {
 			return "redirect:/login";
 		}
 
-//List<MeasurementHistory> list_lsd = mdDAO.getLSDoTheoFirstChuhoID();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		
+		
+
 		List<MeasurementHistory> list_lsd = mdDAO.getAllLSDInPage(cur_page);
+		List<Date> enableDelete = new ArrayList<Date>();
+		
+		for (MeasurementHistory lsd : list_lsd) {
+			if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+				
+				enableDelete.add(lsd.getNgay_do());	
+				
+				
+				calendar.setTime(lsd.getNgay_do());
+				calendar.add(Calendar.MONTH, 1);
+				
+				Date newDate = calendar.getTime();
+//				String add_ngaydo = formatter.format(newDate);
+				
+				if (!enableDelete.contains(newDate)) {
+					enableDelete.add(newDate);
+				}
+				
+			}
+		}
+		
 		model.addAttribute("list_lsd", list_lsd);
-
+		model.addAttribute("enableDelete", enableDelete);
+		
 		int total_page = mdDAO.tong_trang();
-
+		
 		model.addAttribute("curr_page", cur_page);
 		model.addAttribute("total_page", total_page);
 
-		return "manager/quan_ly_lich_su_do_khach_hang";
+		return "employee/quan_ly_lich_su_do_khach_hang";
 	}
 	
 	
@@ -1074,16 +1154,11 @@ public class QuanLyController {
 			redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không được để trống!");
 			canAdd = false;
 		} else {
+			dongho_id = KtraDuLieu.chuanHoaDongHoDien(dongho_id);
 			if (infoDAO.checkExistKhachHangByDongHoId(dongho_id) == false) {
 				redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Đồng hồ điện không tồn tại!");
 				canAdd = false;
 			} else {
-				
-				System.out.println("Ma dong ho: " + dongho_id);
-				
-				System.out.println("Chi so: " + chiso);
-				
-				
 				
 				MeasurementHistory latest_lsd = mdDAO.getLatestLsdByDongHoId(dongho_id);
 				
@@ -1306,6 +1381,7 @@ public class QuanLyController {
 			redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không được để trống!");
 			canAdd = false;
 		} else {
+			khachhang_id = KtraDuLieu.chuanHoaMaKhachHang(khachhang_id);
 			if (infoDAO.checkExistKhachHangById(khachhang_id) == false) {
 				redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không tồn tại!");
 				canAdd = false;

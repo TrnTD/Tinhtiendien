@@ -22,7 +22,9 @@ public class ThongBaoDAO {
 	public List<ThongBao> getThongBaoByKhachhangId(String khachhang_id) {
 		List<ThongBao> list_thongbao = new ArrayList<ThongBao>();
 		
-		String query = "select format(ngay_gui, 'dd-MM-yyyy HH:mm') as ngay_gui, noi_dung from thong_bao where khachhang_id = ? order by ngay_gui desc";
+		String query = "select format(tbhd.ngay_gui, 'dd-MM-yyyy HH:mm') as ngay_gui, tbhd.noi_dung from  thongbao_hoadon tbhd\r\n"
+				+ "inner join hoa_don2 hd on tbhd.hoadon_id = hd.hoadon_id\r\n"
+				+ "where hd.khachhang_id = ? order by ngay_gui desc";
 		
 		try {
 			list_thongbao = jdbcTemplate.query(query, new Object[] {khachhang_id}, new MapperThongBao());

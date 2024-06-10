@@ -238,15 +238,27 @@ public class QuanLyAccountDAO {
 	
 	public List<QuanLyAccount> getAllAccountsUserInPageBySearch(int page,String khid) {
 		List<QuanLyAccount> listAccount = new ArrayList<QuanLyAccount>();
-		String sql = "EXEC sp_GetPagedAllAccKhachHangSearch @PageNumber = ?, @PageSize = 10, @KhachHangId = ?;";
 		
-		try {
-			listAccount = jdbcTemplate.query(sql,new Object[] {page,khid} ,new MapperQuanLyAccount());
-			System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem thanh cong!!");
-		} catch (DataAccessException e) {
-			System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem that bai!!");
+		if (khid == "") {
+			String sql = "EXEC sp_GetPagedAllAccKhachHangSearch @PageNumber = ?, @PageSize = 10, @KhachHangId = null;";
+			try {
+				listAccount = jdbcTemplate.query(sql,new Object[] {page} ,new MapperQuanLyAccount());
+				System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem thanh cong!!");
+			} catch (DataAccessException e) {
+				System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem that bai!!");
+			}
+		} else {
+			
+			String sql = "EXEC sp_GetPagedAllAccKhachHangSearch @PageNumber = ?, @PageSize = 10, @KhachHangId = ?;";
+			
+			try {
+				listAccount = jdbcTemplate.query(sql,new Object[] {page,khid} ,new MapperQuanLyAccount());
+				System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem thanh cong!!");
+			} catch (DataAccessException e) {
+				System.out.println("Truy van tat ca tai khoan nguoi dung theo tim kiem that bai!!");
+			}
+					
 		}
-		
 		if (listAccount.isEmpty()) {
 	        System.out.println("Không có tài khoản nào được trả về");
 	    }

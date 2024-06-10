@@ -65,7 +65,7 @@
 			session.removeAttribute("isError");
 		}
 	%>
-        <div class="table-wrapper">
+        <div class="table-wrapper" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
             <div class="table-title">
                 <div class="row">
                     <div class="col-md-6">

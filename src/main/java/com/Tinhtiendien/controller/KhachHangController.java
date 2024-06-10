@@ -249,7 +249,7 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		
-		List<HoaDon> list_lstt = hoadonDAO.getAllInfoHoaDon(makh);
+		List<HoaDon> list_lstt = hoadonDAO.getAllInfoHoaDonDaThanhToan(makh);
 		int nam_dangky = infoDAO.getNamDangKy(makh);
 		
 		model.addAttribute("nam_dangky", nam_dangky);

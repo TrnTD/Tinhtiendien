@@ -525,6 +525,25 @@ public class HoaDonDAO {
 		return list_hoadon;
 	}
 	
+	public List<HoaDon> getAllInfoHoaDonDaThanhToan(String khachhang_id) {
+		List<HoaDon> list_hoadon = new ArrayList<HoaDon>();
+		String sql = "exec sp_GetChiTietHoaDonDaThanhToanByKhachHangId @KhachHangID = ?";
+
+		try {
+			list_hoadon = jdbcTemplate.query(sql,  new Object[] {khachhang_id}, new MapperHoaDon());
+			System.out.println("Truy van hoa don chua thanh toan tu ma khach hang thanh cong");
+			
+		} catch (DataAccessException e) {
+			System.out.println("Truy van hoa don chua thanh toan tu ma khach hang that bai");
+		}
+		
+		if (list_hoadon.isEmpty()) {
+			System.out.println("Khong co hoa don chua thanh toan nao lay tu ma khach hang duoc tra ve");
+		}
+		
+		return list_hoadon;
+	}
+	
 	
 	public boolean thanhToan (String hoadon_id, String phuong_thuc_id) {
 		String sql = "UPDATE hoa_don2 SET ngay_thanhtoan = getdate(), trangthai = N'Đã thanh toán', phuongthuc_id = ? WHERE hoadon_id = ?";

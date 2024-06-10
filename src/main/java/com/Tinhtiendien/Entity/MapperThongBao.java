@@ -24,10 +24,7 @@ public class MapperThongBao implements RowMapper<ThongBao> {
                 	thongbao.setThongbao_id(rs.getInt("thongbao_id"));
                     break;
                 case "nhanvien_id":
-                	thongbao.setNhanvien_id(rs.getString("nhanvien_id"));
-                    break;
-                case "khachhang_id":
-                	thongbao.setKhachhang_id(rs.getString("khachhang_id"));
+                	thongbao.setHoadon_id(rs.getInt("nhanvien_id"));
                     break;
                 case "ngay_gui":
                 	thongbao.setNgay_gui(rs.getString("ngay_gui"));

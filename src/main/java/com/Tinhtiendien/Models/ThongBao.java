@@ -2,8 +2,7 @@ package com.Tinhtiendien.Models;
 
 public class ThongBao {
 	private int thongbao_id;
-	private String nhanvien_id;
-	private String khachhang_id;
+	private int hoadon_id;
 	private String ngay_gui;
 	private String noi_dung;
 	
@@ -14,17 +13,11 @@ public class ThongBao {
 	public void setThongbao_id(int thongbao_id) {
 		this.thongbao_id = thongbao_id;
 	}
-	public String getNhanvien_id() {
-		return nhanvien_id;
+	public int getHoadon_id() {
+		return hoadon_id;
 	}
-	public void setNhanvien_id(String nhanvien_id) {
-		this.nhanvien_id = nhanvien_id;
-	}
-	public String getKhachhang_id() {
-		return khachhang_id;
-	}
-	public void setKhachhang_id(String khachhang_id) {
-		this.khachhang_id = khachhang_id;
+	public void setHoadon_id(int hoadon_id) {
+		this.hoadon_id = hoadon_id;
 	}
 	public String getNgay_gui() {
 		return ngay_gui;

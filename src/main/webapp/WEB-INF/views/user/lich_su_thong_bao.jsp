@@ -57,6 +57,14 @@
   			 </c:forEach>
     		</tbody>
 	        </table>
+	        <c:if test="${empty list_thongbao}">
+		     	<div style="display: flex; justify-content: center; align-items: center;">
+			     	<%@include file="/WEB-INF/resource/assets/imgs/nodata.svg"%>
+		     	</div>
+		     	<div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+					<p>Không có dữ liệu</p>				     	
+		     	</div>
+			</c:if>     
 		</div>
 	</div>
 </body>

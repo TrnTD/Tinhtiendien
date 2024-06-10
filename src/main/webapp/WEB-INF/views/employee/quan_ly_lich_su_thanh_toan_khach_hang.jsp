@@ -2,11 +2,13 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="ISO-8859-1">
-	<title>Quản lý hóa đơn khách hàng</title>
+	<title>Quản lý lịch sử thanh toán khách hàng</title>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -430,103 +432,103 @@
 <script>
 
 	// Lấy nút "Add"
-	const addButton = document.querySelector('.btn-add');
-	addButton.addEventListener('click', (event) => {
-		var khachhang_id = sessionStorage.getItem("khachhang_id");
-		var ngay = sessionStorage.getItem("ngay");
-		var thang = sessionStorage.getItem("thang");
-		var nam = sessionStorage.getItem("nam");
+// 	const addButton = document.querySelector('.btn-add');
+// 	addButton.addEventListener('click', (event) => {
+// 		var khachhang_id = sessionStorage.getItem("khachhang_id");
+// 		var ngay = sessionStorage.getItem("ngay");
+// 		var thang = sessionStorage.getItem("thang");
+// 		var nam = sessionStorage.getItem("nam");
 		
-		if (thang == '') {
-			document.querySelector('.addMonth').selectedIndex = 0;
-		} else {
-			document.querySelector('.addMonth').value = thang;			
-		}
+// 		if (thang == '') {
+// 			document.querySelector('.addMonth').selectedIndex = 0;
+// 		} else {
+// 			document.querySelector('.addMonth').value = thang;			
+// 		}
 		
-		if (nam == '') {
-			document.querySelector('.addYear').selectedIndex = 0;
-		} else {
-			document.querySelector('.addYear').value = nam;			
-		}
-	})
+// 		if (nam == '') {
+// 			document.querySelector('.addYear').selectedIndex = 0;
+// 		} else {
+// 			document.querySelector('.addYear').value = nam;			
+// 		}
+// 	})
 	
 
 
-	// Lấy tất cả các nút "Edit"
-	const editButtons = document.querySelectorAll('.btn-edit');
+// 	// Lấy tất cả các nút "Edit"
+// 	const editButtons = document.querySelectorAll('.btn-edit');
 	
-	// Thêm sự kiện click cho mỗi nút "Edit"
-	editButtons.forEach((button) => {
-	    button.addEventListener('click', (event) => {
+// 	// Thêm sự kiện click cho mỗi nút "Edit"
+// 	editButtons.forEach((button) => {
+// 	    button.addEventListener('click', (event) => {
 	
-	        const row = event.target.closest('tr'); // Lấy hàng bảng chứa nút "Edit"
-	        const hoadon_id = (row.querySelector('td:nth-child(1)').textContent).trim(); 
-	        const khachhang_id = row.querySelector('td:nth-child(2)').textContent;
-	        const ngaytao = row.querySelector('td:nth-child(3)').textContent; 
-	        const thang = row.querySelector('td:nth-child(4)').textContent; 
-	        const nam = row.querySelector('td:nth-child(5)').textContent;
-	        const thue = row.querySelector('td:nth-child(6)').textContent;
-	        const tongtien = row.querySelector('td:nth-child(7)').textContent;
-			const trangthai = (row.querySelector('td:nth-child(8)').textContent).trim();
-	        // Điền giá trị vào các trường input trong modal
+// 	        const row = event.target.closest('tr'); // Lấy hàng bảng chứa nút "Edit"
+// 	        const hoadon_id = (row.querySelector('td:nth-child(1)').textContent).trim(); 
+// 	        const khachhang_id = row.querySelector('td:nth-child(2)').textContent;
+// 	        const ngaytao = row.querySelector('td:nth-child(3)').textContent; 
+// 	        const thang = row.querySelector('td:nth-child(4)').textContent; 
+// 	        const nam = row.querySelector('td:nth-child(5)').textContent;
+// 	        const thue = row.querySelector('td:nth-child(6)').textContent;
+// 	        const tongtien = row.querySelector('td:nth-child(7)').textContent;
+// 			const trangthai = (row.querySelector('td:nth-child(8)').textContent).trim();
+// 	        // Điền giá trị vào các trường input trong modal
 	        
-	        console.log("hoadon_id: " + hoadon_id)
-	        console.log("khachhang_id: " + khachhang_id)
-	        console.log("ngaytao: " + ngaytao)
-	        console.log("trangthai: " + trangthai)
+// 	        console.log("hoadon_id: " + hoadon_id)
+// 	        console.log("khachhang_id: " + khachhang_id)
+// 	        console.log("ngaytao: " + ngaytao)
+// 	        console.log("trangthai: " + trangthai)
 	        
 			
 	        
-	        sessionStorage.setItem("hoadon_id", hoadon_id);
-	        sessionStorage.setItem("khachhang_id", khachhang_id);
-	        sessionStorage.setItem("thang", thang);
-	        sessionStorage.setItem("nam", nam);
-	        sessionStorage.setItem("thue", thue);
-	        sessionStorage.setItem("trangthai", trangthai);
+// 	        sessionStorage.setItem("hoadon_id", hoadon_id);
+// 	        sessionStorage.setItem("khachhang_id", khachhang_id);
+// 	        sessionStorage.setItem("thang", thang);
+// 	        sessionStorage.setItem("nam", nam);
+// 	        sessionStorage.setItem("thue", thue);
+// 	        sessionStorage.setItem("trangthai", trangthai);
 	        
-	        document.querySelector('.editHoadon_id').value = hoadon_id;
-	        document.querySelector('.editKhachhang_id').value = khachhang_id;
-	        document.querySelector('.editMonth').value = thang;
-	        document.querySelector('.editYear').value = nam;
-	        document.querySelector('.editTax').value = thue;
+// 	        document.querySelector('.editHoadon_id').value = hoadon_id;
+// 	        document.querySelector('.editKhachhang_id').value = khachhang_id;
+// 	        document.querySelector('.editMonth').value = thang;
+// 	        document.querySelector('.editYear').value = nam;
+// 	        document.querySelector('.editTax').value = thue;
 	        
-	        if (trangthai == "Chưa thanh toán") {
-		        document.querySelector('.editStatus').value = 0	        	
-	        } else {
-	        	document.querySelector('.editStatus').value = 1	    
-	        }
+// 	        if (trangthai == "Chưa thanh toán") {
+// 		        document.querySelector('.editStatus').value = 0	        	
+// 	        } else {
+// 	        	document.querySelector('.editStatus').value = 1	    
+// 	        }
 
-	        document.querySelector('.hoadon_id-edit').value = hoadon_id
-	        document.querySelector('.khachhang_id-edit').value = khachhang_id
+// 	        document.querySelector('.hoadon_id-edit').value = hoadon_id
+// 	        document.querySelector('.khachhang_id-edit').value = khachhang_id
 	        
 	        
-// 	        document.querySelector('.khachhang_id').value = khachhang_id;
-// 	        console.log("lich su do id: " + document.querySelector('.hoadon_id-edit').value);
-	    });
-	});
+// // 	        document.querySelector('.khachhang_id').value = khachhang_id;
+// // 	        console.log("lich su do id: " + document.querySelector('.hoadon_id-edit').value);
+// 	    });
+// 	});
 	
 	
 	// Lấy nút Delete
-	const deleteButtons = document.querySelectorAll('.btn-delete');
+// 	const deleteButtons = document.querySelectorAll('.btn-delete');
 	
-	deleteButtons.forEach((button) => {
-	    button.addEventListener('click', (event) => {
-	    	const row = event.target.closest('tr');
+// 	deleteButtons.forEach((button) => {
+// 	    button.addEventListener('click', (event) => {
+// 	    	const row = event.target.closest('tr');
 	
-	        const hoadon_id = row.querySelector('.hoadon_id').value
-	        console.log(hoadon_id)
+// 	        const hoadon_id = row.querySelector('.hoadon_id').value
+// 	        console.log(hoadon_id)
 	
-	        document.querySelector('.hoadon_id-delete').value = hoadon_id
+// 	        document.querySelector('.hoadon_id-delete').value = hoadon_id
 	
-	    });
-	});
+// 	    });
+// 	});
 	
-	window.onload = function() {
-		var selectedValue = sessionStorage.getItem('selectedValue');
-		if (selectedValue) {
-			document.getElementById('select_makh').value = selectedValue;
-		}
-	};
+// 	window.onload = function() {
+// 		var selectedValue = sessionStorage.getItem('selectedValue');
+// 		if (selectedValue) {
+// 			document.getElementById('select_makh').value = selectedValue;
+// 		}
+// 	};
 	
 	
 // 	const select_makh = document.querySelector('#select_makh');
@@ -538,120 +540,120 @@
 // 		document.querySelector('#form_makh').submit()
 // 	});
 	
-	function setSelectForm(form) {
-		sessionStorage.setItem("formType", form)
-		console.log(form)
-	}
+// 	function setSelectForm(form) {
+// 		sessionStorage.setItem("formType", form)
+// 		console.log(form)
+// 	}
 	
-	window.addEventListener('beforeunload', function() {
-		var formType = sessionStorage.getItem("formType")
+// 	window.addEventListener('beforeunload', function() {
+// 		var formType = sessionStorage.getItem("formType")
 		
-		// edit form
-		if (formType == "editForm") {
-	        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
-	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);			
-		}
+// 		// edit form
+// 		if (formType == "editForm") {
+// 	        sessionStorage.setItem("thang", document.querySelector('.editMonth').value);
+// 	        sessionStorage.setItem("nam", document.querySelector('.editYear').value);			
+// 		}
         
-        // add form
-        if (formType == "addForm") {
-	        sessionStorage.setItem("khachhang_id", document.querySelector('input[name="add_khachhangid"]').value);
-	        sessionStorage.setItem("thang", document.querySelector('.addMonth').value);
-	        sessionStorage.setItem("nam", document.querySelector('.addYear').value);
-	        sessionStorage.setItem("thue", document.querySelector('input[name="add_thue"]').value);
-        }
+//         // add form
+//         if (formType == "addForm") {
+// 	        sessionStorage.setItem("khachhang_id", document.querySelector('input[name="add_khachhangid"]').value);
+// 	        sessionStorage.setItem("thang", document.querySelector('.addMonth').value);
+// 	        sessionStorage.setItem("nam", document.querySelector('.addYear').value);
+// 	        sessionStorage.setItem("thue", document.querySelector('input[name="add_thue"]').value);
+//         }
         
-	});
+// 	});
 	
-	document.addEventListener("DOMContentLoaded", function() {
+// 	document.addEventListener("DOMContentLoaded", function() {
 			
-		var thue = sessionStorage.getItem("thue");
-		var hoadon_id = sessionStorage.getItem("hoadon_id");
-		var khachhang_id = sessionStorage.getItem("khachhang_id");
-		var ngay = sessionStorage.getItem("ngay");
-		var thang = sessionStorage.getItem("thang");
-		var nam = sessionStorage.getItem("nam");
-		var status = sessionStorage.getItem("trangthai");
+// 		var thue = sessionStorage.getItem("thue");
+// 		var hoadon_id = sessionStorage.getItem("hoadon_id");
+// 		var khachhang_id = sessionStorage.getItem("khachhang_id");
+// 		var ngay = sessionStorage.getItem("ngay");
+// 		var thang = sessionStorage.getItem("thang");
+// 		var nam = sessionStorage.getItem("nam");
+// 		var status = sessionStorage.getItem("trangthai");
 		
 		
-		// binding data khi tải lại trang
-		// edit form
-		document.querySelector('.editHoadon_id').value = hoadon_id;
-		document.querySelector('.editKhachhang_id').value = khachhang_id;
-		document.querySelector('.hoadon_id-edit').value = hoadon_id;
-		document.querySelector('.khachhang_id-edit').value = khachhang_id;
-		document.querySelector('.editMonth').value = thang;
-		document.querySelector('.editYear').value = nam;
-		document.querySelector('.editTax').value = thue;
-		if (status == "Chưa thanh toán") {
-			document.querySelector('.editStatus').value = 0;			
-		} else {
-			document.querySelector('.editStatus').value = 1;
-		}
+// 		// binding data khi tải lại trang
+// 		// edit form
+// 		document.querySelector('.editHoadon_id').value = hoadon_id;
+// 		document.querySelector('.editKhachhang_id').value = khachhang_id;
+// 		document.querySelector('.hoadon_id-edit').value = hoadon_id;
+// 		document.querySelector('.khachhang_id-edit').value = khachhang_id;
+// 		document.querySelector('.editMonth').value = thang;
+// 		document.querySelector('.editYear').value = nam;
+// 		document.querySelector('.editTax').value = thue;
+// 		if (status == "Chưa thanh toán") {
+// 			document.querySelector('.editStatus').value = 0;			
+// 		} else {
+// 			document.querySelector('.editStatus').value = 1;
+// 		}
 		
 		
 		
-		// add form
-		document.querySelector('#add_khachhang_id').value = khachhang_id;
-		if (thang == '') {
-			document.querySelector('.addMonth').selectedIndex = 0;
-		} else {
-			document.querySelector('.addMonth').value = thang;			
-		}
+// 		// add form
+// 		document.querySelector('#add_khachhang_id').value = khachhang_id;
+// 		if (thang == '') {
+// 			document.querySelector('.addMonth').selectedIndex = 0;
+// 		} else {
+// 			document.querySelector('.addMonth').value = thang;			
+// 		}
 		
-		if (nam == '') {
-			document.querySelector('.addYear').selectedIndex = 0;
-		} else {
-			document.querySelector('.addYear').value = nam;			
-		}
+// 		if (nam == '') {
+// 			document.querySelector('.addYear').selectedIndex = 0;
+// 		} else {
+// 			document.querySelector('.addYear').value = nam;			
+// 		}
 
 		
-		var formType = sessionStorage.getItem("formType");
-		if (formType == "addForm") {
-			$('#addEmployeeModal').modal('show');
-		} else if (formType == "editForm") {
-			$('#editEmployeeModal').modal('show');
-		}
+// 		var formType = sessionStorage.getItem("formType");
+// 		if (formType == "addForm") {
+// 			$('#addEmployeeModal').modal('show');
+// 		} else if (formType == "editForm") {
+// 			$('#editEmployeeModal').modal('show');
+// 		}
 		
-		$('.modal').on('hidden.bs.modal', function () {
-			sessionStorage.removeItem("formType");
-			sessionStorage.removeItem("khachhang_id");
-			sessionStorage.removeItem("thue");
-			sessionStorage.setItem("thang", '');
-			sessionStorage.setItem("nam", '');
+// 		$('.modal').on('hidden.bs.modal', function () {
+// 			sessionStorage.removeItem("formType");
+// 			sessionStorage.removeItem("khachhang_id");
+// 			sessionStorage.removeItem("thue");
+// 			sessionStorage.setItem("thang", '');
+// 			sessionStorage.setItem("nam", '');
 			
-			var error_mess_list = document.querySelectorAll('h6');
-			error_mess_list.forEach(function(error_mess) {
-				error_mess.textContent = "";
+// 			var error_mess_list = document.querySelectorAll('h6');
+// 			error_mess_list.forEach(function(error_mess) {
+// 				error_mess.textContent = "";
 				
-				var inputElements = document.querySelectorAll('#' + error_mess.id + ':not(h6)')
+// 				var inputElements = document.querySelectorAll('#' + error_mess.id + ':not(h6)')
 				
-				inputElements.forEach(inputElement => {
-					inputElement.classList.remove('error-input');	
-		            inputElement.value = "";
-				})
+// 				inputElements.forEach(inputElement => {
+// 					inputElement.classList.remove('error-input');	
+// 		            inputElement.value = "";
+// 				})
 				
-			})
+// 			})
 			
-		})
+// 		})
 		
-	})
+// 	})
 	
 	
-	var errorMessages = document.querySelectorAll('h6');
-	errorMessages.forEach(errorMessage => {
-		if (errorMessage.textContent.trim() !== "") {
+// 	var errorMessages = document.querySelectorAll('h6');
+// 	errorMessages.forEach(errorMessage => {
+// 		if (errorMessage.textContent.trim() !== "") {
             
-            var inputId = errorMessage.id;
+//             var inputId = errorMessage.id;
 
-            var inputElements = document.querySelectorAll('#' + inputId + ':not(h6)');
+//             var inputElements = document.querySelectorAll('#' + inputId + ':not(h6)');
 
-            if (inputElements) {
-            	inputElements.forEach(inputElement => {
-            		inputElement.classList.add('error-input');
-            	})
-            }
-        }
-	})
+//             if (inputElements) {
+//             	inputElements.forEach(inputElement => {
+//             		inputElement.classList.add('error-input');
+//             	})
+//             }
+//         }
+// 	})
 	
 // 	------------------------------------ phan trang ----------------------------
 

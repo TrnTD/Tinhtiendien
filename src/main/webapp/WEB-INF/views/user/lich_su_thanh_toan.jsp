@@ -71,6 +71,7 @@
 	              <th>Năm</th>
 	              <th>Tiền thanh toán</th>
 	              <th>Ngày thanh toán</th>
+	              <th>Phương thức thanh toán</th>
 	            </tr>
 	          </thead>
 	          <tbody>
@@ -80,6 +81,7 @@
 				        <td>${lstt.year_bill}</td>
 				        <td><fmt:formatNumber value="${lstt.tong_tien}" pattern="#,###"/></td>
 				        <td>${lstt.ngay_thanhtoan}</td>
+				        <td>${lstt.ten_phuongthuc}</td>
 				    </tr>
 				</c:forEach>
 

@@ -95,8 +95,6 @@ public class NhanVienController {
 			list_doanhthu.add(hoadonDAO.get_doanhthu_by_year2(year));
 		}
 		
-		List<Integer> list_sotien = hoadonDAO.get_doanhthu_by_year(2010);
-		
 		request.setAttribute("list_3YearsNearest", list_3YearsNearest);
 		request.setAttribute("list_doanhthu", list_doanhthu);
 		
@@ -438,14 +436,14 @@ public class NhanVienController {
 			redirectAttributes.addAttribute("limit", ttp);
 			return "redirect:/nhan_vien/quan_ly_tai_khoan_khach_hang";
 		}
-		if (kh_id == "")
-		{
-			String url = request.getHeader("Referer");
-			redirectAttributes.addFlashAttribute("tb_rong", "Vui lòng nhập thông tin tìm kiếm");
-			return "redirect:" + url;
-		}
+//		if (kh_id == "")
+//		{
+//			String url = request.getHeader("Referer");
+//			redirectAttributes.addFlashAttribute("tb_rong", "Vui lòng nhập thông tin tìm kiếm");
+//			return "redirect:" + url;
+//		}
 		kh_id = kh_id.trim();
-		List<QuanLyAccount> account = qlaccountDAO.getAllAccountsUserInPageBySearch(cur_page,kh_id);
+		List<QuanLyAccount> account = qlaccountDAO.getAllAccountsUserInPageBySearch(cur_page, kh_id);
 		int ttp = qlaccountDAO.getToTalPageAllAccKhachHangBySearch(kh_id);
 		model.addAttribute("list_acc", account);
 		model.addAttribute("search_id",kh_id);
@@ -510,6 +508,9 @@ public class NhanVienController {
 				return "redirect:" + url;
 			}
 			
+			addUsernameId = KtraDuLieu.chuanHoaMaKhachHang(addUsernameId);
+			addUsername = KtraDuLieu.chuanHoaUsername(addUsername);
+			
 			if (infoDAO.checkKhachHangIDandUsername(addUsernameId) == false) {
 				redirectAttributes.addFlashAttribute("tbThemMKH", "Mã khách hàng đã có tài khoản hoặc không tồn tại!");
 				if (!KtraDuLieu.ktraTenDN(addUsername)) {
@@ -559,9 +560,7 @@ public class NhanVienController {
 			thong_bao = qlaccountDAO.deleteAcc(username, thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 		}
-		System.out.println(username);
-		System.out.println(action);
-//		return "redirect:" + url;
+		
 		return "redirect:" + url;
 	}
 
@@ -765,16 +764,11 @@ public class NhanVienController {
 			redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không được để trống!");
 			canAdd = false;
 		} else {
+			dongho_id = KtraDuLieu.chuanHoaDongHoDien(dongho_id);
 			if (infoDAO.checkExistKhachHangByDongHoId(dongho_id) == false) {
 				redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Đồng hồ điện không tồn tại!");
 				canAdd = false;
 			} else {
-				
-				System.out.println("Ma dong ho: " + dongho_id);
-				
-				System.out.println("Chi so: " + chiso);
-				
-				
 				
 				MeasurementHistory latest_lsd = mdDAO.getLatestLsdByDongHoId(dongho_id);
 				
@@ -1098,6 +1092,7 @@ public class NhanVienController {
 			redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không được để trống!");
 			canAdd = false;
 		} else {
+			khachhang_id = KtraDuLieu.chuanHoaMaKhachHang(khachhang_id);
 			if (infoDAO.checkExistKhachHangById(khachhang_id) == false) {
 				redirectAttributes.addFlashAttribute("err_mess_addKhachhangid", "Mã khách hàng không tồn tại!");
 				canAdd = false;
@@ -1186,7 +1181,7 @@ public class NhanVienController {
 		boolean isError = false;
 		
 		if (hoadonDAO.deleteHoaDon(hoadon_id)) {
-			message = "Bạn đã hóa đơn của khách hàng thành công";
+			message = "Bạn đã xóa hóa đơn của khách hàng thành công";
 			session.setAttribute("message", message);
 			session.setAttribute("isError", isError);
 
@@ -1224,6 +1219,7 @@ public class NhanVienController {
 		
 		model.addAttribute("curr_page", cur_page);
 		model.addAttribute("total_page", total_page);
+		
 		model.addAttribute("list_hoadon", list_hoadon);
 		
 		model.addAttribute("list_pttt", list_pttt);

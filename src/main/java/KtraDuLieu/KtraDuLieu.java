@@ -43,6 +43,33 @@ public class KtraDuLieu {
         return tenChuanHoa.toString().trim();
     }
 	 
+	 public static String chuanHoaMaKhachHang(String khachhang_id) {
+		 khachhang_id = khachhang_id.trim();
+		 khachhang_id = khachhang_id.toUpperCase();
+		 
+		 return khachhang_id;
+	 }
+	 
+	 public static String chuanHoaMaNhanVien(String nhanvien_id) {
+		 nhanvien_id = nhanvien_id.trim();
+		 nhanvien_id = nhanvien_id.toUpperCase();
+		 
+		 return nhanvien_id;
+	 }
+	 
+	 public static String chuanHoaDongHoDien(String dongho_id) {
+		 dongho_id = dongho_id.trim();
+		 dongho_id = dongho_id.toUpperCase();
+		 
+		 return dongho_id;
+	 }
+	 
+	 public static String chuanHoaUsername(String username) {
+		 username = username.trim();
+		 
+		 return username;
+	 }
+	 
 	 public static boolean ktraDuLieu_Dien(String giaDien) {
 		    String regex = "\\d+";
 		    Pattern pattern = Pattern.compile(regex);

@@ -190,7 +190,7 @@
 				        <td>${kh.cccd}</td>
 				        <td>${kh.diachi}</td>
 				        <td>
-				        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button>
+				        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Chỉnh sửa</button>
 	
 	                       	<input type="hidden" class="khachhang_id" name="kh_id" value="${kh.khachhang_id}">
 	                       	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>

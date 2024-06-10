@@ -81,12 +81,12 @@
                                 <!-- Add employee form -->
                                 <div class="mb-3">
                                     <label class="form-label">Bậc Điện</label>
-                                    <input type="text" class="form-control" name="add_bacDien" id = "add_bacDien_id">
+                                    <input type="number" class="form-control" name="add_bacDien" id = "add_bacDien_id">
 										<h6 style="color:red; padding-left:5px;padding-top:5px" id="add_bacDien_id">${add_bacDien_id}</h6>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Giá Điện</label>
-                                    <input type="text" class="form-control" name="add_giaDien" id = "add_giaDien_id">
+                                    <input type="number" class="form-control" name="add_giaDien" id = "add_giaDien_id">
                                 	<h6 style="color:red; padding-left:5px;padding-top:5px" id="add_giaDien_id">${add_giaDien_id}</h6>
                                 
                                 </div>
@@ -110,7 +110,7 @@
                                 <!-- Edit employee form -->
                                 <div class="mb-3">
                                     <label class="form-label">Giá Tiền</label>
-                                    <input type="text" class="form-control" name="edit_giaDien" id = "edit_giaDien_id">
+                                    <input type="number" class="form-control" name="edit_giaDien" id = "edit_giaDien_id">
         							<h6 style="color:red; padding-left:5px;padding-top:5px" id="edit_giaDien_id">${edit_giaDien_id}</h6>
                                		
                                 </div>

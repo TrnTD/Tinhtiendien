@@ -246,7 +246,12 @@
 
                        	<input type="hidden" class="hoadon_id" name="hoadon_id" value="${hoadon.hoadon_id}">
                        	<input type="hidden" class="ten_pttt" name="hoadon_id" value="${hoadon.ten_phuongthuc}">
-                       	<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
+                       	<c:if test="${hoadon.trangthai eq 'Chưa thanh toán'}">
+                       		<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal"><i class="bi bi-trash-fill"></i> Xóa</button>
+			        	</c:if>
+			        	<c:if test="${hoadon.trangthai ne 'Chưa thanh toán'}">
+                       		<button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal" disabled><i class="bi bi-trash-fill"></i> Xóa</button>
+			        	</c:if>
 			        </td>
 			      </tr>
 			      </c:forEach>      

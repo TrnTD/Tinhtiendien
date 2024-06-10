@@ -101,7 +101,7 @@
         </li>
         
         <li class="nav-item">
-        <a class="nav-link" href="#tracuu" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu<i class="fa-solid fa-chevron-down"></i></a>
+        <a class="nav-link" href="#tracuu" data-bs-toggle="collapse" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i> Quản lý nhân viên<i class="fa-solid fa-chevron-down"></i></a>
           <ul class="collapse list-unstyled" id="tracuu" style="padding-left: 20px;">
               	<li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_thong_tin_nhan_vien" style="font-size: 13px">Quản lý thông tin nhân viên</a></li>
                 <li><a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_tai_khoan_nhan_vien" style="font-size: 13px">Quản lý tài khoản nhân viên</a></li>
@@ -109,9 +109,9 @@
       	</li>
 
         
-      <li class="nav-item">
-          <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a>
-      </li>
+<!--       <li class="nav-item"> -->
+<!--           <a class="nav-link menu-item" href="#"><i class="fa-regular fa-comments"></i> Lịch sử liên hệ</a> -->
+<!--       </li> -->
       <li class="nav-item">
         <a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_yeu_cau_khach_hang"><i class="fa-regular fa-comment-dots"></i> Quản lý yêu cầu</a>
       </li>
@@ -144,7 +144,13 @@ document.addEventListener("DOMContentLoaded", function() {
             var parentMenuItem1 = document.querySelector('a[href="#tracuu"]');
             var collapseMenu1 = document.querySelector('#tracuu');
 
-            if (this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/tra_cuu_hoa_don" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/thong_tin_hoa_don" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_su_thanh_toan") 
+            if (this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_thong_tin_khach_hang" 
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_tai_khoan_khach_hang" 
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang"
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_lich_su_do_khach_hang"
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_hoa_don_khach_hang"
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_lich_su_thanh_toan_khach_hang"
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_gia_dien") 
             {
                 parentMenuItem1.setAttribute("aria-expanded", "false");
                 collapseMenu1.classList.remove("show");
@@ -153,7 +159,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Lưu trạng thái vào sessionStorage
                 sessionStorage.setItem("menuState", "expanded");
             }
-            else if (this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_tam_ngung_cap_dien"|| this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_ghi_chi_so" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_su_do" ) 
+            else if (this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_thong_tin_nhan_vien" 
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_tai_khoan_nhan_vien") 
             {
                 parentMenuItem.setAttribute("aria-expanded", "false");
                 collapseMenu.classList.remove("show");
@@ -217,5 +224,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </html>
