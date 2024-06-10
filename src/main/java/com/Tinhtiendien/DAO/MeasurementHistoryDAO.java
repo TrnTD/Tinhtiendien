@@ -20,9 +20,9 @@ public class MeasurementHistoryDAO {
 	
 	public List<MeasurementHistory> getLSDoTheoChuhoID(String chuho_id){
 		List<MeasurementHistory> listMH = new ArrayList<MeasurementHistory>();
-		String sql = "select lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join khachhang kh on kh.dongho_id = lsd.dongho_id\r\n"
-				+ "where kh.khachhang_id = ? order by lsd.ngay_do DESC";
+		String sql = "select lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join donghodien dhd on dhd.dongho_id = lsd.dongho_id\r\n"
+				+ "where dhd.khachhang_id = ? order by lsd.ngay_do DESC";
 		try {
 			listMH = jdbcTemplate.query(sql, new Object[] {chuho_id}, new MapperMeasurementHistory());
 			System.out.println("Truy van lich su do bang khach hang id thanh cong");
@@ -97,8 +97,8 @@ public class MeasurementHistoryDAO {
 	public MeasurementHistory getPreviousLDSByLsdIdAndKhId(int lsd_id, String dongho_id) {
 		MeasurementHistory lsd = null;
 		
-		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
+		String query = "select top 1 lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join donghodien dhd on dhd.dongho_id = lsd.dongho_id\r\n"
 				+ "where lsd.ngay_do < (select ngay_do from lichsu_do2 where lichsu_do_id = ?) and lsd.dongho_id = ? order by lsd.ngay_do desc";
 		
 		try {
@@ -115,8 +115,8 @@ public class MeasurementHistoryDAO {
 	public MeasurementHistory getNextLDSByLsdIdAndKhId(int lsd_id, String dongho_id) {
 		MeasurementHistory lsd = null;
 		
-		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
+		String query = "select top 1 lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join donghodien dhd on dhd.dongho_id = lsd.dongho_id\r\n"
 				+ "where lsd.ngay_do > (select ngay_do from lichsu_do2 where lichsu_do_id = ?) and lsd.dongho_id = ? order by lsd.ngay_do asc";
 		
 		
@@ -134,9 +134,9 @@ public class MeasurementHistoryDAO {
 	public MeasurementHistory getLatestLsdByDongHoId(String dongho_id) {
 		MeasurementHistory lsd = null;
 		
-		String query = "select top 1 lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id\r\n"
-				+ "where kh.dongho_id = ? order by lsd.chiso desc";
+		String query = "select top 1 lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join donghodien dhd on dhd.dongho_id = lsd.dongho_id\r\n"
+				+ "where dhd.dongho_id = ? order by lsd.chiso desc";
 		
 		try {
 			lsd = jdbcTemplate.queryForObject(query, new Object[] {dongho_id}, new MapperMeasurementHistory());
@@ -179,7 +179,7 @@ public class MeasurementHistoryDAO {
 		
 		if (lsd_id.isEmpty() && khachhang_id.isEmpty() && dhd_id.isEmpty() && tungay.isEmpty() && denngay.isEmpty()) {
 			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
-					+ "inner join khachhang kh on lsd.dongho_id = kh.dongho_id \r\n"
+					+ "inner join donghodien dhd on dhd.dongho_id = lsd.dongho_id \r\n"
 					+ "where 1=0";			
 		} else {
 //			query = "select lsd.lichsu_do_id, lsd.dongho_id, dhd.khachhang_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd \r\n"
@@ -320,9 +320,9 @@ public class MeasurementHistoryDAO {
 	
 	public List<MeasurementHistory> getLSDoTheoChuhoIDTheoThangNam(String chuho_id, String month, String year){
 		List<MeasurementHistory> listMH = new ArrayList<MeasurementHistory>();
-		String sql = "select lsd.lichsu_do_id, kh.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
-				+ "inner join khachhang kh on kh.dongho_id = lsd.dongho_id\r\n"
-				+ "where kh.khachhang_id = ? ";
+		String sql = "select lsd.lichsu_do_id, dhd.khachhang_id, lsd.dongho_id, lsd.ngay_do, lsd.chiso from lichsu_do2 lsd\r\n"
+				+ "inner join donghodien dhd on dhd.dongho_id = lsd.dongho_id\r\n"
+				+ "where dhd.khachhang_id = ? ";
 		List<Object> params = new ArrayList<>();
 		params.add(chuho_id);
 		if (month != null && !month.isEmpty()) {

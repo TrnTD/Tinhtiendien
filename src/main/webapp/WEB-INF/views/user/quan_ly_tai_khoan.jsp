@@ -59,7 +59,7 @@
 				<!-- Cột 8 -->
 				<div class="col-md-3">
 					<p>
-						<span class="left-align" id="makh">${info_khachhang.dongho_id}</span>
+						<span class="left-align" id="makh">${ma_dongho}</span>
 					</p>
 				</div>
 
@@ -74,6 +74,17 @@
 				<div class="col-md-3">
 					<p>
 						<span class="left-align" id="makh">${info_khachhang.cccd}</span>
+					</p>
+				</div>
+				<div class="col-2">
+					<p>
+						<strong>Username:</strong>
+					</p>
+				</div>
+				<!-- Cột 8 -->
+				<div class="col-md-3">
+					<p>
+						<span class="left-align" id="makh">${info_khachhang.username}</span>
 					</p>
 				</div>
 			</div>

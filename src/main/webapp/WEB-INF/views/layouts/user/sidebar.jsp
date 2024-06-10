@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Lưu trạng thái vào sessionStorage
                 sessionStorage.setItem("menuState", "expanded");
             }
-            else if (this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_tam_ngung_cap_dien"|| this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_ghi_chi_so" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_su_do" ) 
+            else if (this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/thong_tin_hoa_don_chua_thanh_toan"|| this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_ghi_chi_so" || this.getAttribute("href") === "/Tinhtiendien/nguoi_dung/lich_su_do" ) 
             {
                 parentMenuItem.setAttribute("aria-expanded", "false");
                 collapseMenu.classList.remove("show");

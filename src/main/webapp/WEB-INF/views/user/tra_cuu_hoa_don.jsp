@@ -75,7 +75,7 @@
 		            </div>
 <!-- 		            Cột 8 -->
 		            <div class="col-md-3">
-		                <p><span class="left-align" id="mahoadon">${info_khachhang.dongho_id}</span></p>
+		                <p><span class="left-align" id="mahoadon">${dongho_id}</span></p>
 		            </div>
 		        </div>
 		        <div class="row">

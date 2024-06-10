@@ -163,9 +163,12 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
         String makh = info.getKhachhang_id();
 		
-		int nam_dangky = infoDAO.getNamDangKy(makh);
+		int nam_dangky = donghodienDAO.getNamDangKy(makh);
 		
+		String dongho_id = donghodienDAO.getMaDongHo(makh);
 		model.addAttribute("nam_dangky", nam_dangky);
+		
+		model.addAttribute("dongho_id", dongho_id);
 		
 		return "user/tra_cuu_hoa_don";
 	}
@@ -176,7 +179,7 @@ public class KhachHangController {
         Info info = (Info) session.getAttribute("info_khachhang");
         String makh = info.getKhachhang_id();
 
-        int nam_dangky = infoDAO.getNamDangKy(makh);
+        int nam_dangky = donghodienDAO.getNamDangKy(makh);
 		
 		model.addAttribute("nam_dangky", nam_dangky);
         
@@ -186,6 +189,9 @@ public class KhachHangController {
         if (hoadon != null) {
         	issetHoaDon = true;
         }
+        
+        String dongho_id = donghodienDAO.getMaDongHo(makh);
+		model.addAttribute("nam_dangky", nam_dangky);
         
         model.addAttribute("hoadon", hoadon);
         model.addAttribute("issetHoaDon", issetHoaDon);
@@ -209,7 +215,7 @@ public class KhachHangController {
 		String makh = info.getKhachhang_id();
 		
 		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDon(makh);
-		int nam_dangky = infoDAO.getNamDangKy(makh);
+		int nam_dangky = donghodienDAO.getNamDangKy(makh);
 		
 		model.addAttribute("nam_dangky", nam_dangky);
 		model.addAttribute("list_hoadon", list_hoadon);
@@ -221,7 +227,7 @@ public class KhachHangController {
 	public String tim_kiem_thong_tin_hoa_don(HttpSession session, Model model, @RequestParam("search_month") String month,  @RequestParam("search_year") String year) {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
-		int nam_dangky = infoDAO.getNamDangKy(makh);
+		int nam_dangky = donghodienDAO.getNamDangKy(makh);
 		if (month.isEmpty() && year.isEmpty()) {
 			List<HoaDon> list_hoadon = null;
 			model.addAttribute("nam_dangky", nam_dangky);
@@ -250,7 +256,7 @@ public class KhachHangController {
 		String makh = info.getKhachhang_id();
 		
 		List<HoaDon> list_lstt = hoadonDAO.getAllInfoHoaDonDaThanhToan(makh);
-		int nam_dangky = infoDAO.getNamDangKy(makh);
+		int nam_dangky = donghodienDAO.getNamDangKy(makh);
 		
 		model.addAttribute("nam_dangky", nam_dangky);
 		model.addAttribute("list_lstt", list_lstt);
@@ -265,7 +271,7 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		
-		int nam_dangky = infoDAO.getNamDangKy(makh);
+		int nam_dangky = donghodienDAO.getNamDangKy(makh);
 
 		if (month.isEmpty() && year.isEmpty()) {
 			List<HoaDon> list_lstt = null;
@@ -299,6 +305,11 @@ public class KhachHangController {
 	
 	@RequestMapping(value = "/nguoi_dung/thong_tin_hoa_don_chua_thanh_toan", method = RequestMethod.GET)
 	public String thong_tin_hoa_don_chua_thanh_toan(HttpSession session, Model model) {
+		
+		if (session.getAttribute("info_khachhang") == null) {
+			return "redirect:/login";
+		}
+		
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		List<HoaDon> list_hoadon = hoadonDAO.getAllInfoHoaDonChuaThanhToan(makh);
@@ -343,7 +354,7 @@ public class KhachHangController {
 		
 		List<MeasurementHistory> listLSDo = new ArrayList<MeasurementHistory>();
 		listLSDo = mdDAO.getLSDoTheoChuhoID(makh);
-		int nam_dangky = infoDAO.getNamDangKy(makh);
+		int nam_dangky = donghodienDAO.getNamDangKy(makh);
 		
 		model.addAttribute("nam_dangky", nam_dangky);
 		model.addAttribute("listLSDo", listLSDo);
@@ -356,7 +367,7 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		
-		int nam_dangky = infoDAO.getNamDangKy(makh);
+		int nam_dangky = donghodienDAO.getNamDangKy(makh);
 		
 		if (month.isEmpty() && year.isEmpty()) {
 			List<MeasurementHistory> listLSDo = null;
@@ -519,7 +530,7 @@ public class KhachHangController {
 		Info info = (Info) session.getAttribute("info_khachhang");
 		String makh = info.getKhachhang_id();
 		
-		int ma_dongho = donghodienDAO.getMaDongHo(makh);
+		String ma_dongho = donghodienDAO.getMaDongHo(makh);
 		model.addAttribute("ma_dongho", ma_dongho);
 		
 		return "user/quan_ly_tai_khoan";

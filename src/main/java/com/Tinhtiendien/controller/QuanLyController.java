@@ -95,8 +95,6 @@ public class QuanLyController {
 			list_doanhthu.add(hoadonDAO.get_doanhthu_by_year2(year));
 		}
 		
-		List<Integer> list_sotien = hoadonDAO.get_doanhthu_by_year(2010);
-		
 		request.setAttribute("list_3YearsNearest", list_3YearsNearest);
 		request.setAttribute("list_doanhthu", list_doanhthu);
 		

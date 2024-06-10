@@ -136,7 +136,7 @@ public class NhanVienController {
 		model.addAttribute("hoadon_chuathanhtoan", hoadon_chuathanhtoan);
 		model.addAttribute("doanhthu_hoadondathanhtoan", doanhthu_hoadondathanhtoan);
 		model.addAttribute("doanhthu_hoadonchuathanhtoan", doanhthu_hoadonchuathanhtoan);
-		
+//		
 		
 		
 		return "employee/quan_ly_chung";
@@ -577,8 +577,9 @@ public class NhanVienController {
 		model.addAttribute("list_dh", listInf);
 		int ttp = infoDAO.getToTalPageAllKhachHang();
 		model.addAttribute("curr_page", cur_page);
-		model.addAttribute("total_page", ttp); 
+		model.addAttribute("total_page", ttp);
 		return "employee/quan_ly_dong_ho_dien_khach_hang";
+
 	}
 
 	
@@ -598,7 +599,7 @@ public class NhanVienController {
 		
 		if ("search_all".equals(all))
 		{
-			int ttp = infoDAO.getToTalPageAllKhachHang();
+			int ttp = donghodienDAO.getToTalPageAllDongHoKhachHang();
 			redirectAttributes.addAttribute("curr_page", 1);
 			redirectAttributes.addAttribute("limit", ttp);
 			return "redirect:/nhan_vien/quan_ly_dong_ho_dien_khach_hang";
@@ -629,6 +630,7 @@ public class NhanVienController {
 		}
 		
 		return "employee/quan_ly_dong_ho_dien_khach_hang";
+
 	}
 	
 	@RequestMapping(value="/nhan_vien/quan_ly_dong_ho_dien_khach_hang", method = RequestMethod.POST)
@@ -638,7 +640,7 @@ public class NhanVienController {
 		String url = request.getHeader("Referer");
 		String thong_bao = null;
 		if (action.equals("renew")) {
-			thong_bao = infoDAO.updateDongHoId(khachHangId, thong_bao);
+			thong_bao = donghodienDAO.updateDongHoId(khachHangId, thong_bao);
 			redirectAttributes.addFlashAttribute("tb", thong_bao);
 		}
 		else if (action.equals("edit"))
@@ -651,11 +653,12 @@ public class NhanVienController {
 			}
 			else
 			{
-				thong_bao = infoDAO.updateNgayDangKy(khachHangId, doiNDK, thong_bao);
+				thong_bao = donghodienDAO.updateNgayDangKy(khachHangId, doiNDK, thong_bao);
 				redirectAttributes.addFlashAttribute("tb", thong_bao);	
 			}
 		}
 		return "redirect:" + url;
+
 	}
 
 	
@@ -743,6 +746,8 @@ public class NhanVienController {
 
 		return "employee/quan_ly_lich_su_do_khach_hang";
 	}
+	
+	
 	
 	@RequestMapping(value = "/nhan_vien/quan_ly_lich_su_do_khach_hang/them", method = RequestMethod.POST)
 	public String them_lsd_khachhang(@RequestParam("add_dongho_id") String dongho_id, @RequestParam("thang") String thang, 

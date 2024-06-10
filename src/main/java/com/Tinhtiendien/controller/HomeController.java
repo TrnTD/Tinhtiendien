@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.Tinhtiendien.DAO.DongHoDienDAO;
 import com.Tinhtiendien.DAO.InfoDAO;
 import com.Tinhtiendien.DAO.QuanLyAccountDAO;
 
@@ -15,6 +16,9 @@ public class HomeController {
 	
 	@Autowired
 	QuanLyAccountDAO qlaccountDAO = new QuanLyAccountDAO();
+	
+	@Autowired
+	DongHoDienDAO dhdDAO = new DongHoDienDAO();
 	
 	@Autowired
 	InfoDAO infoDAO = new InfoDAO();
@@ -29,7 +33,7 @@ public class HomeController {
 		
 		int ttp = qlaccountDAO.getToTalPageAllAccKhachHang();
 		model.addAttribute("total_page_acc", ttp);
-		int ttp1 = infoDAO.getToTalPageAllKhachHang();
+		int ttp1 = dhdDAO.getToTalPageAllDongHoKhachHang();
 		model.addAttribute("total_page_dongho", ttp1);
 		return "employee/nhan_vien";
 	}
