@@ -80,7 +80,7 @@ public class InfoDAO {
 	}
 
 	public boolean checkKhachHangIDandUsername(String khachhangid) {
-			String sql = "select * from khachhang where khachhang_id = ? AND username is null";
+			String sql = "select * from khachhang where binary_checksum(khachhang_id) = binary_checksum(?) AND username is null";
 			Info info = null;
 			try {
 				info = jdbcTemplate.queryForObject(sql, new Object[] {khachhangid}, new MapperInfo());
@@ -278,7 +278,7 @@ public class InfoDAO {
 	}
 	
 	public boolean deleteNhanVien(String nhanvien_id) {
-		String sql = "delete nhanvien where nhanvien_id = ? AND username is null";
+		String sql = "exec sp_DeleteNhanVienByNhanVienId @nhanvien_id = ?";
 		try {
 			jdbcTemplate.update(sql, new Object[] {nhanvien_id});
 			System.out.println("Xoa nhan vien thanh cong");

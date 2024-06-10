@@ -132,7 +132,7 @@
 		if (successMessage) {
 			successMessage.style.display = "none";
 		}
-	}, 3000);
+	}, 5000);
 		sessionStorage.removeItem("formType");
 		sessionStorage.removeItem("khachhang_id");
 		sessionStorage.setItem("thang", "");
@@ -152,7 +152,7 @@
 		if (errorMessage) {
 			errorMessage.style.display = "none";
 		}
-	}, 3000);
+	}, 5000);
 
 		sessionStorage.removeItem("formType");
 		sessionStorage.removeItem("khachhang_id");
@@ -242,7 +242,7 @@
 					</c:if>
 				    </td>
 			        <td>
-			        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button>
+			        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Chỉnh sửa</button>
 
                        	<input type="hidden" class="hoadon_id" name="hoadon_id" value="${hoadon.hoadon_id}">
                        	<input type="hidden" class="ten_pttt" name="hoadon_id" value="${hoadon.ten_phuongthuc}">

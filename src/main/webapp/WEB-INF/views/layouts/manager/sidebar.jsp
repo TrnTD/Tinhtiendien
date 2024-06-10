@@ -117,7 +117,7 @@
       </li>
       
       <li class="nav-item">
-        <a class="nav-link" href="/Tinhtiendien/quan_ly/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
+        <a class="nav-link menu-item" href="/Tinhtiendien/quan_ly/quan_ly_tai_khoan"><i class="fa-solid fa-id-badge"></i> Quản lý tài khoản</a>
       </li>
     </ul>
 </div>
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_thong_tin_khach_hang" 
             		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_tai_khoan_khach_hang" 
-            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang"
+            		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang?cur_page=1&limit="
             		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_lich_su_do_khach_hang"
             		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_hoa_don_khach_hang"
             		|| this.getAttribute("href") === "/Tinhtiendien/quan_ly/quan_ly_lich_su_thanh_toan_khach_hang"

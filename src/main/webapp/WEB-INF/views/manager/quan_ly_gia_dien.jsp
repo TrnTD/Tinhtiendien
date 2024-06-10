@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Quản lý giá điện</title>
+<title>Quản lý giá điên</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -16,9 +16,9 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css"
 	rel="stylesheet">
 
-<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
 </head>
 <body>
+<style><%@include file="/WEB-INF/resource/assets/css/style-quanly.css"%></style>
     <div class="container">
         <c:if test="${not empty message}">
             <div id="alertMessage" class="alert alert-success" role="alert" style="margin-top: 10px; display: none;">${message}</div>
@@ -81,12 +81,12 @@
                                 <!-- Add employee form -->
                                 <div class="mb-3">
                                     <label class="form-label">Bậc Điện</label>
-                                    <input type="text" class="form-control" name="add_bacDien" id = "add_bacDien_id">
+                                    <input type="number" class="form-control" name="add_bacDien" id = "add_bacDien_id">
 										<h6 style="color:red; padding-left:5px;padding-top:5px" id="add_bacDien_id">${add_bacDien_id}</h6>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Giá Điện</label>
-                                    <input type="text" class="form-control" name="add_giaDien" id = "add_giaDien_id">
+                                    <input type="number" class="form-control" name="add_giaDien" id = "add_giaDien_id">
                                 	<h6 style="color:red; padding-left:5px;padding-top:5px" id="add_giaDien_id">${add_giaDien_id}</h6>
                                 
                                 </div>
@@ -110,7 +110,7 @@
                                 <!-- Edit employee form -->
                                 <div class="mb-3">
                                     <label class="form-label">Giá Tiền</label>
-                                    <input type="text" class="form-control" name="edit_giaDien" id = "edit_giaDien_id">
+                                    <input type="number" class="form-control" name="edit_giaDien" id = "edit_giaDien_id">
         							<h6 style="color:red; padding-left:5px;padding-top:5px" id="edit_giaDien_id">${edit_giaDien_id}</h6>
                                		
                                 </div>

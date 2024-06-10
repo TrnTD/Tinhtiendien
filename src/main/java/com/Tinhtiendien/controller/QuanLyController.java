@@ -1551,7 +1551,7 @@ public class QuanLyController {
 		}
 		
 		if (hoadonDAO.editHoaDon(hoadon_id, thang, nam, thue, edit_status, editPTTT)) {
-			message = "Bạn đã cập nhật lịch sử đo của khách hàng thành công";
+			message = "Bạn đã cập nhật hóa đơn của khách hàng thành công";
 			session.setAttribute("message", message);
 			session.setAttribute("isError", isError);
 		} else {

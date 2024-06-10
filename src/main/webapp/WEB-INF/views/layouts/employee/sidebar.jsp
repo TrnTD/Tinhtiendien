@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var collapseMenu = document.querySelector('#lichsuhoadon');
 
             if (this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_thong_tin_khach_hang" || this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_tai_khoan_khach_hang" 
-            		|| this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang" || this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang" 
+            		|| this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang?cur_page=1&limit=" || this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_lich_su_do_khach_hang" 
             		|| this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_hoa_don_khach_hang" || this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_lich_su_thanh_toan_khach_hang" 
             		|| this.getAttribute("href") === "/Tinhtiendien/nhan_vien/quan_ly_gia_dien") 
             {

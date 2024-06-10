@@ -170,7 +170,7 @@
 				        <td><fmt:formatDate value="${lsd.ngay_do}" pattern="dd-MM-yyyy"/></td>
 				        <td>${lsd.chiso}</td>
 				        <td>
-				        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Sửa</button>
+				        	<button type="button" class="btn btn-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" onclick="setSelectForm('editForm')"><i class="bi bi-pencil-fill"></i> Chỉnh sửa</button>
 	
 	                       	<input type="hidden" class="lsd_id" name="lsd_id" value="${lsd.lichsu_do_id}">
 							<c:if test="${not enableDelete.contains(lsd.ngay_do)}">
