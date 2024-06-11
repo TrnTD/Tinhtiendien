@@ -75,7 +75,7 @@ public class HoaDonDAO {
 	}
 	
 	public List<Integer> get_3YearsNearest() {
-		String query = "select distinct top 3 year_bill from hoa_don2 where trangthai = N'Đã thanh toán' order by year_bill asc";
+		String query = "select distinct top 3 year_bill from hoa_don2 where trangthai = N'Đã thanh toán' order by year_bill desc";
 		
 		List<Integer> list_year = new ArrayList<>();
 		

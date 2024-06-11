@@ -148,11 +148,15 @@ public class MeasurementHistoryDAO {
 		return lsd;
 	}
 	
-	public boolean enableDelete(String ngay_do) {
+	public boolean enableDelete(String ngay_do, String khachhang_id) {
 		boolean isDelete = false;
 	
 		String result = "";
-		String query = "select trangthai from hoa_don2 where month_bill = month(?) and year_bill = year(?)";
+		String query = "DECLARE @Date DATE = '2024-04-01';\r\n"
+				+ "DECLARE @Month INT = MONTH(@Date);\r\n"
+				+ "DECLARE @Year INT = YEAR(@Date);\r\n"
+				+ "\r\n"
+				+ "EXEC sp_GetTrangThaiHoaDon @KhachHangID = 'KH001', @Month = @Month, @Year = @Year;";
 		
 		try {
 			result = jdbcTemplate.queryForObject(query, new Object[] {ngay_do, ngay_do}, String.class);

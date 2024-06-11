@@ -153,7 +153,7 @@
 										Ví dụ: User12</i>
 								</div>
 								<div class="mb-3">
-									<label class="form-label">Mật khẩu </label> <input type="text"
+									<label class="form-label">Mật khẩu </label> <input type="password"
 										class="form-control" name="addPassWord" id="themMK">
 									<h6 style="color: red; padding-left: 5px; padding-top: 5px"
 										id="themMK">${tbThemMK}</h6>

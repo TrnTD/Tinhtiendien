@@ -43,7 +43,7 @@
 
 	<div class="container mt-5" style="margin-top: 0px !important">
 		<div id="thong_bao" class="alert alert-success" role="alert" style="margin-top: 20px; display: none">${tb}</div>
-		<form action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang/tim_kiem" class="custom-form" method="GET">
+		<form action="/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang/tim_kiem" class="custom-form" method="GET">
 		<div style="margin:10px 0">
 			<div style="display:inline-block; width:20%; margin:10px 10px 10px 0">
 				<label for="field1" class="form-label"  style="display:block">Mã khách hàng</label>
@@ -79,7 +79,7 @@
 			
 		</div>
 		</form>
-		<div class="table-wrapper">
+		<div class="table-wrapper" style="box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;">
 			<div class="table-title">
 				<div class="row">
 					<div class="col-md-6">
@@ -124,7 +124,7 @@
 				</tbody>
 			</table>
 			
-			<form action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang" method="POST">
+			<form action="/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang" method="POST">
 				<input type="hidden" id="khachHangId" name="khachHangId" value="">
 				<input type="hidden" id="actionForm" name="action" value="">
 
@@ -206,7 +206,7 @@
 			<c:choose>
 				<c:when test="${not empty search_id_khachhang || not empty search_id_dongho || not empty search_id_tuNgay || not empty search_id_denNgay }">
 					<form
-						action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang/tim_kiem"
+						action="/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang/tim_kiem"
 						class="custom-form" id="submitPage" method="GET">
 						<nav aria-label="Page navigation">
 							<ul class="pagination" id="pagination"></ul>
@@ -226,7 +226,7 @@
 				</c:when>
 				<c:otherwise>
 					<form
-						action="/Tinhtiendien/nhan_vien/quan_ly_dong_ho_dien_khach_hang"
+						action="/Tinhtiendien/quan_ly/quan_ly_dong_ho_dien_khach_hang"
 						class="custom-form" id="submitPage" method="GET">
 						<nav aria-label="Page navigation">
 							<ul class="pagination" id="pagination"></ul>

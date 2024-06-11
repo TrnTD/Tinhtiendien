@@ -19,6 +19,11 @@
 	.error-input {
 	    border: 1px solid red !important; /* Đường viền màu đỏ */
 	}
+	
+	tr th {
+		vertical-align: middle;
+		text-align: center;
+	}
 </style>
 <!-- 	================================================= -->
 	<div class="container">

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -89,6 +90,7 @@ public class QuanLyController {
 		}
 
 		List<Integer> list_3YearsNearest = hoadonDAO.get_3YearsNearest();
+		Collections.sort(list_3YearsNearest);
 		List<Long> list_doanhthu = new ArrayList<>();
 		
 		for (int year : list_3YearsNearest) {
@@ -1107,7 +1109,7 @@ public class QuanLyController {
 		List<Date> enableDelete = new ArrayList<Date>();
 		
 		for (MeasurementHistory lsd : list_lsd) {
-			if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+			if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()), lsd.getKhachhang_id())) {
 				
 				enableDelete.add(lsd.getNgay_do());	
 				
@@ -1345,7 +1347,7 @@ public class QuanLyController {
 			List<Date> enableDelete = new ArrayList<Date>();
 			
 			for (MeasurementHistory lsd : list_lsd) {
-				if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+				if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()), lsd.getKhachhang_id())) {
 					
 					enableDelete.add(lsd.getNgay_do());	
 					

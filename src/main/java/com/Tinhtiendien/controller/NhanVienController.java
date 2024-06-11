@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,6 +90,7 @@ public class NhanVienController {
 		}
 
 		List<Integer> list_3YearsNearest = hoadonDAO.get_3YearsNearest();
+		Collections.sort(list_3YearsNearest);
 		List<Long> list_doanhthu = new ArrayList<>();
 		
 		for (int year : list_3YearsNearest) {
@@ -721,7 +723,7 @@ public class NhanVienController {
 		List<Date> enableDelete = new ArrayList<Date>();
 		
 		for (MeasurementHistory lsd : list_lsd) {
-			if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+			if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()), lsd.getKhachhang_id())) {
 				
 				enableDelete.add(lsd.getNgay_do());	
 				
@@ -737,6 +739,7 @@ public class NhanVienController {
 				}
 				
 			}
+			
 		}
 		
 		model.addAttribute("list_lsd", list_lsd);
@@ -964,7 +967,7 @@ public class NhanVienController {
 			List<Date> enableDelete = new ArrayList<Date>();
 			
 			for (MeasurementHistory lsd : list_lsd) {
-				if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()))) {
+				if (!mdDAO.enableDelete(formatter.format(lsd.getNgay_do()), lsd.getKhachhang_id())) {
 					
 					enableDelete.add(lsd.getNgay_do());	
 					
